@@ -1,0 +1,44 @@
+\documentclass[a4paper, 12 pt]{article}
+
+\usepackage[a4paper,bindingoffset=0.2in,%
+left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm,%
+footskip=.25in]{geometry}
+
+% IDIOMA
+\usepackage[english]{babel} 
+
+% ENCODING
+\usepackage{cmap,lmodern,hyperref}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%\usepackage[bookmarks]{hyperref}
+
+% IMATGES
+\usepackage{wrapfig,graphicx}
+\usepackage[font=small]{caption}
+\usepackage{subcaption}
+
+% EQUACIONS
+\usepackage{mathtools,amsmath,amssymb,systeme,braket}
+
+% OTROS
+\usepackage{listings,color,enumitem,setspace}
+%\usepackage{subfiles}
+%\usepackage{titlesec, titletoc, blindtext,etoolbox,csquotes}
+
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.35em}
+\setstretch{1.125}
+\setlist{noitemsep,nolistsep}
+%\graphicspath{../Figures}
+\newcommand{\ddif}{\mathrm{d}}
+
+\begin{document}
+\include{eos.tex}
+\clearpage
+\include{continuity.tex}
+\bibliography{cosmobib}
+\bibliographystyle{plain}
+
+\end{document}

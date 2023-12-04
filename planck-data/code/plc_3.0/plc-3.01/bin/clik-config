@@ -1,0 +1,28 @@
+#! /usr/bin/env python
+# don't do much for now
+from optparse import OptionParser
+parser = OptionParser()
+
+parser.add_option("--cflags", action="store_true",
+                  help="only the cflags")
+parser.add_option("--libs", action="store_true",
+                  help="only libflags")
+
+(options, args) = parser.parse_args()
+
+
+res={}
+cflags = "-I/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/include -DPYTHONDIR=\"/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages\" -DPYTHONARCHDIR=\"/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages\" -DHAVE_PYEMBED=1 -DHAVE_PYTHON_H=1 -DHAVE_LAPACK_CLIK_H=1 -DHAVE_FITSIO_H=1 -DHAS_LAPACK -DLAPACK_CLIK -m64"
+libs = "-Wl,-Bdynamic-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib -Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01 -L/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib -L/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01 -llapack -lblas -ldl -lcfitsio -lgfortran -lgomp -lclik"
+
+if (not options.libs) and (not options.cflags):
+  options.libs=True
+  options.cflags=True
+
+if options.cflags:
+  print cflags,
+if options.libs:
+  print libs,
+print
+
+

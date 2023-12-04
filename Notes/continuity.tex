@@ -1,0 +1,81 @@
+\section{Perturbative neutrino continuity equations}
+Our goal is to obtain the equations for the evolution of the neutrino perturbations in the synchronous gauge,
+\begin{align} \nonumber
+    \dot{\delta} & =-(1+w)\left(\theta+\frac{\dot{h}}{2}\right)-3\, \frac{\dot{a}}{a}\left(\frac{\delta P}{\delta \rho}-w\right) \delta, \\
+    \dot{\theta} & =-\frac{\dot{a}}{a}(1-3 w)\, \theta-\frac{\dot{w}}{1+w}\, \theta+\frac{\delta P / \delta \rho}{1+w}\,  k^2 \delta-k^2 \sigma\, . \label{eq:delta-theta-evolution}
+\end{align}These equations do not come from the Boltzmann equations, but are just consequence of the conservation of the tensor-energy momentum at first order in perturbations, that is,
+\begin{equation}
+    T_{; \mu}^{\mu \nu}=\partial_\mu T^{\mu \nu}+\Gamma_{\ \alpha \beta}^\nu T^{\alpha \beta}+\Gamma_{\ \alpha \beta}^\alpha T^{\nu \beta}=0\, . \label{eq:tmunu-conservation}
+\end{equation}
+Here we will try to prove that \eqref{eq:delta-theta-evolution} indeed can be derived from \eqref{eq:tmunu-conservation}.
+
+\subsection{Christoffel symbols}
+In the synchronous gauge, the metric is given by
+\begin{equation}
+    \ddif s^2=a^2(\tau)\left(-\ddif \tau^2+\left(\delta_{i j}+h_{i j}\right) \ddif x^i\,  \ddif x^j\right)\, ,
+\end{equation}where $\tau$ is the conformal time, and $h_{ij}$ the perturbation to the spatial metric. The non-zero elements of the metric are then
+\begin{equation}
+    g_{00} = -a^2(\tau) \, , \quad g_{ij} = a^2(\tau)\left(\delta_{i j}+h_{i j}\right)\, .
+\end{equation}And the elements of the inverse matrix are
+\begin{equation}
+    g^{00} = -\frac{1}{a^2(\tau)} \, , \quad 
+    g^{ij} = \frac{1}{a^2(\tau)}\left(\delta^{i j}-h^{i j}\right)\, .
+\end{equation}It is easy to check that $g^{ij}g_{jk} = \delta^i_{\ k}$ at the first order in perturbation theory. Note that $\delta^{ij},h^{ij}$ live in Euclidean 3D space, so we don't really care about indices being upper or lower. 
+
+Now, we can compute the Christoffel symbols from
+\begin{equation}
+    \Gamma^\alpha_{\ \mu \nu} = \frac{1}{2} g^{\alpha \beta}\left(\partial_\nu g_{\beta \mu}+\partial_k g_{\beta \nu}-\partial_m g_{\mu \beta}\right)\, .
+\end{equation}The only non-vanishing symbols are
+\begin{align}
+    \Gamma^0_{\ 00} &= H(\tau)\, , \\
+    \Gamma^0_{\ ij} &= H(\tau) \left(\delta_{i j}+h_{i j}\right) + \frac{1}{2}\dot{h}_{ij}\, , \\
+    \Gamma^k_{\ 0i} &= H(\tau)\delta^k_{\ i} + \frac{1}{2}\dot{h}_{ki}\, ,\\
+    \Gamma^{k}_{\ ij} &= \frac{1}{2} \delta^{kl}\left(\partial_j h_{li} + \partial_i h_{lj} - \partial_l h_{ij}\right)\, .
+\end{align}
+The dot stands for a derivative with respect to conformal time. 
+
+\subsection{Energy-momentum tensor}
+From~\cite{Ma1995}, we have that
+\begin{align}
+    T^0_{\ 0} & =-(\bar{\rho}+\delta \rho) \\
+    T^0_{\ \, i} & =(\bar{\rho}+\bar{P}) v_i=-T^i_{\ 0} \\
+    T^i_{\ j} & =(\bar{P}+\delta P) \delta^i_{\ j}+\Sigma^i_{\ j}\, , \quad \Sigma^i_{\ i}=0\, .
+\end{align}Also from~\cite{Ma1995}, we have $\delta \equiv \delta\rho/\rho$ and
+\begin{equation}
+    (\bar{\rho}+\bar{P}) \theta \equiv i k^j \delta T^0_{\ j}, \quad(\bar{\rho}+\bar{P}) \sigma \equiv-\left(\hat{k}_i \hat{k}_j-\frac{1}{3} \delta_{i j}\right) \Sigma^i_{\ j}\, .
+\end{equation}
+In position space, this is
+\begin{equation}
+    (\bar{\rho}+\bar{P}) \theta = \partial^j \delta T^0_{\ j} = \partial^j\left[(\bar{\rho}+\bar{P}) v_j\right], \quad(\bar{\rho}+\bar{P}) \sigma = \left(\partial_i \partial_j-\frac{1}{3} \delta_{i j}\right) \Sigma^i_{\ j}\, .
+\end{equation}
+
+We will need to move the indices up, as
+\begin{align}
+    T^{00} &= g^{0 0}T^0_{\ 0} = \frac{1}{a^2}(\bar{\rho}+\delta\rho)\, , \\
+    T^{0i} &= g^{ij}T^0_{\ j} = 
+            \frac{1}{a^2}\left(\delta^{i j}-h^{i j}\right)(\bar{\rho}+\bar{P})v_j \, , \\
+    T^{ij} &=  g^{jk}T^i_{\ k} = \frac{1}{a^2}\left(\delta^{jk}-h^{jk}\right)\left[(\bar{P}+\delta P)\delta^i_{\ k} + \Sigma^i_{\ k}\right]\, .
+\end{align}
+
+\subsection{Continuity equations}
+We now want to compute~\eqref{eq:tmunu-conservation}. We begin with $\nu = 0$, that is
+\begin{equation}
+    \partial_\mu T^{\mu 0}+\Gamma_{\ \alpha \beta}^0 T^{\alpha \beta}+
+    \Gamma_{\ \alpha \beta}^\alpha T^{0 \beta}=0\, .
+\end{equation}
+
+Term by term,
+\begin{align}
+    \nonumber
+    \partial_\mu T^{\mu 0} &= \partial_0 T^{00} + \partial_i T^{0i} = 
+    \partial_0 \left(\frac{1}{a^2}[\bar{\rho}+\delta\rho]\right) + \partial^ii\left([\bar{\rho}+\bar{P}]v_i\right) = \\ &= \nonumber
+    -2\, \frac{H}{a^2}\, (\bar{\rho}+\delta\rho) + \frac{1}{a^2}\, (\dot{\bar{\rho}}+\delta\dot{\rho}) + \frac{1}{a^2}(\bar{\rho}+\bar{P})\theta = \\ &=
+    -2\, \frac{H}{a^2}\, (\bar{\rho}+\delta\rho) - \frac{3H}{a^2}\, (\bar{P}+\bar{\rho}) + \frac{1}{a^2}\, \delta\dot{\rho} + \frac{1}{a^2}(\bar{\rho}+\bar{P})\theta\, .
+\end{align}
+\begin{align}
+    \nonumber
+    \Gamma^0_{\ \alpha\beta}T^{\alpha\beta} &= \Gamma^0_{\ 00}T^{00} + \Gamma^0_{\ ij}T^{ij} = \\ &=
+    \nonumber
+    \frac{H}{a^2}(\bar{\rho}+\delta\rho) + \left[H(\delta_{ij} + h_{ij}) + \frac{1}{2}h_{ij}'\right]\frac{1}{a^2}(\delta^{il}-h^{il})\left[(\bar{P}+\delta P)\delta^j_{\ l} + \Sigma^j_{\ l}\right] = \\ &=
+    \frac{H}{a^2}(\bar{\rho}+\delta\rho) + \frac{3H}{a^2}(\bar{P}+\delta P) + \frac{\dot{h}}{2a^2}(\bar{P}+\delta P)\, .
+\end{align}

@@ -1,0 +1,8 @@
+README
+autosetup.py
+setup.py
+/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoBoltzmann/class_ncdm_effboltz/python/../python/classy.pyx
+classy.egg-info/PKG-INFO
+classy.egg-info/SOURCES.txt
+classy.egg-info/dependency_links.txt
+classy.egg-info/top_level.txt

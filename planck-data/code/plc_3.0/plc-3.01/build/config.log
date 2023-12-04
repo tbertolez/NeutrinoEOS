@@ -1,0 +1,1602 @@
+# project  configured on Thu Jan 26 15:32:53 2023 by
+# waf 2.0.17 (abi 20, python 30a06f0 on linux)
+# using ./waf configure --lapack_mkl= --install_all_deps
+#
+----------------------------------------
+Setting top to
+/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01
+----------------------------------------
+Setting out to
+/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build
+----------------------------------------
+Checking for program 'gcc, cc'
+/usr/bin/gcc
+find program=['gcc', 'cc'] paths=['/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/bin', '/home/tbertolez/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/snap/bin'] var='CC' -> ['/usr/bin/gcc']
+['/usr/bin/gcc', '-dM', '-E', '-']
+out: #define __SSP_STRONG__ 3
+#define __DBL_MIN_EXP__ (-1021)
+#define __UINT_LEAST16_MAX__ 0xffff
+#define __ATOMIC_ACQUIRE 2
+#define __FLT128_MAX_10_EXP__ 4932
+#define __FLT_MIN__ 1.17549435082228750796873653722224568e-38F
+#define __GCC_IEC_559_COMPLEX 2
+#define __UINT_LEAST8_TYPE__ unsigned char
+#define __SIZEOF_FLOAT80__ 16
+#define __INTMAX_C(c) c ## L
+#define __CHAR_BIT__ 8
+#define __UINT8_MAX__ 0xff
+#define __SCHAR_WIDTH__ 8
+#define __WINT_MAX__ 0xffffffffU
+#define __FLT32_MIN_EXP__ (-125)
+#define __ORDER_LITTLE_ENDIAN__ 1234
+#define __SIZE_MAX__ 0xffffffffffffffffUL
+#define __WCHAR_MAX__ 0x7fffffff
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 1
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 1
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 1
+#define __DBL_DENORM_MIN__ ((double)4.94065645841246544176568792868221372e-324L)
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 1
+#define __GCC_ATOMIC_CHAR_LOCK_FREE 2
+#define __GCC_IEC_559 2
+#define __FLT32X_DECIMAL_DIG__ 17
+#define __FLT_EVAL_METHOD__ 0
+#define __FLT64_DECIMAL_DIG__ 17
+#define __CET__ 3
+#define __GCC_ATOMIC_CHAR32_T_LOCK_FREE 2
+#define __UINT_FAST64_MAX__ 0xffffffffffffffffUL
+#define __SIG_ATOMIC_TYPE__ int
+#define __DBL_MIN_10_EXP__ (-307)
+#define __FINITE_MATH_ONLY__ 0
+#define __FLT32X_MAX_EXP__ 1024
+#define __FLT32_HAS_DENORM__ 1
+#define __UINT_FAST8_MAX__ 0xff
+#define __FLT32_MAX_10_EXP__ 38
+#define __DEC64_MAX_EXP__ 385
+#define __INT8_C(c) c
+#define __INT_LEAST8_WIDTH__ 8
+#define __UINT_LEAST64_MAX__ 0xffffffffffffffffUL
+#define __SHRT_MAX__ 0x7fff
+#define __LDBL_MAX__ 1.18973149535723176502126385303097021e+4932L
+#define __FLT64X_MAX_10_EXP__ 4932
+#define __LDBL_IS_IEC_60559__ 2
+#define __FLT64X_HAS_QUIET_NAN__ 1
+#define __UINT_LEAST8_MAX__ 0xff
+#define __GCC_ATOMIC_BOOL_LOCK_FREE 2
+#define __FLT128_DENORM_MIN__ 6.47517511943802511092443895822764655e-4966F128
+#define __UINTMAX_TYPE__ long unsigned int
+#define __linux 1
+#define __DEC32_EPSILON__ 1E-6DF
+#define __FLT_EVAL_METHOD_TS_18661_3__ 0
+#define __unix 1
+#define __UINT32_MAX__ 0xffffffffU
+#define __FLT128_MIN_EXP__ (-16381)
+#define __WINT_MIN__ 0U
+#define __FLT128_MIN_10_EXP__ (-4931)
+#define __FLT32X_IS_IEC_60559__ 2
+#define __INT_LEAST16_WIDTH__ 16
+#define __SCHAR_MAX__ 0x7f
+#define __FLT128_MANT_DIG__ 113
+#define __WCHAR_MIN__ (-__WCHAR_MAX__ - 1)
+#define __INT64_C(c) c ## L
+#define __GCC_ATOMIC_POINTER_LOCK_FREE 2
+#define __FLT32X_MANT_DIG__ 53
+#define __USER_LABEL_PREFIX__ 
+#define __FLT64X_EPSILON__ 1.08420217248550443400745280086994171e-19F64x
+#define __STDC_HOSTED__ 1
+#define __DEC64_MIN_EXP__ (-382)
+#define __DBL_DIG__ 15
+#define __FLT32_DIG__ 6
+#define __FLT_EPSILON__ 1.19209289550781250000000000000000000e-7F
+#define __SHRT_WIDTH__ 16
+#define __FLT32_IS_IEC_60559__ 2
+#define __LDBL_MIN__ 3.36210314311209350626267781732175260e-4932L
+#define __STDC_UTF_16__ 1
+#define __DBL_IS_IEC_60559__ 2
+#define __DEC32_MAX__ 9.999999E96DF
+#define __FLT64X_DENORM_MIN__ 3.64519953188247460252840593361941982e-4951F64x
+#define __FLT32X_HAS_INFINITY__ 1
+#define __INT32_MAX__ 0x7fffffff
+#define __unix__ 1
+#define __INT_WIDTH__ 32
+#define __SIZEOF_LONG__ 8
+#define __STDC_IEC_559__ 1
+#define __STDC_ISO_10646__ 201706L
+#define __UINT16_C(c) c
+#define __DECIMAL_DIG__ 21
+#define __STDC_IEC_559_COMPLEX__ 1
+#define __FLT64_EPSILON__ 2.22044604925031308084726333618164062e-16F64
+#define __gnu_linux__ 1
+#define __FLT128_IS_IEC_60559__ 2
+#define __FLT64X_MIN_10_EXP__ (-4931)
+#define __LDBL_HAS_QUIET_NAN__ 1
+#define __FLT64_MANT_DIG__ 53
+#define __FLT64X_MANT_DIG__ 64
+#define __GNUC__ 11
+#define __pie__ 2
+#define __MMX__ 1
+#define __FLT_HAS_DENORM__ 1
+#define __SIZEOF_LONG_DOUBLE__ 16
+#define __BIGGEST_ALIGNMENT__ 16
+#define __FLT64_MAX_10_EXP__ 308
+#define __DBL_MAX__ ((double)1.79769313486231570814527423731704357e+308L)
+#define __INT_FAST32_MAX__ 0x7fffffffffffffffL
+#define __DBL_HAS_INFINITY__ 1
+#define __SIZEOF_FLOAT__ 4
+#define __HAVE_SPECULATION_SAFE_VALUE 1
+#define __DEC32_MIN_EXP__ (-94)
+#define __INTPTR_WIDTH__ 64
+#define __FLT64X_HAS_INFINITY__ 1
+#define __UINT_LEAST32_MAX__ 0xffffffffU
+#define __FLT32X_HAS_DENORM__ 1
+#define __INT_FAST16_TYPE__ long int
+#define __MMX_WITH_SSE__ 1
+#define __LDBL_HAS_DENORM__ 1
+#define __FLT128_HAS_INFINITY__ 1
+#define __DEC32_MIN__ 1E-95DF
+#define __DBL_MAX_EXP__ 1024
+#define __WCHAR_WIDTH__ 32
+#define __FLT32_MAX__ 3.40282346638528859811704183484516925e+38F32
+#define __DEC128_EPSILON__ 1E-33DL
+#define __SSE2_MATH__ 1
+#define __ATOMIC_HLE_RELEASE 131072
+#define __PTRDIFF_MAX__ 0x7fffffffffffffffL
+#define __amd64 1
+#define __ATOMIC_HLE_ACQUIRE 65536
+#define __LONG_LONG_MAX__ 0x7fffffffffffffffLL
+#define __SIZEOF_SIZE_T__ 8
+#define __FLT64X_MIN_EXP__ (-16381)
+#define __SIZEOF_WINT_T__ 4
+#define __LONG_LONG_WIDTH__ 64
+#define __FLT32_MAX_EXP__ 128
+#define __GXX_ABI_VERSION 1016
+#define __FLT_MIN_EXP__ (-125)
+#define __GCC_HAVE_DWARF2_CFI_ASM 1
+#define __INT16_MAX__ 0x7fff
+#define __x86_64 1
+#define __INT_FAST64_TYPE__ long int
+#define __FLT64_DENORM_MIN__ 4.94065645841246544176568792868221372e-324F64
+#define __DBL_MIN__ ((double)2.22507385850720138309023271733240406e-308L)
+#define __FLT128_EPSILON__ 1.92592994438723585305597794258492732e-34F128
+#define __FLT64X_NORM_MAX__ 1.18973149535723176502126385303097021e+4932F64x
+#define __SIZEOF_POINTER__ 8
+#define __LP64__ 1
+#define __DBL_HAS_QUIET_NAN__ 1
+#define __FLT32X_EPSILON__ 2.22044604925031308084726333618164062e-16F32x
+#define __DECIMAL_BID_FORMAT__ 1
+#define __FLT64_MIN_EXP__ (-1021)
+#define __FLT64_MIN_10_EXP__ (-307)
+#define __FLT64X_DECIMAL_DIG__ 21
+#define __DEC128_MIN__ 1E-6143DL
+#define __REGISTER_PREFIX__ 
+#define __UINT16_MAX__ 0xffff
+#define __DBL_HAS_DENORM__ 1
+#define __LDBL_HAS_INFINITY__ 1
+#define __FLT32_MIN__ 1.17549435082228750796873653722224568e-38F32
+#define __UINT8_TYPE__ unsigned char
+#define __FLT_DIG__ 6
+#define __NO_INLINE__ 1
+#define __DEC_EVAL_METHOD__ 2
+#define __DEC128_MAX__ 9.999999999999999999999999999999999E6144DL
+#define __FLT_MANT_DIG__ 24
+#define __LDBL_DECIMAL_DIG__ 21
+#define __VERSION__ "11.3.0"
+#define __UINT64_C(c) c ## UL
+#define _STDC_PREDEF_H 1
+#define __INT_LEAST32_MAX__ 0x7fffffff
+#define __GCC_ATOMIC_INT_LOCK_FREE 2
+#define __FLT128_MAX_EXP__ 16384
+#define __FLT32_MANT_DIG__ 24
+#define __FLOAT_WORD_ORDER__ __ORDER_LITTLE_ENDIAN__
+#define __STDC_IEC_60559_COMPLEX__ 201404L
+#define __FLT128_HAS_DENORM__ 1
+#define __FLT32_DECIMAL_DIG__ 9
+#define __FLT128_DIG__ 33
+#define __INT32_C(c) c
+#define __DEC64_EPSILON__ 1E-15DD
+#define __ORDER_PDP_ENDIAN__ 3412
+#define __DEC128_MIN_EXP__ (-6142)
+#define __INT_FAST32_TYPE__ long int
+#define __UINT_LEAST16_TYPE__ short unsigned int
+#define unix 1
+#define __SIZE_TYPE__ long unsigned int
+#define __UINT64_MAX__ 0xffffffffffffffffUL
+#define __FLT_IS_IEC_60559__ 2
+#define __GNUC_WIDE_EXECUTION_CHARSET_NAME "UTF-32LE"
+#define __FLT64X_DIG__ 18
+#define __INT8_TYPE__ signed char
+#define __ELF__ 1
+#define __GCC_ASM_FLAG_OUTPUTS__ 1
+#define __UINT32_TYPE__ unsigned int
+#define __FLT_RADIX__ 2
+#define __INT_LEAST16_TYPE__ short int
+#define __LDBL_EPSILON__ 1.08420217248550443400745280086994171e-19L
+#define __UINTMAX_C(c) c ## UL
+#define __SSE_MATH__ 1
+#define __k8 1
+#define __FLT32X_MIN__ 2.22507385850720138309023271733240406e-308F32x
+#define __SIG_ATOMIC_MAX__ 0x7fffffff
+#define __GCC_ATOMIC_WCHAR_T_LOCK_FREE 2
+#define __STDC_IEC_60559_BFP__ 201404L
+#define __SIZEOF_PTRDIFF_T__ 8
+#define __LDBL_DIG__ 18
+#define __FLT64_IS_IEC_60559__ 2
+#define __x86_64__ 1
+#define __FLT32X_MIN_EXP__ (-1021)
+#define __DEC32_SUBNORMAL_MIN__ 0.000001E-95DF
+#define __INT_FAST16_MAX__ 0x7fffffffffffffffL
+#define __FLT64_DIG__ 15
+#define __UINT_FAST32_MAX__ 0xffffffffffffffffUL
+#define __UINT_LEAST64_TYPE__ long unsigned int
+#define __FLT_HAS_QUIET_NAN__ 1
+#define __FLT_MAX_10_EXP__ 38
+#define __LONG_MAX__ 0x7fffffffffffffffL
+#define __FLT64X_HAS_DENORM__ 1
+#define __DEC128_SUBNORMAL_MIN__ 0.000000000000000000000000000000001E-6143DL
+#define __FLT_HAS_INFINITY__ 1
+#define __GNUC_EXECUTION_CHARSET_NAME "UTF-8"
+#define __UINT_FAST16_TYPE__ long unsigned int
+#define __DEC64_MAX__ 9.999999999999999E384DD
+#define __INT_FAST32_WIDTH__ 64
+#define __CHAR16_TYPE__ short unsigned int
+#define __PRAGMA_REDEFINE_EXTNAME 1
+#define __SIZE_WIDTH__ 64
+#define __SEG_FS 1
+#define __INT_LEAST16_MAX__ 0x7fff
+#define __DEC64_MANT_DIG__ 16
+#define __INT64_MAX__ 0x7fffffffffffffffL
+#define __SEG_GS 1
+#define __FLT32_DENORM_MIN__ 1.40129846432481707092372958328991613e-45F32
+#define __SIG_ATOMIC_WIDTH__ 32
+#define __INT_LEAST64_TYPE__ long int
+#define __INT16_TYPE__ short int
+#define __INT_LEAST8_TYPE__ signed char
+#define __STDC_VERSION__ 201710L
+#define __SIZEOF_INT__ 4
+#define __DEC32_MAX_EXP__ 97
+#define __INT_FAST8_MAX__ 0x7f
+#define __FLT128_MAX__ 1.18973149535723176508575932662800702e+4932F128
+#define __INTPTR_MAX__ 0x7fffffffffffffffL
+#define linux 1
+#define __FLT64_HAS_QUIET_NAN__ 1
+#define __FLT32_MIN_10_EXP__ (-37)
+#define __FLT32X_DIG__ 15
+#define __PTRDIFF_WIDTH__ 64
+#define __LDBL_MANT_DIG__ 64
+#define __FLT64_HAS_INFINITY__ 1
+#define __FLT64X_MAX__ 1.18973149535723176502126385303097021e+4932F64x
+#define __SIG_ATOMIC_MIN__ (-__SIG_ATOMIC_MAX__ - 1)
+#define __code_model_small__ 1
+#define __GCC_ATOMIC_LONG_LOCK_FREE 2
+#define __DEC32_MANT_DIG__ 7
+#define __k8__ 1
+#define __INTPTR_TYPE__ long int
+#define __UINT16_TYPE__ short unsigned int
+#define __WCHAR_TYPE__ int
+#define __pic__ 2
+#define __UINTPTR_MAX__ 0xffffffffffffffffUL
+#define __INT_FAST64_WIDTH__ 64
+#define __INT_FAST64_MAX__ 0x7fffffffffffffffL
+#define __GCC_ATOMIC_TEST_AND_SET_TRUEVAL 1
+#define __FLT_NORM_MAX__ 3.40282346638528859811704183484516925e+38F
+#define __FLT32_HAS_INFINITY__ 1
+#define __FLT64X_MAX_EXP__ 16384
+#define __UINT_FAST64_TYPE__ long unsigned int
+#define __INT_MAX__ 0x7fffffff
+#define __linux__ 1
+#define __INT64_TYPE__ long int
+#define __FLT_MAX_EXP__ 128
+#define __ORDER_BIG_ENDIAN__ 4321
+#define __DBL_MANT_DIG__ 53
+#define __SIZEOF_FLOAT128__ 16
+#define __INT_LEAST64_MAX__ 0x7fffffffffffffffL
+#define __GCC_ATOMIC_CHAR16_T_LOCK_FREE 2
+#define __DEC64_MIN__ 1E-383DD
+#define __WINT_TYPE__ unsigned int
+#define __UINT_LEAST32_TYPE__ unsigned int
+#define __SIZEOF_SHORT__ 2
+#define __FLT32_NORM_MAX__ 3.40282346638528859811704183484516925e+38F32
+#define __SSE__ 1
+#define __LDBL_MIN_EXP__ (-16381)
+#define __FLT64_MAX__ 1.79769313486231570814527423731704357e+308F64
+#define __amd64__ 1
+#define __WINT_WIDTH__ 32
+#define __INT_LEAST8_MAX__ 0x7f
+#define __INT_LEAST64_WIDTH__ 64
+#define __LDBL_MAX_EXP__ 16384
+#define __FLT32X_MAX_10_EXP__ 308
+#define __SIZEOF_INT128__ 16
+#define __FLT64X_IS_IEC_60559__ 2
+#define __LDBL_MAX_10_EXP__ 4932
+#define __ATOMIC_RELAXED 0
+#define __DBL_EPSILON__ ((double)2.22044604925031308084726333618164062e-16L)
+#define __FLT128_MIN__ 3.36210314311209350626267781732175260e-4932F128
+#define _LP64 1
+#define __UINT8_C(c) c
+#define __FLT64_MAX_EXP__ 1024
+#define __INT_LEAST32_TYPE__ int
+#define __SIZEOF_WCHAR_T__ 4
+#define __UINT64_TYPE__ long unsigned int
+#define __GNUC_PATCHLEVEL__ 0
+#define __FLT128_NORM_MAX__ 1.18973149535723176508575932662800702e+4932F128
+#define __FLT64_NORM_MAX__ 1.79769313486231570814527423731704357e+308F64
+#define __FLT128_HAS_QUIET_NAN__ 1
+#define __INTMAX_MAX__ 0x7fffffffffffffffL
+#define __INT_FAST8_TYPE__ signed char
+#define __FLT64X_MIN__ 3.36210314311209350626267781732175260e-4932F64x
+#define __GNUC_STDC_INLINE__ 1
+#define __FLT64_HAS_DENORM__ 1
+#define __FLT32_EPSILON__ 1.19209289550781250000000000000000000e-7F32
+#define __DBL_DECIMAL_DIG__ 17
+#define __STDC_UTF_32__ 1
+#define __INT_FAST8_WIDTH__ 8
+#define __FXSR__ 1
+#define __FLT32X_MAX__ 1.79769313486231570814527423731704357e+308F32x
+#define __DBL_NORM_MAX__ ((double)1.79769313486231570814527423731704357e+308L)
+#define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
+#define __INTMAX_WIDTH__ 64
+#define __UINT32_C(c) c ## U
+#define __FLT_DENORM_MIN__ 1.40129846432481707092372958328991613e-45F
+#define __INT8_MAX__ 0x7f
+#define __LONG_WIDTH__ 64
+#define __PIC__ 2
+#define __UINT_FAST32_TYPE__ long unsigned int
+#define __FLT32X_NORM_MAX__ 1.79769313486231570814527423731704357e+308F32x
+#define __CHAR32_TYPE__ unsigned int
+#define __FLT_MAX__ 3.40282346638528859811704183484516925e+38F
+#define __SSE2__ 1
+#define __INT32_TYPE__ int
+#define __SIZEOF_DOUBLE__ 8
+#define __FLT_MIN_10_EXP__ (-37)
+#define __FLT64_MIN__ 2.22507385850720138309023271733240406e-308F64
+#define __INT_LEAST32_WIDTH__ 32
+#define __INTMAX_TYPE__ long int
+#define __DEC128_MAX_EXP__ 6145
+#define __FLT32X_HAS_QUIET_NAN__ 1
+#define __ATOMIC_CONSUME 1
+#define __GNUC_MINOR__ 3
+#define __INT_FAST16_WIDTH__ 64
+#define __UINTMAX_MAX__ 0xffffffffffffffffUL
+#define __PIE__ 2
+#define __FLT32X_DENORM_MIN__ 4.94065645841246544176568792868221372e-324F32x
+#define __DBL_MAX_10_EXP__ 308
+#define __LDBL_DENORM_MIN__ 3.64519953188247460252840593361941982e-4951L
+#define __INT16_C(c) c
+#define __STDC__ 1
+#define __PTRDIFF_TYPE__ long int
+#define __ATOMIC_SEQ_CST 5
+#define __FLT32X_MIN_10_EXP__ (-307)
+#define __UINTPTR_TYPE__ long unsigned int
+#define __DEC64_SUBNORMAL_MIN__ 0.000000000000001E-383DD
+#define __DEC128_MANT_DIG__ 34
+#define __LDBL_MIN_10_EXP__ (-4931)
+#define __SIZEOF_LONG_LONG__ 8
+#define __FLT128_DECIMAL_DIG__ 36
+#define __GCC_ATOMIC_LLONG_LOCK_FREE 2
+#define __FLT32_HAS_QUIET_NAN__ 1
+#define __FLT_DECIMAL_DIG__ 9
+#define __UINT_FAST16_MAX__ 0xffffffffffffffffUL
+#define __LDBL_NORM_MAX__ 1.18973149535723176502126385303097021e+4932L
+#define __GCC_ATOMIC_SHORT_LOCK_FREE 2
+#define __UINT_FAST8_TYPE__ unsigned char
+#define __ATOMIC_ACQ_REL 4
+#define __ATOMIC_RELEASE 3
+
+----------------------------------------
+Checking for program 'ar'
+/usr/bin/ar
+find program=['ar'] paths=['/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/bin', '/home/tbertolez/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/snap/bin'] var='AR' -> ['/usr/bin/ar']
+----------------------------------------
+Check gcc version
+11.3.0
+----------------------------------------
+Compile a test code with gcc
+==>
+#include <stdio.h>
+main() {fprintf(stderr,"hello world");}
+
+<==
+[1/2] Compiling [32mbuild/.conf_check_6eff138c9e818fe5979788bda7404b2f/test.c[0m
+
+['/usr/bin/gcc', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_6eff138c9e818fe5979788bda7404b2f/testbuild/test.c.1.o']
+err: ../test.c:2:1: warning: return type defaults to ‘int’ [-Wimplicit-int]
+    2 | main() {fprintf(stderr,"hello world");}
+      | ^~~~
+
+[2/2] Linking [33mbuild/.conf_check_6eff138c9e818fe5979788bda7404b2f/testbuild/testprog[0m
+
+['/usr/bin/gcc', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_6eff138c9e818fe5979788bda7404b2f/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+yes
+----------------------------------------
+Setting architecture flag to
+['-m64']
+----------------------------------------
+Checking for program 'ifort'
+not found
+find program=['ifort'] paths=['/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/bin', '/home/tbertolez/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/snap/bin'] var='FC' -> None
+from /home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01: Could not find the program ['ifort']
+----------------------------------------
+Checking for program 'gfortran, g77'
+/usr/bin/gfortran
+find program=['gfortran', 'g77'] paths=['/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/bin', '/home/tbertolez/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/snap/bin'] var='FC' -> ['/usr/bin/gfortran']
+['/usr/bin/gfortran', '--version']
+out: GNU Fortran (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0
+Copyright (C) 2021 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+['/usr/bin/gfortran', '-dM', '-E', '-']
+out: #define __SSP_STRONG__ 3
+#define __DBL_MIN_EXP__ (-1021)
+#define __UINT_LEAST16_MAX__ 0xffff
+#define __ATOMIC_ACQUIRE 2
+#define __FLT128_MAX_10_EXP__ 4932
+#define __FLT_MIN__ 1.17549435082228750796873653722224568e-38F
+#define __GCC_IEC_559_COMPLEX 2
+#define __UINT_LEAST8_TYPE__ unsigned char
+#define __SIZEOF_FLOAT80__ 16
+#define __INTMAX_C(c) c ## L
+#define __CHAR_BIT__ 8
+#define __UINT8_MAX__ 0xff
+#define __SCHAR_WIDTH__ 8
+#define __WINT_MAX__ 0xffffffffU
+#define __FLT32_MIN_EXP__ (-125)
+#define __ORDER_LITTLE_ENDIAN__ 1234
+#define __SIZE_MAX__ 0xffffffffffffffffUL
+#define __WCHAR_MAX__ 0x7fffffff
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 1
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 1
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 1
+#define __DBL_DENORM_MIN__ ((double)4.94065645841246544176568792868221372e-324L)
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 1
+#define __GCC_ATOMIC_CHAR_LOCK_FREE 2
+#define __GCC_IEC_559 2
+#define __FLT32X_DECIMAL_DIG__ 17
+#define __FLT_EVAL_METHOD__ 0
+#define __FLT64_DECIMAL_DIG__ 17
+#define __CET__ 3
+#define __GCC_ATOMIC_CHAR32_T_LOCK_FREE 2
+#define __UINT_FAST64_MAX__ 0xffffffffffffffffUL
+#define __SIG_ATOMIC_TYPE__ int
+#define __DBL_MIN_10_EXP__ (-307)
+#define __FINITE_MATH_ONLY__ 0
+#define __FLT32X_MAX_EXP__ 1024
+#define __FLT32_HAS_DENORM__ 1
+#define __UINT_FAST8_MAX__ 0xff
+#define __FLT32_MAX_10_EXP__ 38
+#define __DEC64_MAX_EXP__ 385
+#define __INT8_C(c) c
+#define __INT_LEAST8_WIDTH__ 8
+#define __UINT_LEAST64_MAX__ 0xffffffffffffffffUL
+#define __SHRT_MAX__ 0x7fff
+#define __LDBL_MAX__ 1.18973149535723176502126385303097021e+4932L
+#define __FLT64X_MAX_10_EXP__ 4932
+#define __LDBL_IS_IEC_60559__ 2
+#define __FLT64X_HAS_QUIET_NAN__ 1
+#define __UINT_LEAST8_MAX__ 0xff
+#define __GCC_ATOMIC_BOOL_LOCK_FREE 2
+#define __FLT128_DENORM_MIN__ 6.47517511943802511092443895822764655e-4966F128
+#define __UINTMAX_TYPE__ long unsigned int
+#define __linux 1
+#define __DEC32_EPSILON__ 1E-6DF
+#define __FLT_EVAL_METHOD_TS_18661_3__ 0
+#define __unix 1
+#define __UINT32_MAX__ 0xffffffffU
+#define __FLT128_MIN_EXP__ (-16381)
+#define __WINT_MIN__ 0U
+#define __FLT128_MIN_10_EXP__ (-4931)
+#define __FLT32X_IS_IEC_60559__ 2
+#define __INT_LEAST16_WIDTH__ 16
+#define __SCHAR_MAX__ 0x7f
+#define __FLT128_MANT_DIG__ 113
+#define __WCHAR_MIN__ (-__WCHAR_MAX__ - 1)
+#define __INT64_C(c) c ## L
+#define __GCC_ATOMIC_POINTER_LOCK_FREE 2
+#define __FLT32X_MANT_DIG__ 53
+#define __USER_LABEL_PREFIX__ 
+#define __FLT64X_EPSILON__ 1.08420217248550443400745280086994171e-19F64x
+#define __STDC_HOSTED__ 1
+#define __DEC64_MIN_EXP__ (-382)
+#define __DBL_DIG__ 15
+#define __FLT32_DIG__ 6
+#define __FLT_EPSILON__ 1.19209289550781250000000000000000000e-7F
+#define __SHRT_WIDTH__ 16
+#define __FLT32_IS_IEC_60559__ 2
+#define __LDBL_MIN__ 3.36210314311209350626267781732175260e-4932L
+#define __STDC_UTF_16__ 1
+#define __DBL_IS_IEC_60559__ 2
+#define __DEC32_MAX__ 9.999999E96DF
+#define __FLT64X_DENORM_MIN__ 3.64519953188247460252840593361941982e-4951F64x
+#define __FLT32X_HAS_INFINITY__ 1
+#define __INT32_MAX__ 0x7fffffff
+#define __unix__ 1
+#define __INT_WIDTH__ 32
+#define __SIZEOF_LONG__ 8
+#define __STDC_IEC_559__ 1
+#define __STDC_ISO_10646__ 201706L
+#define __UINT16_C(c) c
+#define __DECIMAL_DIG__ 21
+#define __STDC_IEC_559_COMPLEX__ 1
+#define __FLT64_EPSILON__ 2.22044604925031308084726333618164062e-16F64
+#define __gnu_linux__ 1
+#define __FLT128_IS_IEC_60559__ 2
+#define __FLT64X_MIN_10_EXP__ (-4931)
+#define __LDBL_HAS_QUIET_NAN__ 1
+#define __FLT64_MANT_DIG__ 53
+#define __FLT64X_MANT_DIG__ 64
+#define __GNUC__ 11
+#define __pie__ 2
+#define __MMX__ 1
+#define __FLT_HAS_DENORM__ 1
+#define __SIZEOF_LONG_DOUBLE__ 16
+#define __BIGGEST_ALIGNMENT__ 16
+#define __FLT64_MAX_10_EXP__ 308
+#define __DBL_MAX__ ((double)1.79769313486231570814527423731704357e+308L)
+#define __INT_FAST32_MAX__ 0x7fffffffffffffffL
+#define __DBL_HAS_INFINITY__ 1
+#define __SIZEOF_FLOAT__ 4
+#define __HAVE_SPECULATION_SAFE_VALUE 1
+#define __DEC32_MIN_EXP__ (-94)
+#define __INTPTR_WIDTH__ 64
+#define __FLT64X_HAS_INFINITY__ 1
+#define __UINT_LEAST32_MAX__ 0xffffffffU
+#define __FLT32X_HAS_DENORM__ 1
+#define __INT_FAST16_TYPE__ long int
+#define __MMX_WITH_SSE__ 1
+#define __LDBL_HAS_DENORM__ 1
+#define __FLT128_HAS_INFINITY__ 1
+#define __DEC32_MIN__ 1E-95DF
+#define __DBL_MAX_EXP__ 1024
+#define __WCHAR_WIDTH__ 32
+#define __FLT32_MAX__ 3.40282346638528859811704183484516925e+38F32
+#define __DEC128_EPSILON__ 1E-33DL
+#define __SSE2_MATH__ 1
+#define __ATOMIC_HLE_RELEASE 131072
+#define __PTRDIFF_MAX__ 0x7fffffffffffffffL
+#define __amd64 1
+#define __ATOMIC_HLE_ACQUIRE 65536
+#define __LONG_LONG_MAX__ 0x7fffffffffffffffLL
+#define __SIZEOF_SIZE_T__ 8
+#define __FLT64X_MIN_EXP__ (-16381)
+#define __SIZEOF_WINT_T__ 4
+#define __LONG_LONG_WIDTH__ 64
+#define __FLT32_MAX_EXP__ 128
+#define __GXX_ABI_VERSION 1016
+#define __FLT_MIN_EXP__ (-125)
+#define __GCC_HAVE_DWARF2_CFI_ASM 1
+#define __INT16_MAX__ 0x7fff
+#define __x86_64 1
+#define __INT_FAST64_TYPE__ long int
+#define __FLT64_DENORM_MIN__ 4.94065645841246544176568792868221372e-324F64
+#define __DBL_MIN__ ((double)2.22507385850720138309023271733240406e-308L)
+#define __FLT128_EPSILON__ 1.92592994438723585305597794258492732e-34F128
+#define __FLT64X_NORM_MAX__ 1.18973149535723176502126385303097021e+4932F64x
+#define __SIZEOF_POINTER__ 8
+#define __LP64__ 1
+#define __DBL_HAS_QUIET_NAN__ 1
+#define __FLT32X_EPSILON__ 2.22044604925031308084726333618164062e-16F32x
+#define __DECIMAL_BID_FORMAT__ 1
+#define __FLT64_MIN_EXP__ (-1021)
+#define __FLT64_MIN_10_EXP__ (-307)
+#define __FLT64X_DECIMAL_DIG__ 21
+#define __DEC128_MIN__ 1E-6143DL
+#define __REGISTER_PREFIX__ 
+#define __UINT16_MAX__ 0xffff
+#define __DBL_HAS_DENORM__ 1
+#define __LDBL_HAS_INFINITY__ 1
+#define __FLT32_MIN__ 1.17549435082228750796873653722224568e-38F32
+#define __UINT8_TYPE__ unsigned char
+#define __FLT_DIG__ 6
+#define __NO_INLINE__ 1
+#define __DEC_EVAL_METHOD__ 2
+#define __DEC128_MAX__ 9.999999999999999999999999999999999E6144DL
+#define __FLT_MANT_DIG__ 24
+#define __LDBL_DECIMAL_DIG__ 21
+#define __VERSION__ "11.3.0"
+#define __UINT64_C(c) c ## UL
+#define _STDC_PREDEF_H 1
+#define __INT_LEAST32_MAX__ 0x7fffffff
+#define __GCC_ATOMIC_INT_LOCK_FREE 2
+#define __FLT128_MAX_EXP__ 16384
+#define __FLT32_MANT_DIG__ 24
+#define __FLOAT_WORD_ORDER__ __ORDER_LITTLE_ENDIAN__
+#define __STDC_IEC_60559_COMPLEX__ 201404L
+#define __FLT128_HAS_DENORM__ 1
+#define __FLT32_DECIMAL_DIG__ 9
+#define __FLT128_DIG__ 33
+#define __INT32_C(c) c
+#define __DEC64_EPSILON__ 1E-15DD
+#define __ORDER_PDP_ENDIAN__ 3412
+#define __DEC128_MIN_EXP__ (-6142)
+#define __INT_FAST32_TYPE__ long int
+#define __UINT_LEAST16_TYPE__ short unsigned int
+#define unix 1
+#define __SIZE_TYPE__ long unsigned int
+#define __UINT64_MAX__ 0xffffffffffffffffUL
+#define __FLT_IS_IEC_60559__ 2
+#define __GNUC_WIDE_EXECUTION_CHARSET_NAME "UTF-32LE"
+#define __FLT64X_DIG__ 18
+#define __INT8_TYPE__ signed char
+#define __ELF__ 1
+#define __GCC_ASM_FLAG_OUTPUTS__ 1
+#define __UINT32_TYPE__ unsigned int
+#define __FLT_RADIX__ 2
+#define __INT_LEAST16_TYPE__ short int
+#define __LDBL_EPSILON__ 1.08420217248550443400745280086994171e-19L
+#define __UINTMAX_C(c) c ## UL
+#define __SSE_MATH__ 1
+#define __k8 1
+#define __FLT32X_MIN__ 2.22507385850720138309023271733240406e-308F32x
+#define __SIG_ATOMIC_MAX__ 0x7fffffff
+#define __GCC_ATOMIC_WCHAR_T_LOCK_FREE 2
+#define __STDC_IEC_60559_BFP__ 201404L
+#define __SIZEOF_PTRDIFF_T__ 8
+#define __LDBL_DIG__ 18
+#define __FLT64_IS_IEC_60559__ 2
+#define __x86_64__ 1
+#define __FLT32X_MIN_EXP__ (-1021)
+#define __DEC32_SUBNORMAL_MIN__ 0.000001E-95DF
+#define __INT_FAST16_MAX__ 0x7fffffffffffffffL
+#define __FLT64_DIG__ 15
+#define __UINT_FAST32_MAX__ 0xffffffffffffffffUL
+#define __UINT_LEAST64_TYPE__ long unsigned int
+#define __FLT_HAS_QUIET_NAN__ 1
+#define __FLT_MAX_10_EXP__ 38
+#define __LONG_MAX__ 0x7fffffffffffffffL
+#define __FLT64X_HAS_DENORM__ 1
+#define __DEC128_SUBNORMAL_MIN__ 0.000000000000000000000000000000001E-6143DL
+#define __FLT_HAS_INFINITY__ 1
+#define __GNUC_EXECUTION_CHARSET_NAME "UTF-8"
+#define __UINT_FAST16_TYPE__ long unsigned int
+#define __DEC64_MAX__ 9.999999999999999E384DD
+#define __INT_FAST32_WIDTH__ 64
+#define __CHAR16_TYPE__ short unsigned int
+#define __PRAGMA_REDEFINE_EXTNAME 1
+#define __SIZE_WIDTH__ 64
+#define __SEG_FS 1
+#define __INT_LEAST16_MAX__ 0x7fff
+#define __DEC64_MANT_DIG__ 16
+#define __INT64_MAX__ 0x7fffffffffffffffL
+#define __SEG_GS 1
+#define __FLT32_DENORM_MIN__ 1.40129846432481707092372958328991613e-45F32
+#define __SIG_ATOMIC_WIDTH__ 32
+#define __INT_LEAST64_TYPE__ long int
+#define __INT16_TYPE__ short int
+#define __INT_LEAST8_TYPE__ signed char
+#define __STDC_VERSION__ 201710L
+#define __SIZEOF_INT__ 4
+#define __DEC32_MAX_EXP__ 97
+#define __INT_FAST8_MAX__ 0x7f
+#define __FLT128_MAX__ 1.18973149535723176508575932662800702e+4932F128
+#define __INTPTR_MAX__ 0x7fffffffffffffffL
+#define linux 1
+#define __FLT64_HAS_QUIET_NAN__ 1
+#define __FLT32_MIN_10_EXP__ (-37)
+#define __FLT32X_DIG__ 15
+#define __PTRDIFF_WIDTH__ 64
+#define __LDBL_MANT_DIG__ 64
+#define __FLT64_HAS_INFINITY__ 1
+#define __FLT64X_MAX__ 1.18973149535723176502126385303097021e+4932F64x
+#define __SIG_ATOMIC_MIN__ (-__SIG_ATOMIC_MAX__ - 1)
+#define __code_model_small__ 1
+#define __GCC_ATOMIC_LONG_LOCK_FREE 2
+#define __DEC32_MANT_DIG__ 7
+#define __k8__ 1
+#define __INTPTR_TYPE__ long int
+#define __UINT16_TYPE__ short unsigned int
+#define __WCHAR_TYPE__ int
+#define __pic__ 2
+#define __UINTPTR_MAX__ 0xffffffffffffffffUL
+#define __INT_FAST64_WIDTH__ 64
+#define __INT_FAST64_MAX__ 0x7fffffffffffffffL
+#define __GCC_ATOMIC_TEST_AND_SET_TRUEVAL 1
+#define __FLT_NORM_MAX__ 3.40282346638528859811704183484516925e+38F
+#define __FLT32_HAS_INFINITY__ 1
+#define __FLT64X_MAX_EXP__ 16384
+#define __UINT_FAST64_TYPE__ long unsigned int
+#define __INT_MAX__ 0x7fffffff
+#define __linux__ 1
+#define __INT64_TYPE__ long int
+#define __FLT_MAX_EXP__ 128
+#define __ORDER_BIG_ENDIAN__ 4321
+#define __DBL_MANT_DIG__ 53
+#define __SIZEOF_FLOAT128__ 16
+#define __INT_LEAST64_MAX__ 0x7fffffffffffffffL
+#define __GCC_ATOMIC_CHAR16_T_LOCK_FREE 2
+#define __DEC64_MIN__ 1E-383DD
+#define __WINT_TYPE__ unsigned int
+#define __UINT_LEAST32_TYPE__ unsigned int
+#define __SIZEOF_SHORT__ 2
+#define __FLT32_NORM_MAX__ 3.40282346638528859811704183484516925e+38F32
+#define __SSE__ 1
+#define __LDBL_MIN_EXP__ (-16381)
+#define __FLT64_MAX__ 1.79769313486231570814527423731704357e+308F64
+#define __amd64__ 1
+#define __WINT_WIDTH__ 32
+#define __INT_LEAST8_MAX__ 0x7f
+#define __INT_LEAST64_WIDTH__ 64
+#define __LDBL_MAX_EXP__ 16384
+#define __FLT32X_MAX_10_EXP__ 308
+#define __SIZEOF_INT128__ 16
+#define __FLT64X_IS_IEC_60559__ 2
+#define __LDBL_MAX_10_EXP__ 4932
+#define __ATOMIC_RELAXED 0
+#define __DBL_EPSILON__ ((double)2.22044604925031308084726333618164062e-16L)
+#define __FLT128_MIN__ 3.36210314311209350626267781732175260e-4932F128
+#define _LP64 1
+#define __UINT8_C(c) c
+#define __FLT64_MAX_EXP__ 1024
+#define __INT_LEAST32_TYPE__ int
+#define __SIZEOF_WCHAR_T__ 4
+#define __UINT64_TYPE__ long unsigned int
+#define __GNUC_PATCHLEVEL__ 0
+#define __FLT128_NORM_MAX__ 1.18973149535723176508575932662800702e+4932F128
+#define __FLT64_NORM_MAX__ 1.79769313486231570814527423731704357e+308F64
+#define __FLT128_HAS_QUIET_NAN__ 1
+#define __INTMAX_MAX__ 0x7fffffffffffffffL
+#define __INT_FAST8_TYPE__ signed char
+#define __FLT64X_MIN__ 3.36210314311209350626267781732175260e-4932F64x
+#define __GNUC_STDC_INLINE__ 1
+#define __FLT64_HAS_DENORM__ 1
+#define __FLT32_EPSILON__ 1.19209289550781250000000000000000000e-7F32
+#define __DBL_DECIMAL_DIG__ 17
+#define __STDC_UTF_32__ 1
+#define __INT_FAST8_WIDTH__ 8
+#define __FXSR__ 1
+#define __FLT32X_MAX__ 1.79769313486231570814527423731704357e+308F32x
+#define __DBL_NORM_MAX__ ((double)1.79769313486231570814527423731704357e+308L)
+#define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
+#define __INTMAX_WIDTH__ 64
+#define __UINT32_C(c) c ## U
+#define __FLT_DENORM_MIN__ 1.40129846432481707092372958328991613e-45F
+#define __INT8_MAX__ 0x7f
+#define __LONG_WIDTH__ 64
+#define __PIC__ 2
+#define __UINT_FAST32_TYPE__ long unsigned int
+#define __FLT32X_NORM_MAX__ 1.79769313486231570814527423731704357e+308F32x
+#define __CHAR32_TYPE__ unsigned int
+#define __FLT_MAX__ 3.40282346638528859811704183484516925e+38F
+#define __SSE2__ 1
+#define __INT32_TYPE__ int
+#define __SIZEOF_DOUBLE__ 8
+#define __FLT_MIN_10_EXP__ (-37)
+#define __FLT64_MIN__ 2.22507385850720138309023271733240406e-308F64
+#define __INT_LEAST32_WIDTH__ 32
+#define __INTMAX_TYPE__ long int
+#define __DEC128_MAX_EXP__ 6145
+#define __FLT32X_HAS_QUIET_NAN__ 1
+#define __ATOMIC_CONSUME 1
+#define __GNUC_MINOR__ 3
+#define __INT_FAST16_WIDTH__ 64
+#define __UINTMAX_MAX__ 0xffffffffffffffffUL
+#define __PIE__ 2
+#define __FLT32X_DENORM_MIN__ 4.94065645841246544176568792868221372e-324F32x
+#define __DBL_MAX_10_EXP__ 308
+#define __LDBL_DENORM_MIN__ 3.64519953188247460252840593361941982e-4951L
+#define __INT16_C(c) c
+#define __STDC__ 1
+#define __PTRDIFF_TYPE__ long int
+#define __ATOMIC_SEQ_CST 5
+#define __FLT32X_MIN_10_EXP__ (-307)
+#define __UINTPTR_TYPE__ long unsigned int
+#define __DEC64_SUBNORMAL_MIN__ 0.000000000000001E-383DD
+#define __DEC128_MANT_DIG__ 34
+#define __LDBL_MIN_10_EXP__ (-4931)
+#define __SIZEOF_LONG_LONG__ 8
+#define __FLT128_DECIMAL_DIG__ 36
+#define __GCC_ATOMIC_LLONG_LOCK_FREE 2
+#define __FLT32_HAS_QUIET_NAN__ 1
+#define __FLT_DECIMAL_DIG__ 9
+#define __UINT_FAST16_MAX__ 0xffffffffffffffffUL
+#define __LDBL_NORM_MAX__ 1.18973149535723176502126385303097021e+4932L
+#define __GCC_ATOMIC_SHORT_LOCK_FREE 2
+#define __UINT_FAST8_TYPE__ unsigned char
+#define __ATOMIC_ACQ_REL 4
+#define __ATOMIC_RELEASE 3
+
+----------------------------------------
+Checking for program 'ar'
+/usr/bin/ar
+find program=['ar'] paths=['/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/bin', '/home/tbertolez/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/snap/bin'] var='AR' -> ['/usr/bin/ar']
+----------------------------------------
+Check gfortran version
+not found, let's hope for the best...
+----------------------------------------
+Compile a test code with gfortran
+==>
+program test
+  WRITE(*,*) 'hello world'
+ end program test
+
+<==
+[1/2] Compiling [32mbuild/.conf_check_8d98cc5b84a234425367e463f8130d69/test.f90[0m
+
+['/usr/bin/gfortran', '-DGFORTRAN', '-ffixed-line-length-0', '-ffree-line-length-0', '-m64', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_8d98cc5b84a234425367e463f8130d69/testbuild/test.f90.1.o', '/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_8d98cc5b84a234425367e463f8130d69/test.f90']
+[2/2] Linking [33mbuild/.conf_check_8d98cc5b84a234425367e463f8130d69/testbuild/testprog[0m
+
+['/usr/bin/gfortran', '-m64', 'test.f90.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_8d98cc5b84a234425367e463f8130d69/testbuild/testprog', '-m64']
+yes
+----------------------------------------
+retrieve gfortran link line
+ok
+----------------------------------------
+fortran link line
+-L/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01 -lgfortran -lgomp
+----------------------------------------
+Setting install root to
+/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01
+----------------------------------------
+Setting install bin directory to
+/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/bin
+----------------------------------------
+Setting install lib directory to
+/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib
+----------------------------------------
+Setting install include directory to
+/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/include
+----------------------------------------
+Checking for program 'python'
+/usr/bin/python3
+find program=['python'] paths=['/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/bin', '/home/tbertolez/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/snap/bin'] var='PYTHON' -> ['/usr/bin/python3']
+['/usr/bin/python3', '-c', 'import imp;print(imp.get_tag())']
+out: cpython-310
+
+err: <string>:1: DeprecationWarning: the imp module is deprecated in favour of importlib and slated for removal in Python 3.12; see the module's documentation for alternative uses
+
+['/usr/bin/python3', '-c', 'import sys\nfor x in sys.version_info: print(str(x))']
+out: 3
+10
+6
+final
+0
+
+['/usr/bin/python3', '-c', "from distutils.sysconfig import get_config_var, get_python_lib\n\nprint(repr(get_python_lib(standard_lib=0, prefix='/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01') or ''))"]
+out: '/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages'
+
+'/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages'
+
+['/usr/bin/python3', '-c', "from distutils.sysconfig import get_config_var, get_python_lib\n\nprint(repr(get_python_lib(plat_specific=1, standard_lib=0, prefix='/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01') or ''))"]
+out: '/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages'
+
+'/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages'
+
+----------------------------------------
+Checking for python version
+3.10.6
+['/usr/bin/python3', '-c', "from distutils.sysconfig import get_config_var, get_python_lib\n\nprint(repr(get_config_var('prefix') or ''))\nprint(repr(get_config_var('SO') or ''))\nprint(repr(get_config_var('LDFLAGS') or ''))\nprint(repr(get_config_var('LIBDIR') or ''))\nprint(repr(get_config_var('LIBPL') or ''))\nprint(repr(get_config_var('INCLUDEPY') or ''))\nprint(repr(get_config_var('Py_ENABLE_SHARED') or ''))\nprint(repr(get_config_var('MACOSX_DEPLOYMENT_TARGET') or ''))\nprint(repr(get_config_var('LDSHARED') or ''))\nprint(repr(get_config_var('CFLAGS') or ''))\nprint(repr(get_config_var('LDVERSION') or ''))"]
+out: '/usr'
+'.cpython-310-x86_64-linux-gnu.so'
+'-Wl,-Bsymbolic-functions      -g -fwrapv -O2   '
+'/usr/lib/x86_64-linux-gnu'
+'/usr/lib/python3.10/config-3.10-x86_64-linux-gnu'
+'/usr/include/python3.10'
+1
+''
+'x86_64-linux-gnu-gcc -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions      -g -fwrapv -O2   '
+'-Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O2 -Wall -g       -fstack-protector-strong -Wformat -Werror=format-security  -g -fwrapv -O2   '
+'3.10'
+
+err: <string>:4: DeprecationWarning: SO is deprecated, use EXT_SUFFIX
+
+'/usr'
+'.cpython-310-x86_64-linux-gnu.so'
+'-Wl,-Bsymbolic-functions      -g -fwrapv -O2   '
+'/usr/lib/x86_64-linux-gnu'
+'/usr/lib/python3.10/config-3.10-x86_64-linux-gnu'
+'/usr/include/python3.10'
+1
+''
+'x86_64-linux-gnu-gcc -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions      -g -fwrapv -O2   '
+'-Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O2 -Wall -g       -fstack-protector-strong -Wformat -Werror=format-security  -g -fwrapv -O2   '
+'3.10'
+
+Configuration returned from ['/usr/bin/python3']:
+prefix = '/usr'
+SO = '.cpython-310-x86_64-linux-gnu.so'
+LDFLAGS = '-Wl,-Bsymbolic-functions      -g -fwrapv -O2   '
+LIBDIR = '/usr/lib/x86_64-linux-gnu'
+LIBPL = '/usr/lib/python3.10/config-3.10-x86_64-linux-gnu'
+INCLUDEPY = '/usr/include/python3.10'
+Py_ENABLE_SHARED = 1
+MACOSX_DEPLOYMENT_TARGET = ''
+LDSHARED = 'x86_64-linux-gnu-gcc -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions      -g -fwrapv -O2   '
+CFLAGS = '-Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O2 -Wall -g       -fstack-protector-strong -Wformat -Werror=format-security  -g -fwrapv -O2   '
+LDVERSION = '3.10'
+
+----------------------------------------
+python-config
+/usr/bin/python3-config
+find program=['/usr/bin/python3-config', 'python3.10-config', 'python-config-3.10', 'python3.10m-config'] paths=['/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/bin', '/home/tbertolez/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/snap/bin'] var='PYTHON_CONFIG' -> ['/usr/bin/python3-config']
+--------------------------------------------------------------------------
+Asking python-config for pyembed '--cflags --libs --ldflags --embed' flags
+['/usr/bin/python3-config', '--cflags', '--libs', '--ldflags', '--embed']
+out: -I/usr/include/python3.10 -I/usr/include/python3.10  -Wno-unused-result -Wsign-compare -g      -fstack-protector-strong -Wformat -Werror=format-security  -DNDEBUG -g -fwrapv -O2 -Wall
+-lpython3.10 -lcrypt -ldl  -lm -lm 
+-L/usr/lib/python3.10/config-3.10-x86_64-linux-gnu -L/usr/lib/x86_64-linux-gnu -lpython3.10 -lcrypt -ldl  -lm -lm 
+
+Unhandled flag '-Wno-unused-result'
+Unhandled flag '-Wsign-compare'
+Unhandled flag '-Wformat'
+Unhandled flag '-Werror=format-security'
+Unhandled flag '-Wall'
+yes
+--------------------------------------------------------------------------
+Testing pyembed configuration
+==>
+
+#include <Python.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+	void Py_Initialize(void);
+	void Py_Finalize(void);
+#ifdef __cplusplus
+}
+#endif
+int main(int argc, char **argv)
+{
+   (void)argc; (void)argv;
+   Py_Initialize();
+   Py_Finalize();
+   return 0;
+}
+
+<==
+[1/2] Compiling [32mbuild/.conf_check_be2fe0e2d75f3913b98bbff239e10149/test.c[0m
+
+['/usr/bin/gcc', '-g', '-fstack-protector-strong', '-g', '-fwrapv', '-O2', '-I/usr/include/python3.10', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DNDEBUG', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_be2fe0e2d75f3913b98bbff239e10149/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_be2fe0e2d75f3913b98bbff239e10149/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_be2fe0e2d75f3913b98bbff239e10149/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-L/usr/lib/x86_64-linux-gnu', '-L/usr/lib/python3.10/config-3.10-x86_64-linux-gnu', '-lm', '-ldl', '-lutil', '-lpthread', '-lpython3.10', '-lcrypt', '-ldl', '-lm', '-lm', '-lpython3.10', '-lcrypt', '-ldl', '-lm', '-lm']
+yes
+--------------------------------------------------------------------------
+Checking for library dl
+==>
+
+int main(int argc, char **argv) {
+	(void)argc; (void)argv;
+	return 0;
+}
+
+<==
+[1/2] Compiling [32mbuild/.conf_check_07938a5bcc5d761426e3069e6209370d/test.c[0m
+
+['/usr/bin/gcc', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_07938a5bcc5d761426e3069e6209370d/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_07938a5bcc5d761426e3069e6209370d/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_07938a5bcc5d761426e3069e6209370d/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-ldl']
+yes
+--------------------------------------------------------------------------
+checking for RTLD_DEFAULT in dl
+==>
+#include <dlfcn.h> 
+int main() {void* tt = RTLD_DEFAULT;}
+<==
+[1/2] Compiling [32mbuild/.conf_check_97d34f19b8d74a10bd0a1b0f520c73d6/test.c[0m
+
+['/usr/bin/gcc', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_RTLD_DEFAULT', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_97d34f19b8d74a10bd0a1b0f520c73d6/testbuild/test.c.1.o']
+err: ../test.c: In function ‘main’:
+../test.c:2:24: error: ‘RTLD_DEFAULT’ undeclared (first use in this function); did you mean ‘HAS_RTLD_DEFAULT’?
+    2 | int main() {void* tt = RTLD_DEFAULT;}
+      |                        ^~~~~~~~~~~~
+      |                        HAS_RTLD_DEFAULT
+../test.c:2:24: note: each undeclared identifier is reported only once for each function it appears in
+
+from /home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01: Test does not build: Traceback (most recent call last):
+  File "/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/.waf3-2.0.17-c5414c9b1eca70e1add79159e16494fe/waflib/Configure.py", line 325, in run_build
+    bld.compile()
+  File "/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/.waf3-2.0.17-c5414c9b1eca70e1add79159e16494fe/waflib/Build.py", line 176, in compile
+    raise Errors.BuildError(self.producer.error)
+waflib.Errors.BuildError: Build failed
+ -> task in 'testprog' failed with exit status 1 (run with -v to display more information)
+
+no
+from /home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01: The configuration failed
+--------------------------------------------------------------------------
+compile with debug option
+OFF
+--------------------------------------------------------------------------
+Checking for program 'pmc-config'
+not found
+find program=['pmc-config'] paths=['/bin'] var='PMC_CONFIG' -> None
+from /home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01: Could not find the program ['pmc-config']
+--------------------------------------------------------------------------
+Checking for library pmc
+==>
+
+int main(int argc, char **argv) {
+	(void)argc; (void)argv;
+	return 0;
+}
+
+<==
+[1/2] Compiling [32mbuild/.conf_check_2f7ac02413a5ca09d91a30d0f89c129f/test.c[0m
+
+['/usr/bin/gcc', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_PMC', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_2f7ac02413a5ca09d91a30d0f89c129f/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_2f7ac02413a5ca09d91a30d0f89c129f/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_2f7ac02413a5ca09d91a30d0f89c129f/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-lpmc']
+err: /usr/bin/ld: no se puede encontrar -lpmc: El fitxer o directori no existeix
+collect2: error: ld returned 1 exit status
+
+from /home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01: Test does not build: Traceback (most recent call last):
+  File "/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/.waf3-2.0.17-c5414c9b1eca70e1add79159e16494fe/waflib/Configure.py", line 325, in run_build
+    bld.compile()
+  File "/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/.waf3-2.0.17-c5414c9b1eca70e1add79159e16494fe/waflib/Build.py", line 176, in compile
+    raise Errors.BuildError(self.producer.error)
+waflib.Errors.BuildError: Build failed
+ -> task in 'testprog' failed with exit status 1 (run with -v to display more information)
+
+not found
+from /home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01: The configuration failed
+--------------------------------------------------------------------------
+Checking for library ['lapack', 'blas']
+==>
+
+int main(int argc, char **argv) {
+	(void)argc; (void)argv;
+	return 0;
+}
+
+<==
+[1/2] Compiling [32mbuild/.conf_check_c09613d384c7f708ec2af7562c5c67bf/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_c09613d384c7f708ec2af7562c5c67bf/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_c09613d384c7f708ec2af7562c5c67bf/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_c09613d384c7f708ec2af7562c5c67bf/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dposv'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dposv);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_8e1ac8c647c7e328a4ebad139612922b/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_8e1ac8c647c7e328a4ebad139612922b/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_8e1ac8c647c7e328a4ebad139612922b/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_8e1ac8c647c7e328a4ebad139612922b/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dtrsv'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dtrsv);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_9cce03bd4625f00ac91d7c208b88a187/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_9cce03bd4625f00ac91d7c208b88a187/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_9cce03bd4625f00ac91d7c208b88a187/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_9cce03bd4625f00ac91d7c208b88a187/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dpotrf'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dpotrf);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_f05b87975ce60b83042a4897df987115/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_f05b87975ce60b83042a4897df987115/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_f05b87975ce60b83042a4897df987115/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_f05b87975ce60b83042a4897df987115/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dpotrs'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dpotrs);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_31c2710a960e699c89be8bf38172323c/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_31c2710a960e699c89be8bf38172323c/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_31c2710a960e699c89be8bf38172323c/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_31c2710a960e699c89be8bf38172323c/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dpotri'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dpotri);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_734bb929f8a97c851a23119f638db26a/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_734bb929f8a97c851a23119f638db26a/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_734bb929f8a97c851a23119f638db26a/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_734bb929f8a97c851a23119f638db26a/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dtrtri'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dtrtri);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_80ad54cce96a5f817463a0ac98862b8a/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_80ad54cce96a5f817463a0ac98862b8a/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_80ad54cce96a5f817463a0ac98862b8a/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_80ad54cce96a5f817463a0ac98862b8a/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dtrmm'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dtrmm);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_dd976e7a915c5c7b812e856c418deb93/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_dd976e7a915c5c7b812e856c418deb93/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_dd976e7a915c5c7b812e856c418deb93/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_dd976e7a915c5c7b812e856c418deb93/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dtrmv'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dtrmv);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_46216af2546579ed68c73c07e73d67f7/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_46216af2546579ed68c73c07e73d67f7/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_46216af2546579ed68c73c07e73d67f7/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_46216af2546579ed68c73c07e73d67f7/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dgeqrf'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dgeqrf);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_0d60a29f5f470d18a45cd493640ae7c2/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_0d60a29f5f470d18a45cd493640ae7c2/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_0d60a29f5f470d18a45cd493640ae7c2/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_0d60a29f5f470d18a45cd493640ae7c2/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dormqr'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dormqr);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_f6e48780e6f9d3525f096b8960a3e035/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_f6e48780e6f9d3525f096b8960a3e035/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_f6e48780e6f9d3525f096b8960a3e035/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_f6e48780e6f9d3525f096b8960a3e035/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dsyev'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dsyev);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_07e52ce1aaa43b0f790970bbd7a1fe3b/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_07e52ce1aaa43b0f790970bbd7a1fe3b/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_07e52ce1aaa43b0f790970bbd7a1fe3b/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_07e52ce1aaa43b0f790970bbd7a1fe3b/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dgesvd'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dgesvd);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_8966cf473234504db4f77333d2cb8c3f/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_8966cf473234504db4f77333d2cb8c3f/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_8966cf473234504db4f77333d2cb8c3f/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_8966cf473234504db4f77333d2cb8c3f/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dsymv'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dsymv);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_ae670fd18af712bd610b8c0e8896501a/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_ae670fd18af712bd610b8c0e8896501a/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_ae670fd18af712bd610b8c0e8896501a/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_ae670fd18af712bd610b8c0e8896501a/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dgemv'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dgemv);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_2ac4ed54f700d86a4da4f47eda324d2a/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_2ac4ed54f700d86a4da4f47eda324d2a/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_2ac4ed54f700d86a4da4f47eda324d2a/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_2ac4ed54f700d86a4da4f47eda324d2a/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dgemm'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dgemm);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_84c74b5c18cade4d70289b7d4074958b/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_84c74b5c18cade4d70289b7d4074958b/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_84c74b5c18cade4d70289b7d4074958b/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_84c74b5c18cade4d70289b7d4074958b/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dsyrk'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dsyrk);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_291927e2b0e38df661598854d8eb2f87/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_291927e2b0e38df661598854d8eb2f87/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_291927e2b0e38df661598854d8eb2f87/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_291927e2b0e38df661598854d8eb2f87/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dsyr2k'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dsyr2k);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_be952467fa52e4cb7d223e67e7cde36e/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_be952467fa52e4cb7d223e67e7cde36e/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_be952467fa52e4cb7d223e67e7cde36e/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_be952467fa52e4cb7d223e67e7cde36e/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'daxpy'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(daxpy);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_a3e4d6366ac9d3d54ee46437b9f94458/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_a3e4d6366ac9d3d54ee46437b9f94458/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_a3e4d6366ac9d3d54ee46437b9f94458/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_a3e4d6366ac9d3d54ee46437b9f94458/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dtrsm'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dtrsm);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_9f10ab5dca7fa601666d376394fc1891/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_9f10ab5dca7fa601666d376394fc1891/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_9f10ab5dca7fa601666d376394fc1891/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_9f10ab5dca7fa601666d376394fc1891/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dsymm'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dsymm);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_b170411630ab356b5f6b5f7762ab1af5/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_b170411630ab356b5f6b5f7762ab1af5/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_b170411630ab356b5f6b5f7762ab1af5/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_b170411630ab356b5f6b5f7762ab1af5/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dsyr'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dsyr);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_79721f34e574c7c114c6e8cfb1412b90/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_79721f34e574c7c114c6e8cfb1412b90/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_79721f34e574c7c114c6e8cfb1412b90/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_79721f34e574c7c114c6e8cfb1412b90/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'ddot'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(ddot);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_ddf1cc1ccd6836711ed42c6012ee9032/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_ddf1cc1ccd6836711ed42c6012ee9032/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_ddf1cc1ccd6836711ed42c6012ee9032/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_ddf1cc1ccd6836711ed42c6012ee9032/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dsyevd'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dsyevd);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_a593b86d256f97074c4402e17baa8b21/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_a593b86d256f97074c4402e17baa8b21/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_a593b86d256f97074c4402e17baa8b21/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_a593b86d256f97074c4402e17baa8b21/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dlamch'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dlamch);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_0588863de6df23036843d7f3a656e424/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_0588863de6df23036843d7f3a656e424/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_0588863de6df23036843d7f3a656e424/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_0588863de6df23036843d7f3a656e424/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+checking for function 'dsyevr'
+==>
+#include <lapack_clik.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(dsyevr);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_591a415d52547b0a3437445a3c1ef078/test.c[0m
+
+['/usr/bin/gcc', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAS_LAPACK', '-DLAPACK_CLIK', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_591a415d52547b0a3437445a3c1ef078/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_591a415d52547b0a3437445a3c1ef078/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_591a415d52547b0a3437445a3c1ef078/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-llapack', '-lblas']
+yes
+--------------------------------------------------------------------------
+Checking for library ['cfitsio']
+==>
+
+int main(int argc, char **argv) {
+	(void)argc; (void)argv;
+	return 0;
+}
+
+<==
+[1/2] Compiling [32mbuild/.conf_check_321e6be9b1a2239eecf5c2cdeecc0568/test.c[0m
+
+['/usr/bin/gcc', '-fPIC', '-shared', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAVE_LAPACK_CLIK_H=1', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_321e6be9b1a2239eecf5c2cdeecc0568/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_321e6be9b1a2239eecf5c2cdeecc0568/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', '-shared', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_321e6be9b1a2239eecf5c2cdeecc0568/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-L/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-lcfitsio']
+yes
+--------------------------------------------------------------------------
+checking for function 'fits_init_cfitsio'
+==>
+#include <fitsio.h>
+
+int main(int argc, char **argv) {
+void (*p)();
+(void)argc; (void)argv;
+p=(void(*)())(fits_init_cfitsio);
+return !p;
+}
+<==
+[1/2] Compiling [32mbuild/.conf_check_5046d174bd328ded70593b886a1051d6/test.c[0m
+
+['/usr/bin/gcc', '-fPIC', '-shared', '-I../../../include', '-DPYTHONDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DPYTHONARCHDIR="/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib/python3.10/site-packages"', '-DHAVE_PYEMBED=1', '-DHAVE_PYTHON_H=1', '-DHAVE_LAPACK_CLIK_H=1', '../test.c', '-c', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_5046d174bd328ded70593b886a1051d6/testbuild/test.c.1.o']
+[2/2] Linking [33mbuild/.conf_check_5046d174bd328ded70593b886a1051d6/testbuild/testprog[0m
+
+['/usr/bin/gcc', '-m64', '-shared', 'test.c.1.o', '-o/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/build/.conf_check_5046d174bd328ded70593b886a1051d6/testbuild/testprog', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-rpath,/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-L/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/lib', '-lcfitsio']
+yes
+--------------------------------------------------------------------------
+Python version allows for automatic install
+yes (3.10.6)
+--------------------------------------------------------------------------
+Checking for program 'python'
+/usr/bin/python3
+find program=['python'] paths=['/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/bin', '/home/tbertolez/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/snap/bin'] var='PYTHON' -> ['/usr/bin/python3']
+['/usr/bin/python3', '-c', 'import imp;print(imp.get_tag())']
+out: cpython-310
+
+err: <string>:1: DeprecationWarning: the imp module is deprecated in favour of importlib and slated for removal in Python 3.12; see the module's documentation for alternative uses
+
+--------------------------------------------------------------------------
+Checking python module 'numpy'
+ok
+--------------------------------------------------------------------------
+Checking python module 'astropy'
+ok
+--------------------------------------------------------------------------
+Checking for program 'python'
+/usr/bin/python3
+find program=['python'] paths=['/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/bin', '/home/tbertolez/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/snap/bin'] var='PYTHON' -> ['/usr/bin/python3']
+['/usr/bin/python3', '-c', 'import imp;print(imp.get_tag())']
+out: cpython-310
+
+err: <string>:1: DeprecationWarning: the imp module is deprecated in favour of importlib and slated for removal in Python 3.12; see the module's documentation for alternative uses
+
+--------------------------------------------------------------------------
+Checking python module 'cython'
+ok
+--------------------------------------------------------------------------
+Checking python module 'cython'
+ok
+--------------------------------------------------------------------------
+Checking cython version (>0.28)
+0.29.32
+--------------------------------------------------------------------------
+Checking for program 'cython'
+/home/tbertolez/.local/bin/cython
+find program=['cython'] paths=['/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoEOS/planck-data/code/plc_3.0/plc-3.01/bin', '/home/tbertolez/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/snap/bin'] var='CYTHON' -> ['/home/tbertolez/.local/bin/cython']
+--------------------------------------------------------------------------
+Add plugin : 'rel2015'
+ok
