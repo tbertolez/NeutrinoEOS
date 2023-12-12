@@ -7694,11 +7694,12 @@ int perturbations_total_stress_energy(
         for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
           rho_nufld_bg = ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
           p_nufld_bg = ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
-          pseudo_p_nufld = ppw->pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld];
+          // pseudo_p_nufld = ppw->pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld];
 
           rho_plus_p_nufld = rho_nufld_bg + p_nufld_bg;
           w_nufld = p_nufld_bg/rho_nufld_bg;
-          cg2_nufld = w_nufld*(1.0-1.0/(3.0+3.0*w_nufld)*(3.0*w_nufld-2.0+pseudo_p_nufld/p_nufld_bg));
+          // cg2_nufld = w_nufld*(1.0-1.0/(3.0+3.0*w_nufld)*(3.0*w_nufld-2.0+pseudo_p_nufld/p_nufld_bg));
+          cg2_nufld = 1./3.0; // NUFLD_PERT: Obviously wrong.
           if ((ppt->has_source_delta_nufld == _TRUE_) || (ppt->has_source_theta_nufld == _TRUE_) || (ppt->has_source_delta_m == _TRUE_)) {
             ppw->delta_nufld[n_nufld] = y[idx];
             ppw->theta_nufld[n_nufld] = y[idx+1];
@@ -9102,14 +9103,15 @@ int perturbations_print_variables(double tau,
         for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
           rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld];
           p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld];
-          pseudo_p_nufld = pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld];
+          // pseudo_p_nufld = pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld];
           w_nufld = p_nufld_bg/rho_nufld_bg;
 
           delta_nufld[n_nufld] = y[idx];
           theta_nufld[n_nufld] = y[idx+1];
           shear_nufld[n_nufld] = y[idx+2];
           //This is the adiabatic sound speed:
-          delta_p_over_delta_rho_nufld[n_nufld] = w_nufld*(1.0-1.0/(3.0+3.0*w_nufld)*(3.0*w_nufld-2.0+pseudo_p_nufld/p_nufld_bg));
+          // delta_p_over_delta_rho_nufld[n_nufld] = w_nufld*(1.0-1.0/(3.0+3.0*w_nufld)*(3.0*w_nufld-2.0+pseudo_p_nufld/p_nufld_bg));
+          delta_p_over_delta_rho_nufld[n_nufld] = 1./3.0; // NUFLD_PERT: Obviously wrong
           idx += ppw->pv->l_max_nufld[n_nufld]+1;
         }
       }
@@ -10469,9 +10471,10 @@ int perturbations_derivs(double tau,
 
           rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld]; /* background density */
           p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld]; /* background pressure */
-          pseudo_p_nufld = pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld]; /* pseudo-pressure (see CLASS IV paper) */
+          // pseudo_p_nufld = pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld]; /* pseudo-pressure (see CLASS IV paper) */
           w_nufld = p_nufld_bg/rho_nufld_bg; /* equation of state parameter */
-          ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.0-pseudo_p_nufld/p_nufld_bg); /* adiabatic sound speed */
+          // ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.0-pseudo_p_nufld/p_nufld_bg); /* adiabatic sound speed */
+          ca2_nufld = 1./3.0; // NUFLD_PERT: Obviously wrong.
 
           /* c_eff is (delta p / delta rho) in the gauge under
              consideration (not in the gauge comoving with the
@@ -10508,9 +10511,10 @@ int perturbations_derivs(double tau,
 
           if (ppr->nufld_fluid_approximation == nufldfa_mb) {
 
-            dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-pseudo_p_nufld/p_nufld_bg/3.)+1./tau)*y[idx+2]
-              +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_shear);
-
+            // dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-pseudo_p_nufld/p_nufld_bg/3.)+1./tau)*y[idx+2]
+            //   +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_shear);
+            dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-1/3.)+1./tau)*y[idx+2]
+              +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_shear); // NUFLD_PERT: Obviously wrong.
           }
 
           if (ppr->nufld_fluid_approximation == nufldfa_hu) {
@@ -10522,8 +10526,10 @@ int perturbations_derivs(double tau,
 
           if (ppr->nufld_fluid_approximation == nufldfa_CLASS) {
 
-            dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-pseudo_p_nufld/p_nufld_bg/3.)+1./tau)*y[idx+2]
-              +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_ufa_class);
+            // dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-pseudo_p_nufld/p_nufld_bg/3.)+1./tau)*y[idx+2]
+            //   +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_ufa_class);
+            dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-1/3.)+1./tau)*y[idx+2]
+              +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_ufa_class); // NUFLD_PERT: Obviously wrong.
 
           }
 

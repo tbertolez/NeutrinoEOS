@@ -399,6 +399,12 @@ int background_functions(
   double rho_nufld,p_nufld,pseudo_p_nufld;
   /* index for n_nufld species */
   int n_nufld;
+  /* equation of state of nufld species*/
+  double w_nufld[pba->N_nufld];
+  double * w_nufld_ptr = w_nufld;
+  /* exp(-3 int((1+w)/a)) of nufld species */
+  double intw_nufld[pba->N_nufld];
+  double * intw_nufld_ptr = intw_nufld;
   /* fluid's time-dependent equation of state parameter */
   double w_fld, dw_over_da, integral_fld;
   /* scalar field quantities */
@@ -409,6 +415,7 @@ int background_functions(
      p_prime = a_prime_over_a * dp_dloga = a_prime_over_a * Sum [ (w_prime/a_prime_over_a -3(1+w)w)rho].
      Note: The scalar field contribution must be added in the end, as an exception!*/
   double dp_dloga;
+  FILE *myfile;
 
   /** - initialize local variables */
   rho_tot = 0.;
@@ -517,6 +524,11 @@ int background_functions(
                  pba->error_message,
                  pba->error_message);
 
+      myfile = fopen("eos_ncdm.dat", "a");
+      fprintf(myfile, "a: %.5e, rho_ncdm: %.5e, p_ncdm: %.5e\n", a, rho_ncdm,
+                                                                   p_ncdm);
+      fclose(myfile); 
+
       pvecback[pba->index_bg_rho_ncdm1+n_ncdm] = rho_ncdm;
       rho_tot += rho_ncdm;
       pvecback[pba->index_bg_p_ncdm1+n_ncdm] = p_ncdm;
@@ -540,30 +552,53 @@ int background_functions(
     /* Loop over species: */
     for (n_nufld=0; n_nufld<pba->N_nufld; n_nufld++) {
 
+      /* functioning returning the arbitrary equation of state that we want to impose. */
+      class_call(background_w_nufld(pba,
+                                    a,
+                                    pba->w_nufld_fit,
+                                    pba->w_nufld_pars, 
+                                    w_nufld_ptr+n_nufld, // NUFLD_DOUBT: Is this correct?
+                                    NULL, 
+                                    intw_nufld_ptr+n_nufld), // NUFLD_DOUBT: Is this correct?
+                 pba->error_message, 
+                 pba->error_message)
+
       /* function returning background nufld[n_nufld] quantities (only
          those for which non-NULL pointers are passed) */
       class_call(background_nufld_momenta(
                                          pba->q_nufld_bg[n_nufld],
                                          pba->w_nufld_bg[n_nufld],
                                          pba->q_size_nufld_bg[n_nufld],
-                                         pba->M_nufld[n_nufld],
+                                         pba->M_nufld[n_nufld], // NUFLD_CHECK: The mass enters, but should be redundant at background level
                                          pba->factor_nufld[n_nufld],
                                          1./a-1.,
+                                         w_nufld_ptr[n_nufld],
+                                         intw_nufld_ptr[n_nufld],
                                          NULL,
                                          &rho_nufld,
-                                         &p_nufld,
-                                         NULL,
-                                         &pseudo_p_nufld),
+                                         &p_nufld),
                  pba->error_message,
                  pba->error_message);
+
+      myfile = fopen("eos_nufld.dat", "a");
+      fprintf(myfile, "a: %.5e, w: %.5e, intw: %.5e, rho_nufld: %.5e, p_nufld: %.5e\n", a, w_nufld[n_nufld],
+                                                                               intw_nufld[n_nufld],
+                                                                               rho_nufld,
+                                                                               p_nufld);
+      fclose(myfile);                                                                               
+      pvecback[pba->index_bg_w_nufld1+n_nufld] = w_nufld[n_nufld];
+      // p_nufld = rho_nufld*w_nufld[n_nufld]; // In principle it is already computed in the previous function
+      // NUFLD_TODO: I need to save in the background the derivative of w_nufld as a function of time, for the perturbations.
+
 
       pvecback[pba->index_bg_rho_nufld1+n_nufld] = rho_nufld;
       rho_tot += rho_nufld;
       pvecback[pba->index_bg_p_nufld1+n_nufld] = p_nufld;
       p_tot += p_nufld;
-      pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld] = pseudo_p_nufld;
+      // NUFLD_DOUBT: If I am correct, the pseudo_p need not be computed. We'll compute the sound speed with the full Boltzmann tower.
+      // pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld] = pseudo_p_nufld;
       /** See e.g. Eq. A6 in 1811.00904. */
-      dp_dloga += (pseudo_p_nufld - 5*p_nufld);
+      // dp_dloga += (pseudo_p_nufld - 5*p_nufld);
 
       /* (3 p_nufld1) is the "relativistic" contribution to rho_nufld1 */
       rho_r += 3.* p_nufld;
@@ -691,6 +726,87 @@ int background_functions(
   return _SUCCESS_;
 
 }
+
+
+
+double w_nufld_tanh(
+                    double a,
+                    double k,
+                    double a_0) {
+  
+  // double c, b;
+
+  return 1./6.*(1.-tanh(k*log(a/a_0)));
+  // c = 1./3.*(1-1/(1+tanh(k*log(1/a_0))));
+  // b = -1./3./(1+tanh(k*log(1/a_0)));
+  // return c+b*tanh(k*log(a/a_0));
+}
+
+double dw_over_da_nufld_tanh(
+                             double a,
+                             double k,
+                             double a_0) {
+  // double b;
+
+  // b = -1./3./(1+tanh(k*log(1/a_0)));
+  // return b*k/a/pow(cosh(k*log(a/a_0)),2);
+  return -1./6.*k/a/pow(cosh(k*log(a/a_0)),2);
+}
+
+double integral_w_nufld_tanh(
+                             double a,
+                             double k,
+                             double a_0) {
+  // double b, c, int_a, int_a_today;
+  // c = 1./3.*(1-1/(1+tanh(k*log(1/a_0))));
+  // b = -1./3./(1+tanh(k*log(1/a_0)));
+  // int_a = (1+c)*log(a)+b/k*log(cosh(k*log(a/a_0)));
+  // int_a_today = b/k*log(cosh(k*log(1.0/a_0)));
+  // return exp(-3*(int_a - int_a_today));
+
+  // The following assumes k = 1, else we need hypergeometric functions
+  double int_a,exp_a_ini;
+  int_a = 7.*log(a)/6. - log(cosh(k*log(a/a_0)))/(6.*k);
+  exp_a_ini = pow(2.,1/(2.*k))/sqrt(a_0); // if a_ini << a_0, we can remove the a_ini^4 dependency in exp(-3*int), and this is what remains
+  return exp(-3*int_a)*exp_a_ini;
+}
+
+int background_w_nufld(
+                       struct background *pba,
+                       double a,
+                       int w_nufld_fit,
+                       double *pars,
+                       double *w_nufld,
+                       double *dw_over_da_nufld,
+                       double *integral_nufld                       
+                       ) {
+  
+  double k, a_0;
+
+  if (w_nufld_fit == nufld_tanh) {
+    // In tanh eos, pars[0] = k, pars[1] = a_0.
+    k = pars[0];
+    a_0 = pars[1];
+    if (w_nufld != NULL) *w_nufld = w_nufld_tanh(a,k,a_0);
+    if (dw_over_da_nufld != NULL) *dw_over_da_nufld = w_nufld_tanh(a,k,a_0);
+    if (integral_nufld != NULL) *integral_nufld = pow(a,3*(1+*w_nufld))*integral_w_nufld_tanh(a,k,a_0);
+    // if (integral_nufld != NULL) *integral_nufld = integral_w_nufld_tanh(a,k,a_0);
+    // printf("intw: %.5e, \n", integral_w_nufld_tanh(a,k,a_0));
+
+  }
+  // printf("inside w_nufld, w = %.5e, a^3(1+w) = %.5e, integral = %.5e\n", w_nufld_tanh(a,k,a_0), pow(a,3*(1+w_nufld_tanh(a,k,a_0))),integral_w_nufld_tanh(a,k,a_0));
+  else if (w_nufld_fit == nufld_ur) {
+    if (w_nufld != NULL) *w_nufld = 1./3.0;
+    if (dw_over_da_nufld != NULL) *dw_over_da_nufld = 0.0;
+    if (integral_nufld != NULL) *integral_nufld = pow(a,-4);
+  }
+  else{
+    printf("Not implemented yet!\n");
+  }
+
+  return _SUCCESS_;
+}
+
 
 /**
  * Single place where the fluid equation of state is
@@ -1140,7 +1256,8 @@ int background_indices(
      are contiguous */
   class_define_index(pba->index_bg_rho_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   class_define_index(pba->index_bg_p_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
-  class_define_index(pba->index_bg_pseudo_p_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
+  class_define_index(pba->index_bg_w_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
+  // class_define_index(pba->index_bg_pseudo_p_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
 
   /* - index for dcdm */
   class_define_index(pba->index_bg_rho_dcdm,pba->has_dcdm,index_bg,1);
@@ -2226,28 +2343,32 @@ int background_nufld_momenta(
                             double M,
                             double factor,
                             double z,
+                            double w_nufld, // equation of state 
+                            double intw_nufld, // exp(-3 int((1+w)/a))) 
                             double * n,
                             double * rho, // density
-                            double * p,   // pressure
-                            double * drho_dM,  // d rho / d M used in next function
-                            double * pseudo_p  // pseudo-p used in nufld fluid approx
+                            double * p   // pressure
+                            // double * drho_dM,  // d rho / d M used in next function
+                            // double * pseudo_p  // pseudo-p used in nufld fluid approx
                             ) {
 
   int index_q;
   double epsilon;
   double q2;
   double factor2;
+  double factorn; /* NCDM_FLAG: The number density goes always with a^-3, density goes with a^(-3(1+w)) */
   /** Summary: */
 
   /** - rescale normalization at given redshift */
-  factor2 = factor*pow(1+z,4);
+  factorn = factor*pow(1+z,3);
+  factor2 = factor*pow(1+z,3*(1+w_nufld))*intw_nufld;//*factor*pow(1+z,3*(1+w_nufld))
 
   /** - initialize quantities */
   if (n!=NULL) *n = 0.;
   if (rho!=NULL) *rho = 0.;
   if (p!=NULL) *p = 0.;
-  if (drho_dM!=NULL) *drho_dM = 0.;
-  if (pseudo_p!=NULL) *pseudo_p = 0.;
+  // if (drho_dM!=NULL) *drho_dM = 0.;
+  // if (pseudo_p!=NULL) *pseudo_p = 0.;
 
   /** - loop over momenta */
   for (index_q=0; index_q<qsize; index_q++) {
@@ -2261,17 +2382,18 @@ int background_nufld_momenta(
     /* integrand of the various quantities */
     if (n!=NULL) *n += q2*wvec[index_q];
     if (rho!=NULL) *rho += q2*epsilon*wvec[index_q];
-    if (p!=NULL) *p += q2*q2/3./epsilon*wvec[index_q];
-    if (drho_dM!=NULL) *drho_dM += q2*M/(1.+z)/(1.+z)/epsilon*wvec[index_q];
-    if (pseudo_p!=NULL) *pseudo_p += pow(q2/epsilon,3)/3.0*wvec[index_q];
+    // if (p!=NULL) *p += q2*q2/3./epsilon*wvec[index_q];
+    // if (drho_dM!=NULL) *drho_dM += q2*M/(1.+z)/(1.+z)/epsilon*wvec[index_q];
+    // if (pseudo_p!=NULL) *pseudo_p += pow(q2/epsilon,3)/3.0*wvec[index_q];
   }
 
   /** - adjust normalization */
-  if (n!=NULL) *n *= factor2/(1.+z);
+  if (n!=NULL) *n *= factorn;
   if (rho!=NULL) *rho *= factor2;
-  if (p!=NULL) *p *= factor2;
-  if (drho_dM!=NULL) *drho_dM *= factor2;
-  if (pseudo_p!=NULL) *pseudo_p *=factor2;
+  // if (p!=NULL) *p *= factor2;
+  // if (drho_dM!=NULL) *drho_dM *= factor2;
+  // if (pseudo_p!=NULL) *pseudo_p *=factor2;
+  if (p!=NULL) *p = *rho*w_nufld;
 
   return _SUCCESS_;
 }
@@ -2293,55 +2415,62 @@ int background_nufld_M_from_Omega(
   double rho0,rho,n,M,deltaM,drhodM;
   int iter,maxiter=50;
 
-  rho0 = pba->H0*pba->H0*pba->Omega0_nufld[n_nufld]; /*Remember that rho is defined such that H^2=sum(rho_i) */
-  M = 0.0;
-
-  background_nufld_momenta(pba->q_nufld_bg[n_nufld],
-                          pba->w_nufld_bg[n_nufld],
-                          pba->q_size_nufld_bg[n_nufld],
-                          M,
-                          pba->factor_nufld[n_nufld],
-                          0.,
-                          &n,
-                          &rho,
-                          NULL,
-                          NULL,
-                          NULL);
-
-  /* Is the value of Omega less than a massless species?*/
-  class_test(rho0<rho,pba->error_message,
-             "The value of Omega for the %dth species, %g, is less than for a massless species! It should be atleast %g. Check your input.",
-             n_nufld,pba->Omega0_nufld[n_nufld],pba->Omega0_nufld[n_nufld]*rho/rho0);
-
-  /* In the strict NR limit we have rho = n*(M) today, giving a zeroth order guess: */
-  M = rho0/n; /* This is our guess for M. */
-  for (iter=1; iter<=maxiter; iter++) {
-
-    /* Newton iteration. First get relevant quantities at M: */
-    background_nufld_momenta(pba->q_nufld_bg[n_nufld],
-                            pba->w_nufld_bg[n_nufld],
-                            pba->q_size_nufld_bg[n_nufld],
-                            M,
-                            pba->factor_nufld[n_nufld],
-                            0.,
-                            NULL,
-                            &rho,
-                            NULL,
-                            &drhodM,
-                            NULL);
-
-    deltaM = (rho0-rho)/drhodM; /* By definition of the derivative */
-    if ((M+deltaM)<0.0) deltaM = -M/2.0; /* Avoid overshooting to negative M value. */
-    M += deltaM; /* Update value of M.. */
-    if (fabs(deltaM/M)<ppr->tol_M_nufld) {
-      /* Accuracy reached.. */
-      pba->M_nufld[n_nufld] = M;
-      break;
-    }
-  }
-  class_test(iter>=maxiter,pba->error_message,
-             "Newton iteration could not converge on a mass for some reason.");
+  class_test(_FALSE_,pba->error_message,"BEWARE! You're using a function (background_nufld_M_from_Omega) which is not well-defined. M should not enter in background")
   return _SUCCESS_;
+
+  // rho0 = pba->H0*pba->H0*pba->Omega0_nufld[n_nufld]; /*Remember that rho is defined such that H^2=sum(rho_i) */
+  // M = 0.0;
+
+
+  // background_nufld_momenta(pba->q_nufld_bg[n_nufld],
+  //                         pba->w_nufld_bg[n_nufld],
+  //                         pba->q_size_nufld_bg[n_nufld],
+  //                         M,
+  //                         pba->factor_nufld[n_nufld],
+  //                         0.,
+  //                         1./3.0, // NUFLD_ERROR: I haven't thought about this, but it's fine: I should use this function
+  //                         1., // NUFLD_ERROR: I haven't thought about this, but it's fine: I should use this function
+  //                         &n,
+  //                         &rho,
+  //                         NULL);
+
+  // /* Is the value of Omega less than a massless species?*/
+  // class_test(rho0<rho,pba->error_message,
+  //            "The value of Omega for the %dth species, %g, is less than for a massless species! It should be atleast %g. Check your input.",
+  //            n_nufld,pba->Omega0_nufld[n_nufld],pba->Omega0_nufld[n_nufld]*rho/rho0);
+
+  // /* In the strict NR limit we have rho = n*(M) today, giving a zeroth order guess: */
+  // M = rho0/n; /* This is our guess for M. */
+  // for (iter=1; iter<=maxiter; iter++) {
+
+  //   /* Newton iteration. First get relevant quantities at M: */
+  //   background_nufld_momenta(pba->q_nufld_bg[n_nufld],
+  //                           pba->w_nufld_bg[n_nufld],
+  //                           pba->q_size_nufld_bg[n_nufld],
+  //                           M,
+  //                           pba->factor_nufld[n_nufld],
+  //                           0.,
+  //                           1./3.0, // NUFLD_ERROR: I haven't thought about this, but it's fine: I should use this function
+  //                           1., // NUFLD_ERROR: I haven't thought about this, but it's fine: I should use this function
+  //                           NULL,
+  //                           &rho,
+  //                           NULL
+  //                           // &drhodM, // NUFLD_ERROR: This used to have a derivative with respect to M, which I should not use.
+  //                           );
+
+  //   // NUFLD_ERROR: All these will lead to errors, since I am not computing drhodM
+  //   deltaM = (rho0-rho)/drhodM; /* By definition of the derivative */
+  //   if ((M+deltaM)<0.0) deltaM = -M/2.0; /* Avoid overshooting to negative M value. */
+  //   M += deltaM; /* Update value of M.. */
+  //   if (fabs(deltaM/M)<ppr->tol_M_nufld) {
+  //     /* Accuracy reached.. */
+  //     pba->M_nufld[n_nufld] = M;
+  //     break;
+  //   }
+  // }
+  // class_test(iter>=maxiter,pba->error_message,
+  //            "Newton iteration could not converge on a mass for some reason.");
+  // return _SUCCESS_;
 }
 
 /**
@@ -2363,6 +2492,10 @@ int background_checks(
   double rho_ncdm_rel,rho_nu_rel;
   int n_nufld;
   double rho_nufld_rel;
+  double w_nufld[pba->N_nufld];
+  double *w_nufld_ptr = w_nufld;
+  double intw_nufld[pba->N_nufld];
+  double *intw_nufld_ptr = intw_nufld;
   double N_dark;
   double w_fld, dw_over_da, integral_fld;
   int filenum=0;
@@ -2491,6 +2624,16 @@ int background_checks(
                pba->m_nufld_in_eV[n_nufld],
                pba->m_nufld_in_eV[n_nufld]*pba->deg_nufld[n_nufld]/pba->Omega0_nufld[n_nufld]/pba->h/pba->h);
 
+        class_call(background_w_nufld(pba,
+                                      1.0,
+                                      pba->w_nufld_fit,
+                                      pba->w_nufld_pars,
+                                      w_nufld_ptr+n_nufld, // NUFLD_DOUBT: Is this correct?
+                                      NULL,
+                                      intw_nufld_ptr+n_nufld), // NUFLD_DOUBT: Is this correct?
+                   pba->error_message,
+                   pba->error_message);
+
         /* call this function to get rho_nufld */
         background_nufld_momenta(pba->q_nufld_bg[n_nufld],
                                 pba->w_nufld_bg[n_nufld],
@@ -2498,10 +2641,10 @@ int background_checks(
                                 0.,
                                 pba->factor_nufld[n_nufld],
                                 0.,
+                                w_nufld_ptr[n_nufld],
+                                intw_nufld_ptr[n_nufld], // This should be 1, or something is wrong
                                 NULL,
                                 &rho_nufld_rel,
-                                NULL,
-                                NULL,
                                 NULL);
 
         /* inform user of the contribution of each species to
@@ -2514,11 +2657,12 @@ int background_checks(
         rho_nu_rel = 56.0/45.0*pow(_PI_,6)*pow(4.0/11.0,4.0/3.0)*_G_/pow(_h_P_,3)/pow(_c_,7)*
           pow(_Mpc_over_m_,2)*pow(pba->T_cmb*_k_B_,4);
 
-        printf(" -> nufld species i=%d sampled with %d (resp. %d) points for purpose of background (resp. perturbation) integration. In the relativistic limit it gives Delta N_eff = %g\n",
+        printf(" -> nufld species i=%d sampled with %d (resp. %d) points for purpose of background (resp. perturbation) integration. In the relativistic limit it gives Delta N_eff = %g, with rho = %.5e\n",
                n_nufld+1,
                pba->q_size_nufld_bg[n_nufld],
                pba->q_size_nufld[n_nufld],
-               rho_nufld_rel/rho_nu_rel);
+               rho_nufld_rel/rho_nu_rel,
+               rho_nufld_rel);
       }
     }
 
@@ -2825,6 +2969,10 @@ int background_initial_conditions(
 
   double rho_ncdm, p_ncdm, rho_ncdm_rel_tot=0.;
   double rho_nufld, p_nufld, rho_nufld_rel_tot=0.;
+  double w_nufld[pba->N_nufld];
+  double *w_nufld_ptr = w_nufld;
+  double intw_nufld[pba->N_nufld];
+  double *intw_nufld_ptr = intw_nufld;
   double f,Omega_rad, rho_rad;
   int counter,is_early_enough,n_ncdm,n_nufld;
   double scf_lambda;
@@ -2861,6 +3009,7 @@ int background_initial_conditions(
                                            NULL),
                    pba->error_message,
                    pba->error_message);
+        printf("a: %.5e, w: %.5e, rho: %.5e, p: %.5e\n", a, p_ncdm/rho_ncdm,rho_ncdm,p_ncdm);
         rho_ncdm_rel_tot += 3.*p_ncdm;
         if (fabs(p_ncdm/rho_ncdm-1./3.)>ppr->tol_ncdm_initial_w) {
           is_early_enough = _FALSE_;
@@ -2892,25 +3041,42 @@ int background_initial_conditions(
 
       for (n_nufld=0; n_nufld<pba->N_nufld; n_nufld++) {
 
+        class_call(background_w_nufld(pba,
+                                      a,
+                                      pba->w_nufld_fit,
+                                      pba->w_nufld_pars,
+                                      w_nufld_ptr+n_nufld, // NUFLD_DOUBT: Is this correct?
+                                      NULL,
+                                      // NULL),
+                                      intw_nufld_ptr+n_nufld),
+                   pba->error_message,
+                   pba->error_message);
+
+
         class_call(background_nufld_momenta(pba->q_nufld_bg[n_nufld],
                                            pba->w_nufld_bg[n_nufld],
                                            pba->q_size_nufld_bg[n_nufld],
                                            pba->M_nufld[n_nufld],
                                            pba->factor_nufld[n_nufld],
                                            1./a-1.0,
+                                           w_nufld[n_nufld],
+                                           1.,
+                                          //  intw_nufld_ptr[n_nufld], // We're computing rho_ini, this factor is always with respect to rho_ini
                                            NULL,
                                            &rho_nufld,
-                                           &p_nufld,
-                                           NULL,
-                                           NULL),
+                                           &p_nufld),
                    pba->error_message,
                    pba->error_message);
         rho_nufld_rel_tot += 3.*p_nufld;
+        printf("a^(3(1+w)): %.5e, intw: %.5e\n", pow(a,-3*(1+w_nufld[n_nufld])),intw_nufld[n_nufld]);
+        printf("a: %.5e, w: %.5e, rho: %.5e, p: %.5e\n", a, w_nufld[n_nufld],rho_nufld,p_nufld);
+
         if (fabs(p_nufld/rho_nufld-1./3.)>ppr->tol_nufld_initial_w) {
           is_early_enough = _FALSE_;
         }
       }
       if (is_early_enough == _TRUE_) {
+        pba->a_ini_nufld = a;
         break;
       }
       else {
@@ -2981,7 +3147,7 @@ int background_initial_conditions(
        [(1+w_fld)/a] da] (e.g. with the Romberg method?) instead of
        calling background_w_fld */
 
-    /* rho_fld at initial time */
+    /* rho_fld at inrho_raditial time */
     pvecback_integration[pba->index_bi_rho_fld] = rho_fld_today * exp(integral_fld);
 
   }

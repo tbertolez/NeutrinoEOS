@@ -2343,8 +2343,13 @@ int input_read_parameters_species(struct file_content * pfc,
   int fileentries;
   int N_ncdm=0, n, entries_read;
   double rho_ncdm;
-  int N_nufld=0;
+  int N_nufld=3;
   double rho_nufld;
+  int nufld_num_of_pars = 2;
+  double w_nufld[N_nufld];
+  double *w_nufld_ptr = w_nufld;
+  double intw_nufld[N_nufld];
+  double *intw_nufld_ptr = intw_nufld;
   double scf_lambda;
   double fnu_factor;
   double Omega_tot;
@@ -2700,7 +2705,7 @@ int input_read_parameters_species(struct file_content * pfc,
     Omega_m_remaining-= pba->Omega0_ncdm_tot;
   }
 
-  /** 6) Non-cold relics with generalized Boltzmann hierarchy (nufld) */
+  /** 6) Non-cold relics with arbitrary equation of state (nufld) */
   /** 6.a) Number of non-cold relics */
   /* Read */
   class_read_int("N_nufld",N_nufld);
@@ -2768,19 +2773,45 @@ int input_read_parameters_species(struct file_content * pfc,
       }
     }
 
-    /** 6.e) Temperatures */
+    /** 6.e) Equation of state parametrisation */
+    /* Read */
+    class_call(parser_read_string(pfc,"nufld_parametrisation",&string1,&flag1,errmsg),
+               errmsg,
+               errmsg);
+    /* Complete set of parameters */
+    if (flag1 == _TRUE_) {
+      if ((strstr(string1,"tanh") != NULL) || (strstr(string1,"TANH") != NULL)) {
+        pba->w_nufld_fit = nufld_tanh;
+      }
+      else if ((strstr(string1,"steps") != NULL) || (strstr(string1,"STEPS") != NULL)) {
+        pba->w_nufld_fit = nufld_steps;
+      }
+      else if ((strstr(string1,"ur") != NULL) || (strstr(string1,"UR") != NULL)) {
+        pba->w_nufld_fit = nufld_ur;
+      }
+      else {
+        class_stop(errmsg,"incomprehensible input '%s' for the field 'nufld_parametrisation'",string1);
+      }
+    }
+
+    /** 6.f) Equation of state parameters */
+    class_read_int("nufld_num_of_pars", nufld_num_of_pars);
+    pba->nufld_num_of_pars = nufld_num_of_pars;
+    class_read_list_of_doubles_or_default("nufld_pars",pba->w_nufld_pars,0.0,nufld_num_of_pars); // NUFLD_ERROR: I don't know how to define the default value :(
+
+    /** 6.g) Temperatures */
     /* Read */
     class_read_list_of_doubles_or_default("T_nufld",pba->T_nufld,pba->T_nufld_default,N_nufld);
 
-    /** 6.f) Chemical potentials */
+    /** 6.h) Chemical potentials */
     /* Read */
     class_read_list_of_doubles_or_default("ksi_nufld",pba->ksi_nufld,pba->ksi_nufld_default,N_nufld);
 
-    /** 6.g) Degeneracy of each nufld species */
+    /** 6.i) Degeneracy of each nufld species */
     /* Read */
     class_read_list_of_doubles_or_default("deg_nufld",pba->deg_nufld,pba->deg_nufld_default,N_nufld);
 
-    /** 6.h) Quadrature modes, 0 is qm_auto */
+    /** 6.j) Quadrature modes, 0 is qm_auto */
     /* Read */
     class_call(parser_read_list_of_integers(pfc, "Quadrature strategy", &entries_read, &(pba->nufld_quadrature_strategy), &flag1, errmsg),
                errmsg, errmsg); //Deprecated parameter, still read to keep compatibility
@@ -2791,7 +2822,7 @@ int input_read_parameters_species(struct file_content * pfc,
       class_read_list_of_integers_or_default("nufld_quadrature_strategy", pba->nufld_quadrature_strategy, 0, N_nufld);
     }
 
-    /** 6.h.1) qmax, if relevant */
+    /** 6.j.1) qmax, if relevant */
     /* Read */
     class_call(parser_read_list_of_doubles(pfc, "Maximum_q", &entries_read, &(pba->nufld_qmax), &flag1, errmsg),
                errmsg, errmsg); //Deprecated parameter, still read to keep compatibility
@@ -2802,7 +2833,7 @@ int input_read_parameters_species(struct file_content * pfc,
       class_read_list_of_doubles_or_default("nufld_maximum_q", pba->nufld_qmax, 15, N_nufld);
     }
 
-    /** 6.h.2) Number of momentum bins */
+    /** 6.j.2) Number of momentum bins */
     class_call(parser_read_list_of_integers(pfc, "Number of momentum bins", &entries_read, &(pba->nufld_input_q_size), &flag1, errmsg),
                errmsg, errmsg); //Deprecated parameter, still read to keep compatibility
     if (flag1 == _TRUE_) {
@@ -2824,16 +2855,26 @@ int input_read_parameters_species(struct file_content * pfc,
       if (pba->m_nufld_in_eV[n] != 0.0){
         /* Case of only mass or mass and Omega/omega: */
         pba->M_nufld[n] = pba->m_nufld_in_eV[n]/_k_B_*_eV_/pba->T_nufld[n]/pba->T_cmb;
+        class_call(background_w_nufld(pba,
+                                      1.0,
+                                      pba->w_nufld_fit,
+                                      pba->w_nufld_pars,
+                                      w_nufld_ptr+n,
+                                      NULL,
+                                      intw_nufld_ptr+n), 
+                   pba->error_message,
+                   pba->error_message);
+
         class_call(background_nufld_momenta(pba->q_nufld_bg[n],
                                            pba->w_nufld_bg[n],
                                            pba->q_size_nufld_bg[n],
-                                           pba->M_nufld[n],
+                                           pba->M_nufld[n], // DOUBT_CHECK: M enters here, but should be redundant!
                                            pba->factor_nufld[n],
                                            0.,
+                                           w_nufld_ptr[n],
+                                           intw_nufld_ptr[n],
                                            NULL,
                                            &rho_nufld,
-                                           NULL,
-                                           NULL,
                                            NULL),
                    pba->error_message,
                    errmsg);

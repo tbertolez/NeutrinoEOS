@@ -33,6 +33,10 @@ enum vecback_format {short_info, normal_info, long_info};
 
 enum interpolation_method {inter_normal, inter_closeby};
 
+/** list of possible parametrisations of the neutrino equation of state */
+
+enum nufld_parametrisation {nufld_tanh,nufld_steps,nufld_ur};
+
 /**
  * background structure containing all the background information that
  * other modules need to know.
@@ -121,7 +125,10 @@ struct background
                                              default value */
   int * nufld_input_q_size; /**< Vector of numbers of q bins */
   double * nufld_qmax;      /**< Vector of maximum value of q */
-
+  enum nufld_parametrisation w_nufld_fit; /** parametrisation scheme for the neutrino equation of state */
+  int nufld_num_of_pars;
+  double * w_nufld_pars;    /** list of parameters to describe the equation of state of the nufld species */
+  double a_ini_nufld;       /**< Scale factor where the integration begins, for the background evolution */
   double Omega0_k;         /**< \f$ \Omega_{0_k} \f$: curvature contribution */
 
   double Omega0_lambda;    /**< \f$ \Omega_{0_\Lambda} \f$: cosmological constant */
@@ -212,7 +219,8 @@ struct background
 
   int index_bg_rho_nufld1;     /**< density of first nufld species (others contiguous) */
   int index_bg_p_nufld1;       /**< pressure of first nufld species (others contiguous) */
-  int index_bg_pseudo_p_nufld1;/**< another statistical momentum useful in nuflda approximation */
+  // int index_bg_pseudo_p_nufld1;/**< another statistical momentum useful in nuflda approximation */
+  int index_bg_w_nufld1;       /**< equation of state of first nufld species (others contiguous) */
 
   int index_bg_rho_tot;       /**< Total density */
   int index_bg_p_tot;         /**< Total pressure */
@@ -460,6 +468,32 @@ extern "C" {
                            double * pvecback
                            );
 
+double w_nufld_tanh(
+                    double a,
+                    double k,
+                    double a_0);
+
+double dw_over_da_nufld_tanh(
+                             double a,
+                             double k,
+                             double a_0);
+
+double integral_w_nufld_tanh(
+                             double a,
+                            //  double a_ini,
+                             double k,
+                             double a_0);
+
+int background_w_nufld(
+                       struct background *pba,
+                       double a,
+                       int w_nufld_fit,
+                       double *pars,
+                       double *w_nufld,
+                       double *dw_over_da_nufld,
+                       double *integral_nufld                       
+                       );
+
   int background_w_fld(
                        struct background * pba,
                        double a,
@@ -557,11 +591,11 @@ extern "C" {
                               double M,
                               double factor,
                               double z,
+                              double w_nufld,
+                              double intw_nufld,
                               double * n,
                               double * rho,
-                              double * p,
-                              double * drho_dM,
-                              double * pseudo_p
+                              double * p
                               );
 
   int background_nufld_M_from_Omega(
