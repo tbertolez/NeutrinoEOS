@@ -402,9 +402,14 @@ int background_functions(
   /* equation of state of nufld species*/
   double w_nufld[pba->N_nufld];
   double * w_nufld_ptr = w_nufld;
+  /* derivative (with respect to a) of the equation of state  of nufld species*/
+  double dw_over_da_nufld[pba->N_nufld];
+  double * dw_over_da_nufld_ptr = dw_over_da_nufld;
   /* exp(-3 int((1+w)/a)) of nufld species */
   double intw_nufld[pba->N_nufld];
   double * intw_nufld_ptr = intw_nufld;
+  /* derivative of the pressure of nufld species */
+  double p_prime_nufld;
   /* fluid's time-dependent equation of state parameter */
   double w_fld, dw_over_da, integral_fld;
   /* scalar field quantities */
@@ -415,7 +420,7 @@ int background_functions(
      p_prime = a_prime_over_a * dp_dloga = a_prime_over_a * Sum [ (w_prime/a_prime_over_a -3(1+w)w)rho].
      Note: The scalar field contribution must be added in the end, as an exception!*/
   double dp_dloga;
-  FILE *myfile;
+  // FILE *myfile;
 
   /** - initialize local variables */
   rho_tot = 0.;
@@ -524,10 +529,10 @@ int background_functions(
                  pba->error_message,
                  pba->error_message);
 
-      myfile = fopen("eos_ncdm.dat", "a");
-      fprintf(myfile, "a: %.5e, rho_ncdm: %.5e, p_ncdm: %.5e\n", a, rho_ncdm,
-                                                                   p_ncdm);
-      fclose(myfile); 
+      // myfile = fopen("eos_ncdm.dat", "a");
+      // fprintf(myfile, "a: %.5e, rho_ncdm: %.5e, p_ncdm: %.5e\n", a, rho_ncdm,
+      //                                                              p_ncdm);
+      // fclose(myfile); 
 
       pvecback[pba->index_bg_rho_ncdm1+n_ncdm] = rho_ncdm;
       rho_tot += rho_ncdm;
@@ -558,7 +563,7 @@ int background_functions(
                                     pba->w_nufld_fit,
                                     pba->w_nufld_pars, 
                                     w_nufld_ptr+n_nufld, // NUFLD_DOUBT: Is this correct?
-                                    NULL, 
+                                    dw_over_da_nufld_ptr+n_nufld, 
                                     intw_nufld_ptr+n_nufld), // NUFLD_DOUBT: Is this correct?
                  pba->error_message, 
                  pba->error_message)
@@ -580,12 +585,12 @@ int background_functions(
                  pba->error_message,
                  pba->error_message);
 
-      myfile = fopen("eos_nufld.dat", "a");
-      fprintf(myfile, "a: %.5e, w: %.5e, intw: %.5e, rho_nufld: %.5e, p_nufld: %.5e\n", a, w_nufld[n_nufld],
-                                                                               intw_nufld[n_nufld],
-                                                                               rho_nufld,
-                                                                               p_nufld);
-      fclose(myfile);                                                                               
+      // myfile = fopen("eos_nufld.dat", "a");
+      // fprintf(myfile, "a: %.5e, w: %.5e, intw: %.5e, rho_nufld: %.5e, p_nufld: %.5e\n", a, w_nufld[n_nufld],
+      //                                                                          intw_nufld[n_nufld],
+      //                                                                          rho_nufld,
+      //                                                                          p_nufld);
+      // fclose(myfile);                                                                               
       pvecback[pba->index_bg_w_nufld1+n_nufld] = w_nufld[n_nufld];
       // p_nufld = rho_nufld*w_nufld[n_nufld]; // In principle it is already computed in the previous function
       // NUFLD_TODO: I need to save in the background the derivative of w_nufld as a function of time, for the perturbations.
@@ -674,6 +679,18 @@ int background_functions(
     pvecback[pba->index_bg_p_prime_scf] = pvecback[pba->index_bg_phi_prime_scf]*
       (-pvecback[pba->index_bg_phi_prime_scf]*pvecback[pba->index_bg_H]/a-2./3.*pvecback[pba->index_bg_dV_scf]);
     pvecback[pba->index_bg_p_tot_prime] += pvecback[pba->index_bg_p_prime_scf];
+  }
+
+  if (pba->has_nufld == _TRUE_) {
+    /** In order to compute the derivative of the equation of state with
+     * respect to time, we needed the expansion rate */
+    for (n_nufld=0; n_nufld<pba->N_nufld; n_nufld++) {
+      // NUFLD_ERROR! H is in proper time, but you're thinking it is the one in conformal time!
+      pvecback[pba->index_bg_w_prime_nufld1+n_nufld] = a*pvecback[pba->index_bg_H]*dw_over_da_nufld[n_nufld];
+      p_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]*pvecback[pba->index_bg_rho_nufld1+n_nufld]
+                     -3*pvecback[pba->index_bg_H]*w_nufld[n_nufld]*(1.+w_nufld[n_nufld])*pvecback[pba->index_bg_rho_nufld1+n_nufld];
+      pvecback[pba->index_bg_p_tot_prime] += p_prime_nufld;
+    }
   }
 
   /** - compute critical density */
@@ -789,7 +806,7 @@ int background_w_nufld(
     a_0 = pars[1];
     if (w_nufld != NULL) *w_nufld = w_nufld_tanh(a,k,a_0);
     if (dw_over_da_nufld != NULL) *dw_over_da_nufld = w_nufld_tanh(a,k,a_0);
-    if (integral_nufld != NULL) *integral_nufld = pow(a,3*(1+*w_nufld))*integral_w_nufld_tanh(a,k,a_0);
+    if (integral_nufld != NULL) *integral_nufld = integral_w_nufld_tanh(a,k,a_0);
     // if (integral_nufld != NULL) *integral_nufld = integral_w_nufld_tanh(a,k,a_0);
     // printf("intw: %.5e, \n", integral_w_nufld_tanh(a,k,a_0));
 
@@ -1257,6 +1274,7 @@ int background_indices(
   class_define_index(pba->index_bg_rho_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   class_define_index(pba->index_bg_p_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   class_define_index(pba->index_bg_w_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
+  class_define_index(pba->index_bg_w_prime_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   // class_define_index(pba->index_bg_pseudo_p_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
 
   /* - index for dcdm */
@@ -2361,7 +2379,7 @@ int background_nufld_momenta(
 
   /** - rescale normalization at given redshift */
   factorn = factor*pow(1+z,3);
-  factor2 = factor*pow(1+z,3*(1+w_nufld))*intw_nufld;//*factor*pow(1+z,3*(1+w_nufld))
+  factor2 = factor*intw_nufld;//*factor*pow(1+z,3*(1+w_nufld))
 
   /** - initialize quantities */
   if (n!=NULL) *n = 0.;
@@ -2381,7 +2399,7 @@ int background_nufld_momenta(
 
     /* integrand of the various quantities */
     if (n!=NULL) *n += q2*wvec[index_q];
-    if (rho!=NULL) *rho += q2*epsilon*wvec[index_q];
+    if (rho!=NULL) *rho += q2*epsilon*wvec[index_q]; // NUFLD_DOUBT: epsilon = sqrt(q2) ?
     // if (p!=NULL) *p += q2*q2/3./epsilon*wvec[index_q];
     // if (drho_dM!=NULL) *drho_dM += q2*M/(1.+z)/(1.+z)/epsilon*wvec[index_q];
     // if (pseudo_p!=NULL) *pseudo_p += pow(q2/epsilon,3)/3.0*wvec[index_q];
@@ -3060,8 +3078,8 @@ int background_initial_conditions(
                                            pba->factor_nufld[n_nufld],
                                            1./a-1.0,
                                            w_nufld[n_nufld],
-                                           1.,
-                                          //  intw_nufld_ptr[n_nufld], // We're computing rho_ini, this factor is always with respect to rho_ini
+                                          //  1.,
+                                           intw_nufld_ptr[n_nufld], // We're computing rho_ini, this factor is always with respect to rho_ini
                                            NULL,
                                            &rho_nufld,
                                            &p_nufld),
