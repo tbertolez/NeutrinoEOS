@@ -1,14 +1,14 @@
 \section{Changing the equation of state}
 Following~\cite{Ma1995}, the background energy and pressure for massive neutrinos are given by
 \begin{equation}\label{eq:dens-press-massive-nu}
-    \rho_\nu = \rho_{\mathrm{ini}}\, a^{-4} \int q^2\,  \ddif q\, \ddif\Omega\,  \varepsilon\,  f_0(q)\, ,\qquad
-    P_\nu = \frac{\rho_{\mathrm{ini}}}{3}a^{-4} \int q^2\, \ddif q\,  \ddif\Omega\, \frac{q^2}{\varepsilon}\, f_0(q) \, ,
-\end{equation}with $\varepsilon = \sqrt{q^2 + m_\nu^2 a^2}$ and $\rho_{\mathrm{ini}}$ a normalization constant that . In the ultra-relativistic limit $\varepsilon\sim q$, $P_\nu = \frac{1}{3}\rho_\nu$, i.e. $w = 1/3$. Also, both $\rho$ and $p$ evolve as $a^{-4}$. In the non-relativistic limit, $a^2m_\nu^2\gg q^2$, and then $P_\nu \to 0$, such that $w = 0$. Now, $\rho$ evolves with $a^{-3}$ due to the $a$ factor in $\varepsilon$. The mass naturally introduces a phase transition between $w = 1/3$ and $w=0$, and the $\rho$ evolution varies smoothly from $a^{-4}$ to $a^{-3}$. 
+    \rho_\nu = a^{-4} \int q^2\,  \ddif q\, \ddif\Omega\,  \varepsilon\,  f_0(q)\, ,\qquad
+    P_\nu = \frac{1}{3}a^{-4} \int q^2\, \ddif q\,  \ddif\Omega\, \frac{q^2}{\varepsilon}\, f_0(q) \, ,
+\end{equation}with $\varepsilon = \sqrt{q^2 + m_\nu^2 a^2}$. In the ultra-relativistic limit $\varepsilon\sim q$, $P_\nu = \frac{1}{3}\rho_\nu$, i.e. $w = 1/3$. Also, both $\rho$ and $p$ evolve as $a^{-4}$. In the non-relativistic limit, $a^2m_\nu^2\gg q^2$, and then $P_\nu \to 0$, such that $w = 0$. Now, $\rho$ evolves with $a^{-3}$ due to the $a$ factor in $\varepsilon$. The mass naturally introduces a phase transition between $w = 1/3$ and $w=0$, and the $\rho$ evolution varies smoothly from $a^{-4}$ to $a^{-3}$. 
 
 Massless neutrinos with $m_\nu=0$ fulfill $\varepsilon = q$ and then \eqref{eq:dens-press-massive-nu} becomes 
-\begin{equation}
-    \rho_\nu = \rho_{\mathrm{ini}}\, a^{-4}  \int q^2\,  \ddif q \, \ddif \Omega\,  q\,  f_0(q)\, ,\qquad
-    P_\nu = \frac{\rho_{\mathrm{ini}}}{3}\, a^{-4} \int q^2\, \ddif q\,  \ddif \Omega\,  q\,  f_0(q) \, .
+\begin{equation}\label{eq:dens-press-massless-nu}
+    \rho_\nu = a^{-4}  \int q^2\,  \ddif q \, \ddif \Omega\,  q\,  f_0(q)\, ,\qquad
+    P_\nu = \frac{1}{3}\, a^{-4} \int q^2\, \ddif q\,  \ddif \Omega\,  q\,  f_0(q) \, .
 \end{equation}That is, massless neutrinos always have $w = 1/3$. 
 
 \subsection{Arbitrary equation of state}
@@ -16,14 +16,15 @@ From the energy-momentum tensor conservation, we can retrieve
 \begin{equation}
     \frac{\ddif \rho}{\rho} = -3\, \frac{\ddif a}{a}\, (1+w(a))\, 
 \end{equation}for an arbitrary equation of state $w(a)$. The solution is trivial,
-\begin{equation}
+\begin{equation}\label{eq:rho-solution}
     \rho(a) = \rho_{\mathrm{ini}} \exp\left\{-3\int_{a_{\mathrm{ini}}}^a \frac{da'}{a'}(1+w(a')) \right\}\, .
 \end{equation}
 Then, we modify the massless neutrino energy density and pressure as follows:
 \begin{align}\label{eq:eos-energy-density}
-    \rho_\nu &= \rho_{\mathrm{ini}}\, \exp\left\{-3\int_{a_{\mathrm{ini}}}^a \frac{da'}{a'}(1+w(a')) \right\}\int q^2\,  \ddif q \, \ddif \Omega\,  q\,  f_0(q)\, ,\qquad \\
-    P_\nu &= \rho_{\mathrm{ini}}\, w(a)\exp\left\{-3\int_{a_{\mathrm{ini}}}^a \frac{da'}{a'}(1+w(a')) \right\} \int q^2\, \ddif q\,  \ddif \Omega\,  q\,  f_0(q) \, . \label{eq:eos-pressure}
+    \rho_\nu &= a_{\mathrm{ini}}^{-4}\, \exp\left\{-3\int_{a_{\mathrm{ini}}}^a \frac{da'}{a'}(1+w(a')) \right\}\int q^2\,  \ddif q \, \ddif \Omega\,  q\,  f_0(q)\, ,\qquad \\
+    P_\nu &= a_{\mathrm{ini}}^{-4}\, w(a)\exp\left\{-3\int_{a_{\mathrm{ini}}}^a \frac{da'}{a'}(1+w(a')) \right\} \int q^2\, \ddif q\,  \ddif \Omega\,  q\,  f_0(q) \, . \label{eq:eos-pressure}
 \end{align}This way, we necessarily have $P_\nu/\rho_\nu = w(a)$ and the correct evolution with $a$ during all history. 
+One can understand this formula as setting~\eqref{eq:dens-pres-massless-nu} inside~\eqref{eq:rho-solution}.
 
 \subsection{Different parametrisations for $w(a)$}
 A first possibility is to try to fit if neutrinos go non-relativistic. We introduce an equation of state which goes from UR to NR in a single step at $a = a_{\text{tr}}$,

@@ -4241,6 +4241,9 @@ int perturbations_vector_init(
     /* non-cold dark matter with generalized Boltzmann hierarchy */
 
     if (pba->has_nufld == _TRUE_) {
+      class_define_index(ppv->index_pt_delta_nufld1,_TRUE_,index_pt,pba->N_nufld);
+      class_define_index(ppv->index_pt_theta_nufld1,_TRUE_,index_pt,pba->N_nufld);
+
       ppv->index_pt_psi0_nufld1 = index_pt; /* density of ultra-relativistic neutrinos/relics */
       ppv->N_nufld = pba->N_nufld;
       class_alloc(ppv->l_max_nufld,ppv->N_nufld*sizeof(double),ppt->error_message);
@@ -4258,6 +4261,7 @@ int perturbations_vector_init(
           ppv->q_size_nufld[n_nufld] = pba->q_size_nufld[n_nufld];
         }
         else{
+          printf("The fluid approximation is on, but you're not controlling this.\n");
           // In the fluid approximation, hierarchy is cut at lmax = 2 and q dependence is integrated out:
           ppv->l_max_nufld[n_nufld] = 2;
           ppv->q_size_nufld[n_nufld] = 1;
@@ -4374,6 +4378,10 @@ int perturbations_vector_init(
     }
 
     if (ppt->evolve_tensor_nufld == _TRUE_) {
+      printf("nufld tensor perturbations used but not controlled.\n");
+      class_define_index(ppv->index_pt_delta_nufld1,_TRUE_,index_pt,pba->N_nufld);
+      class_define_index(ppv->index_pt_theta_nufld1,_TRUE_,index_pt,pba->N_nufld);
+
       ppv->index_pt_psi0_nufld1 = index_pt;
       ppv->N_nufld = pba->N_nufld;
       class_alloc(ppv->l_max_nufld,ppv->N_nufld*sizeof(double),ppt->error_message);
@@ -4495,14 +4503,12 @@ int perturbations_vector_init(
 
     if (pba->has_nufld == _TRUE_) {
 
-      /* we don't need nufld multipoles above l=2 (but they are
-         defined only when nufldfa is off) */
-
+      /* the nufld multipoles are not used for sourcing anything */
       index_pt = ppv->index_pt_psi0_nufld1;
       for (n_nufld = 0; n_nufld < ppv-> N_nufld; n_nufld++){
         for (index_q=0; index_q < ppv->q_size_nufld[n_nufld]; index_q++){
           for (l=0; l<=ppv->l_max_nufld[n_nufld]; l++){
-            if (l>2) ppv->used_in_sources[index_pt]=_FALSE_;
+            ppv->used_in_sources[index_pt]=_FALSE_;
             index_pt++;
           }
         }
@@ -4823,6 +4829,11 @@ int perturbations_vector_init(
         if (pba->has_nufld == _TRUE_) {
           index_pt = 0;
           for (n_nufld = 0; n_nufld < ppv->N_nufld; n_nufld++){
+            ppv->y[ppv->index_pt_delta_nufld1+n_nufld] = 
+              ppw->pv->y[ppw->pv->index_pt_delta_nufld1+n_nufld];
+            ppv->y[ppv->index_pt_theta_nufld1+n_nufld] = 
+              ppw->pv->y[ppw->pv->index_pt_theta_nufld1+n_nufld];
+
             for (index_q=0; index_q < ppv->q_size_nufld[n_nufld]; index_q++){
               for (l=0; l<=ppv->l_max_nufld[n_nufld];l++){
                 // This is correct with or without nufldfa, since ppv->lmax_nufld is set accordingly.
@@ -4907,6 +4918,11 @@ int perturbations_vector_init(
         if (pba->has_nufld == _TRUE_) {
           index_pt = 0;
           for (n_nufld = 0; n_nufld < ppv->N_nufld; n_nufld++){
+            ppv->y[ppv->index_pt_delta_nufld1+n_nufld] = 
+              ppw->pv->y[ppw->pv->index_pt_delta_nufld1+n_nufld];
+            ppv->y[ppv->index_pt_theta_nufld1+n_nufld] = 
+              ppw->pv->y[ppw->pv->index_pt_theta_nufld1+n_nufld];
+
             for (index_q=0; index_q < ppv->q_size_nufld[n_nufld]; index_q++){
               for (l=0; l<=ppv->l_max_nufld[n_nufld]; l++){
                 ppv->y[ppv->index_pt_psi0_nufld1+index_pt] =
@@ -5031,6 +5047,11 @@ int perturbations_vector_init(
           if (pba->has_nufld == _TRUE_) {
             index_pt = 0;
             for (n_nufld = 0; n_nufld < ppv->N_nufld; n_nufld++){
+              ppv->y[ppv->index_pt_delta_nufld1+n_nufld] = 
+                ppw->pv->y[ppw->pv->index_pt_delta_nufld1+n_nufld];
+              ppv->y[ppv->index_pt_theta_nufld1+n_nufld] = 
+                ppw->pv->y[ppw->pv->index_pt_theta_nufld1+n_nufld];
+
               for (index_q=0; index_q < ppv->q_size_nufld[n_nufld]; index_q++){
                 for (l=0; l<=ppv->l_max_nufld[n_nufld]; l++){
                   /* This is correct even when nufldfa == off, since ppv->l_max_nufld and
@@ -5141,6 +5162,11 @@ int perturbations_vector_init(
           if (pba->has_nufld == _TRUE_) {
             index_pt = 0;
             for (n_nufld = 0; n_nufld < ppv->N_nufld; n_nufld++){
+              ppv->y[ppv->index_pt_delta_nufld1+n_nufld] = 
+                ppw->pv->y[ppw->pv->index_pt_delta_nufld1+n_nufld];
+              ppv->y[ppv->index_pt_theta_nufld1+n_nufld] = 
+                ppw->pv->y[ppw->pv->index_pt_theta_nufld1+n_nufld];
+
               for (index_q=0; index_q < ppv->q_size_nufld[n_nufld]; index_q++){
                 for (l=0; l<=ppv->l_max_nufld[n_nufld]; l++){
                   /* This is correct even when nufldfa == off, since ppv->l_max_nufld and
@@ -5270,6 +5296,11 @@ int perturbations_vector_init(
           if (pba->has_nufld == _TRUE_) {
             index_pt = 0;
             for (n_nufld = 0; n_nufld < ppv->N_nufld; n_nufld++){
+              ppv->y[ppv->index_pt_delta_nufld1+n_nufld] = 
+                ppw->pv->y[ppw->pv->index_pt_delta_nufld1+n_nufld];
+              ppv->y[ppv->index_pt_theta_nufld1+n_nufld] = 
+                ppw->pv->y[ppw->pv->index_pt_theta_nufld1+n_nufld];
+
               for (index_q=0; index_q < ppv->q_size_nufld[n_nufld]; index_q++){
                 for (l=0; l<=ppv->l_max_nufld[n_nufld]; l++){
                   /* This is correct even when nufldfa == off, since ppv->l_max_nufld and
@@ -5368,6 +5399,11 @@ int perturbations_vector_init(
           if (pba->has_nufld == _TRUE_) {
             index_pt = 0;
             for (n_nufld = 0; n_nufld < ppv->N_nufld; n_nufld++){
+              ppv->y[ppv->index_pt_delta_nufld1+n_nufld] = 
+                ppw->pv->y[ppw->pv->index_pt_delta_nufld1+n_nufld];
+              ppv->y[ppv->index_pt_theta_nufld1+n_nufld] = 
+                ppw->pv->y[ppw->pv->index_pt_theta_nufld1+n_nufld];
+
               for (index_q=0; index_q < ppv->q_size_nufld[n_nufld]; index_q++){
                 for (l=0; l<=ppv->l_max_nufld[n_nufld]; l++){
                   /* This is correct even when nufldfa == off, since ppv->l_max_nufld and
@@ -5455,157 +5491,158 @@ int perturbations_vector_init(
 
         if ((pa_old[ppw->index_ap_nufldfa] == (int)nufldfa_off) && (ppw->approx[ppw->index_ap_nufldfa] == (int)nufldfa_on)) {
 
-          if (ppt->perturbations_verbose>2)
-            fprintf(stdout,"Mode k=%e: switch on nufld fluid approximation at tau=%e\n",k,tau);
+          class_test(_FALSE_,pba->error_message,"I am switching on the nufld fluid approximation, which is not implemented yet.");
+        //   if (ppt->perturbations_verbose>2)
+        //     fprintf(stdout,"Mode k=%e: switch on nufld fluid approximation at tau=%e\n",k,tau);
 
-          if (ppw->approx[ppw->index_ap_rsa] == (int)rsa_off) {
+        //   if (ppw->approx[ppw->index_ap_rsa] == (int)rsa_off) {
 
-            ppv->y[ppv->index_pt_delta_g] =
-              ppw->pv->y[ppw->pv->index_pt_delta_g];
+        //     ppv->y[ppv->index_pt_delta_g] =
+        //       ppw->pv->y[ppw->pv->index_pt_delta_g];
 
-            ppv->y[ppv->index_pt_theta_g] =
-              ppw->pv->y[ppw->pv->index_pt_theta_g];
-          }
+        //     ppv->y[ppv->index_pt_theta_g] =
+        //       ppw->pv->y[ppw->pv->index_pt_theta_g];
+        //   }
 
-          if ((ppw->approx[ppw->index_ap_tca] == (int)tca_off) && (ppw->approx[ppw->index_ap_rsa] == (int)rsa_off)) {
+        //   if ((ppw->approx[ppw->index_ap_tca] == (int)tca_off) && (ppw->approx[ppw->index_ap_rsa] == (int)rsa_off)) {
 
-            ppv->y[ppv->index_pt_shear_g] =
-              ppw->pv->y[ppw->pv->index_pt_shear_g];
+        //     ppv->y[ppv->index_pt_shear_g] =
+        //       ppw->pv->y[ppw->pv->index_pt_shear_g];
 
-            ppv->y[ppv->index_pt_l3_g] =
-              ppw->pv->y[ppw->pv->index_pt_l3_g];
+        //     ppv->y[ppv->index_pt_l3_g] =
+        //       ppw->pv->y[ppw->pv->index_pt_l3_g];
 
-            for (l = 4; l <= ppw->pv->l_max_g; l++) {
+        //     for (l = 4; l <= ppw->pv->l_max_g; l++) {
 
-              ppv->y[ppv->index_pt_delta_g+l] =
-                ppw->pv->y[ppw->pv->index_pt_delta_g+l];
-            }
+        //       ppv->y[ppv->index_pt_delta_g+l] =
+        //         ppw->pv->y[ppw->pv->index_pt_delta_g+l];
+        //     }
 
-            ppv->y[ppv->index_pt_pol0_g] =
-              ppw->pv->y[ppw->pv->index_pt_pol0_g];
+        //     ppv->y[ppv->index_pt_pol0_g] =
+        //       ppw->pv->y[ppw->pv->index_pt_pol0_g];
 
-            ppv->y[ppv->index_pt_pol1_g] =
-              ppw->pv->y[ppw->pv->index_pt_pol1_g];
+        //     ppv->y[ppv->index_pt_pol1_g] =
+        //       ppw->pv->y[ppw->pv->index_pt_pol1_g];
 
-            ppv->y[ppv->index_pt_pol2_g] =
-              ppw->pv->y[ppw->pv->index_pt_pol2_g];
+        //     ppv->y[ppv->index_pt_pol2_g] =
+        //       ppw->pv->y[ppw->pv->index_pt_pol2_g];
 
-            ppv->y[ppv->index_pt_pol3_g] =
-              ppw->pv->y[ppw->pv->index_pt_pol3_g];
+        //     ppv->y[ppv->index_pt_pol3_g] =
+        //       ppw->pv->y[ppw->pv->index_pt_pol3_g];
 
-            for (l = 4; l <= ppw->pv->l_max_pol_g; l++) {
+        //     for (l = 4; l <= ppw->pv->l_max_pol_g; l++) {
 
-              ppv->y[ppv->index_pt_pol0_g+l] =
-                ppw->pv->y[ppw->pv->index_pt_pol0_g+l];
-            }
+        //       ppv->y[ppv->index_pt_pol0_g+l] =
+        //         ppw->pv->y[ppw->pv->index_pt_pol0_g+l];
+        //     }
 
-          }
+        //   }
 
-          if (pba->has_ur == _TRUE_) {
+        //   if (pba->has_ur == _TRUE_) {
 
-            if (ppw->approx[ppw->index_ap_rsa] == (int)rsa_off) {
-
-
-              ppv->y[ppv->index_pt_delta_ur] =
-                ppw->pv->y[ppw->pv->index_pt_delta_ur];
-
-              ppv->y[ppv->index_pt_theta_ur] =
-                ppw->pv->y[ppw->pv->index_pt_theta_ur];
-
-              ppv->y[ppv->index_pt_shear_ur] =
-                ppw->pv->y[ppw->pv->index_pt_shear_ur];
-
-              if (ppw->approx[ppw->index_ap_ufa] == (int)ufa_off) {
-
-                ppv->y[ppv->index_pt_l3_ur] =
-                  ppw->pv->y[ppw->pv->index_pt_l3_ur];
-
-                for (l=4; l <= ppv->l_max_ur; l++)
-                  ppv->y[ppv->index_pt_delta_ur+l] =
-                    ppw->pv->y[ppw->pv->index_pt_delta_ur+l];
-
-              }
-            }
-          }
-
-          if (pba->has_ncdm == _TRUE_) {
-            index_pt = 0;
-            for (n_ncdm = 0; n_ncdm < ppv->N_ncdm; n_ncdm++){
-              for (index_q=0; index_q < ppv->q_size_ncdm[n_ncdm]; index_q++){
-                for (l=0; l<=ppv->l_max_ncdm[n_ncdm]; l++){
-                  /* This is correct even when ncdmfa == off, since ppv->l_max_ncdm and
-                     ppv->q_size_ncdm is updated. */
-                  ppv->y[ppv->index_pt_psi0_ncdm1+index_pt] =
-                    ppw->pv->y[ppw->pv->index_pt_psi0_ncdm1+index_pt];
-                  index_pt++;
-                }
-              }
-            }
-          }
-
-          if (pba->has_idr == _TRUE_){
-            if (ppw->approx[ppw->index_ap_rsa_idr] == (int)rsa_idr_off){
-
-              ppv->y[ppv->index_pt_delta_idr] =
-                ppw->pv->y[ppw->pv->index_pt_delta_idr];
-
-              ppv->y[ppv->index_pt_theta_idr] =
-                ppw->pv->y[ppw->pv->index_pt_theta_idr];
-
-              if (ppt->idr_nature == idr_free_streaming){
-
-                if (ppw->approx[ppw->index_ap_tca_idm_dr] == (int)tca_idm_dr_off){
-
-                  ppv->y[ppv->index_pt_shear_idr] =
-                    ppw->pv->y[ppw->pv->index_pt_shear_idr];
-
-                  ppv->y[ppv->index_pt_l3_idr] =
-                    ppw->pv->y[ppw->pv->index_pt_l3_idr];
-
-                  for (l=4; l <= ppv->l_max_idr; l++)
-                    ppv->y[ppv->index_pt_delta_idr+l] =
-                      ppw->pv->y[ppw->pv->index_pt_delta_idr+l];
-                }
-              }
-            }
-          }
+        //     if (ppw->approx[ppw->index_ap_rsa] == (int)rsa_off) {
 
 
-          a = ppw->pvecback[pba->index_bg_a];
-          index_pt = ppw->pv->index_pt_psi0_nufld1;
-          for (n_nufld = 0; n_nufld < ppv->N_nufld; n_nufld++){
-            // We are in the fluid approximation, so nufld_l_size is always 3.
-            nufld_l_size = ppv->l_max_nufld[n_nufld]+1;
-            rho_plus_p_nufld = ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+
-              ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
-            for (l=0; l<=2; l++){
-              ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld+l] = 0.0;
-            }
-            factor = pba->factor_nufld[n_nufld]/pow(a,4);
-            for (index_q=0; index_q < ppw->pv->q_size_nufld[n_nufld]; index_q++){
-              // Integrate over distributions:
-              q = pba->q_nufld[n_nufld][index_q];
-              q2 = q*q;
-              epsilon = sqrt(q2+a*a*pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]);
-              ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld] +=
-                pba->w_nufld[n_nufld][index_q]*q2*epsilon*
-                ppw->pv->y[index_pt];
+        //       ppv->y[ppv->index_pt_delta_ur] =
+        //         ppw->pv->y[ppw->pv->index_pt_delta_ur];
 
-              ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld+1] +=
-                pba->w_nufld[n_nufld][index_q]*q2*q*
-                ppw->pv->y[index_pt+1];
+        //       ppv->y[ppv->index_pt_theta_ur] =
+        //         ppw->pv->y[ppw->pv->index_pt_theta_ur];
 
-              ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld+2] +=
-                pba->w_nufld[n_nufld][index_q]*q2*q2/epsilon*
-                ppw->pv->y[index_pt+2];
+        //       ppv->y[ppv->index_pt_shear_ur] =
+        //         ppw->pv->y[ppw->pv->index_pt_shear_ur];
 
-              //Jump to next momentum bin in ppw->pv->y:
-              index_pt += (ppw->pv->l_max_nufld[n_nufld]+1);
-            }
-            ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld] *=factor/ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
-            ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld+1] *=k*factor/rho_plus_p_nufld;
-            ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld+2] *=2.0/3.0*factor/rho_plus_p_nufld;
-          }
+        //       if (ppw->approx[ppw->index_ap_ufa] == (int)ufa_off) {
+
+        //         ppv->y[ppv->index_pt_l3_ur] =
+        //           ppw->pv->y[ppw->pv->index_pt_l3_ur];
+
+        //         for (l=4; l <= ppv->l_max_ur; l++)
+        //           ppv->y[ppv->index_pt_delta_ur+l] =
+        //             ppw->pv->y[ppw->pv->index_pt_delta_ur+l];
+
+        //       }
+        //     }
+        //   }
+
+        //   if (pba->has_ncdm == _TRUE_) {
+        //     index_pt = 0;
+        //     for (n_ncdm = 0; n_ncdm < ppv->N_ncdm; n_ncdm++){
+        //       for (index_q=0; index_q < ppv->q_size_ncdm[n_ncdm]; index_q++){
+        //         for (l=0; l<=ppv->l_max_ncdm[n_ncdm]; l++){
+        //           /* This is correct even when ncdmfa == off, since ppv->l_max_ncdm and
+        //              ppv->q_size_ncdm is updated. */
+        //           ppv->y[ppv->index_pt_psi0_ncdm1+index_pt] =
+        //             ppw->pv->y[ppw->pv->index_pt_psi0_ncdm1+index_pt];
+        //           index_pt++;
+        //         }
+        //       }
+        //     }
+        //   }
+
+        //   if (pba->has_idr == _TRUE_){
+        //     if (ppw->approx[ppw->index_ap_rsa_idr] == (int)rsa_idr_off){
+
+        //       ppv->y[ppv->index_pt_delta_idr] =
+        //         ppw->pv->y[ppw->pv->index_pt_delta_idr];
+
+        //       ppv->y[ppv->index_pt_theta_idr] =
+        //         ppw->pv->y[ppw->pv->index_pt_theta_idr];
+
+        //       if (ppt->idr_nature == idr_free_streaming){
+
+        //         if (ppw->approx[ppw->index_ap_tca_idm_dr] == (int)tca_idm_dr_off){
+
+        //           ppv->y[ppv->index_pt_shear_idr] =
+        //             ppw->pv->y[ppw->pv->index_pt_shear_idr];
+
+        //           ppv->y[ppv->index_pt_l3_idr] =
+        //             ppw->pv->y[ppw->pv->index_pt_l3_idr];
+
+        //           for (l=4; l <= ppv->l_max_idr; l++)
+        //             ppv->y[ppv->index_pt_delta_idr+l] =
+        //               ppw->pv->y[ppw->pv->index_pt_delta_idr+l];
+        //         }
+        //       }
+        //     }
+        //   }
+
+
+        //   a = ppw->pvecback[pba->index_bg_a];
+        //   index_pt = ppw->pv->index_pt_psi0_nufld1;
+        //   for (n_nufld = 0; n_nufld < ppv->N_nufld; n_nufld++){
+        //     // We are in the fluid approximation, so nufld_l_size is always 3.
+        //     nufld_l_size = ppv->l_max_nufld[n_nufld]+1;
+        //     rho_plus_p_nufld = ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+
+        //       ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
+        //     for (l=0; l<=2; l++){
+        //       ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld+l] = 0.0;
+        //     }
+        //     factor = pba->factor_nufld[n_nufld]/pow(a,4);
+        //     for (index_q=0; index_q < ppw->pv->q_size_nufld[n_nufld]; index_q++){
+        //       // Integrate over distributions:
+        //       q = pba->q_nufld[n_nufld][index_q];
+        //       q2 = q*q;
+        //       epsilon = sqrt(q2+a*a*pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]);
+        //       ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld] +=
+        //         pba->w_nufld[n_nufld][index_q]*q2*epsilon*
+        //         ppw->pv->y[index_pt];
+
+        //       ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld+1] +=
+        //         pba->w_nufld[n_nufld][index_q]*q2*q*
+        //         ppw->pv->y[index_pt+1];
+
+        //       ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld+2] +=
+        //         pba->w_nufld[n_nufld][index_q]*q2*q2/epsilon*
+        //         ppw->pv->y[index_pt+2];
+
+        //       //Jump to next momentum bin in ppw->pv->y:
+        //       index_pt += (ppw->pv->l_max_nufld[n_nufld]+1);
+        //     }
+        //     ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld] *=factor/ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
+        //     ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld+1] *=k*factor/rho_plus_p_nufld;
+        //     ppv->y[ppv->index_pt_psi0_nufld1+nufld_l_size*n_nufld+2] *=2.0/3.0*factor/rho_plus_p_nufld;
+        //   }
         }
       }
 
@@ -5739,8 +5776,15 @@ int perturbations_vector_init(
 
       if (ppt->evolve_tensor_nufld == _TRUE_){
 
+        printf("Tensor perturbations for nufld used but not implemented.\n");
+
         index_pt = 0;
         for (n_nufld = 0; n_nufld < ppv->N_nufld; n_nufld++){
+          ppv->y[ppv->index_pt_delta_nufld1+n_nufld] = 
+            ppw->pv->y[ppw->pv->index_pt_delta_nufld1+n_nufld];
+          ppv->y[ppv->index_pt_theta_nufld1+n_nufld] = 
+            ppw->pv->y[ppw->pv->index_pt_theta_nufld1+n_nufld];
+
           for (index_q=0; index_q < ppv->q_size_nufld[n_nufld]; index_q++){
             for (l=0; l<=ppv->l_max_nufld[n_nufld];l++){
               // This is correct with or without nufldfa, since ppv->lmax_nufld is set accordingly.
@@ -6402,7 +6446,11 @@ int perturbations_initial_conditions(struct precision * ppr,
 
     if (pba->has_nufld == _TRUE_) {
       idx = ppw->pv->index_pt_psi0_nufld1;
+
       for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
+
+        ppw->pv->y[ppw->pv->index_pt_delta_nufld1+n_nufld] = delta_ur;
+        ppw->pv->y[ppw->pv->index_pt_theta_nufld1+n_nufld] = theta_ur;
 
         for (index_q=0; index_q < ppw->pv->q_size_nufld[n_nufld]; index_q++) {
 
@@ -7339,7 +7387,11 @@ int perturbations_total_stress_energy(
   double delta_p_nufld=0.;
   double rho_plus_p_nufld;
   int n_nufld;
-  double cg2_nufld,w_nufld,rho_nufld_bg,p_nufld_bg,pseudo_p_nufld;
+  double rho_nufld_bg,p_nufld_bg;
+  double cs2_nufld[pba->N_nufld];
+  double *cs2_nufld_ptr = cs2_nufld;
+  double shear_nufld[pba->N_nufld];
+  double *shear_nufld_ptr = shear_nufld;
   double gwnufld;
   double rho_relativistic;
   double rho_dr_over_f;
@@ -7688,79 +7740,82 @@ int perturbations_total_stress_energy(
 
     /* non-cold dark matter with generalized Boltzmann hierarchy contribution */
     if (pba->has_nufld == _TRUE_) {
-      idx = ppw->pv->index_pt_psi0_nufld1;
-      if (ppw->approx[ppw->index_ap_nufldfa] == (int)nufldfa_on){
+      // idx = ppw->pv->index_pt_psi0_nufld1;
+      // if (ppw->approx[ppw->index_ap_nufldfa] == (int)nufldfa_on){
         // The perturbations are evolved integrated:
-        for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
-          rho_nufld_bg = ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
-          p_nufld_bg = ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
-          // pseudo_p_nufld = ppw->pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld];
+      
+      class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, NULL, cs2_nufld_ptr), pba->error_message, pba->error_message);
+      class_call(shear_nufld_from_tower(ppw,pba,y,shear_nufld_ptr), pba->error_message, pba->error_message);
 
-          rho_plus_p_nufld = rho_nufld_bg + p_nufld_bg;
-          w_nufld = p_nufld_bg/rho_nufld_bg;
-          // cg2_nufld = w_nufld*(1.0-1.0/(3.0+3.0*w_nufld)*(3.0*w_nufld-2.0+pseudo_p_nufld/p_nufld_bg));
-          cg2_nufld = 1./3.0; // NUFLD_PERT: Obviously wrong.
-          if ((ppt->has_source_delta_nufld == _TRUE_) || (ppt->has_source_theta_nufld == _TRUE_) || (ppt->has_source_delta_m == _TRUE_)) {
-            ppw->delta_nufld[n_nufld] = y[idx];
-            ppw->theta_nufld[n_nufld] = y[idx+1];
-            ppw->shear_nufld[n_nufld] = y[idx+2];
-          }
+      for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
+        rho_nufld_bg = ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
+        p_nufld_bg = ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
+        // pseudo_p_nufld = ppw->pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld];
 
-          ppw->delta_rho += rho_nufld_bg*y[idx];
-          ppw->rho_plus_p_theta += rho_plus_p_nufld*y[idx+1];
-          ppw->rho_plus_p_shear += rho_plus_p_nufld*y[idx+2];
-          ppw->delta_p += cg2_nufld*rho_nufld_bg*y[idx];
+        rho_plus_p_nufld = rho_nufld_bg + p_nufld_bg;
 
-          ppw->rho_plus_p_tot += rho_plus_p_nufld;
-
-          idx += ppw->pv->l_max_nufld[n_nufld]+1;
+        if ((ppt->has_source_delta_nufld == _TRUE_) || (ppt->has_source_theta_nufld == _TRUE_) || (ppt->has_source_delta_m == _TRUE_)) {
+          ppw->delta_nufld[n_nufld] = y[ppw->pv->index_pt_delta_nufld1+n_nufld];
+          ppw->theta_nufld[n_nufld] = y[ppw->pv->index_pt_theta_nufld1+n_nufld];
+          ppw->shear_nufld[n_nufld] = shear_nufld[n_nufld];
         }
+
+        ppw->delta_rho += rho_nufld_bg*ppw->delta_nufld[n_nufld];
+        ppw->rho_plus_p_theta += rho_plus_p_nufld*ppw->theta_nufld[n_nufld];
+        ppw->rho_plus_p_shear += rho_plus_p_nufld*ppw->shear_nufld[n_nufld];
+        // Right now, we will leave this as is, but nye!
+        ppw->delta_p += cs2_nufld[n_nufld]*ppw->delta_rho;
+
+        ppw->rho_plus_p_tot += rho_plus_p_nufld;
+
+        // idx += ppw->pv->l_max_nufld[n_nufld]+1;
       }
-      else{
-        // We must integrate to find perturbations:
-        for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
-          rho_delta_nufld = 0.0;
-          rho_plus_p_theta_nufld = 0.0;
-          rho_plus_p_shear_nufld = 0.0;
-          delta_p_nufld = 0.0;
-          factor = pba->factor_nufld[n_nufld]/pow(a,4);
+      // }
+      // else{
+      //   // We must integrate to find perturbations:
+      //   for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
+      //     rho_delta_nufld = 0.0;
+      //     rho_plus_p_theta_nufld = 0.0;
+      //     rho_plus_p_shear_nufld = 0.0;
+      //     delta_p_nufld = 0.0;
+      //     factor = pba->factor_nufld[n_nufld]/pow(a,4);
 
-          for (index_q=0; index_q < ppw->pv->q_size_nufld[n_nufld]; index_q ++) {
+      //     for (index_q=0; index_q < ppw->pv->q_size_nufld[n_nufld]; index_q ++) {
 
-            q = pba->q_nufld[n_nufld][index_q];
-            q2 = q*q;
-            epsilon = sqrt(q2+pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]*a2);
+      //       q = pba->q_nufld[n_nufld][index_q];
+      //       q2 = q*q;
+      //       epsilon = sqrt(q2+pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]*a2);
 
-            rho_delta_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
-            rho_plus_p_theta_nufld += q2*q*pba->w_nufld[n_nufld][index_q]*y[idx+1];
-            rho_plus_p_shear_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx+2];
-            delta_p_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
+      //       rho_delta_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
+      //       rho_plus_p_theta_nufld += q2*q*pba->w_nufld[n_nufld][index_q]*y[idx+1];
+      //       rho_plus_p_shear_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx+2];
+      //       delta_p_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
 
-            //Jump to next momentum bin:
-            idx+=(ppw->pv->l_max_nufld[n_nufld]+1);
-          }
+      //       //Jump to next momentum bin:
+      //       idx+=(ppw->pv->l_max_nufld[n_nufld]+1);
+      //     }
 
-          rho_delta_nufld *= factor;
-          rho_plus_p_theta_nufld *= k*factor;
-          rho_plus_p_shear_nufld *= 2.0/3.0*factor;
-          delta_p_nufld *= factor/3.;
+      //     rho_delta_nufld *= factor;
+      //     rho_plus_p_theta_nufld *= k*factor;
+      //     rho_plus_p_shear_nufld *= 2.0/3.0*factor;
+      //     delta_p_nufld *= factor/3.;
 
-          if ((ppt->has_source_delta_nufld == _TRUE_) || (ppt->has_source_theta_nufld == _TRUE_) || (ppt->has_source_delta_m == _TRUE_)) {
-            ppw->delta_nufld[n_nufld] = rho_delta_nufld/ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
-            ppw->theta_nufld[n_nufld] = rho_plus_p_theta_nufld/
-              (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
-            ppw->shear_nufld[n_nufld] = rho_plus_p_shear_nufld/
-              (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
-          }
+      //     if ((ppt->has_source_delta_nufld == _TRUE_) || (ppt->has_source_theta_nufld == _TRUE_) || (ppt->has_source_delta_m == _TRUE_)) {
+      //       ppw->delta_nufld[n_nufld] = rho_delta_nufld/ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
+      //       ppw->theta_nufld[n_nufld] = rho_plus_p_theta_nufld/
+      //         (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
+      //       ppw->shear_nufld[n_nufld] = rho_plus_p_shear_nufld/
+      //         (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
+      //     }
 
-          ppw->delta_rho += rho_delta_nufld;
-          ppw->rho_plus_p_theta += rho_plus_p_theta_nufld;
-          ppw->rho_plus_p_shear += rho_plus_p_shear_nufld;
-          ppw->delta_p += delta_p_nufld;
+      //     ppw->delta_rho += rho_delta_nufld;
+      //     ppw->rho_plus_p_theta += rho_plus_p_theta_nufld;
+      //     ppw->rho_plus_p_shear += rho_plus_p_shear_nufld;
+      //     ppw->delta_p += delta_p_nufld;
 
-          ppw->rho_plus_p_tot += ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
-        }
-      }
+      //     ppw->rho_plus_p_tot += ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
+      //   }
+      // }
       if (ppt->has_source_delta_m == _TRUE_) {
         for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
           delta_rho_m += ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]*ppw->delta_nufld[n_nufld]; // contribution to delta rho_matter
@@ -8044,6 +8099,8 @@ int perturbations_total_stress_energy(
 
     /** - --> nufld contribution to gravitational wave source: */
     if (ppt->evolve_tensor_nufld == _TRUE_){
+
+      printf("Tensor perturbations have not yet been corrected in the nufld species.\n");
 
       idx = ppw->pv->index_pt_psi0_nufld1;
 
@@ -8838,11 +8895,15 @@ int perturbations_print_variables(double tau,
   /** - nufld sector begins */
   int n_nufld;
   double *delta_nufld=NULL, *theta_nufld=NULL, *shear_nufld=NULL, *delta_p_over_delta_rho_nufld=NULL;
-  double rho_nufld_bg, p_nufld_bg, pseudo_p_nufld, w_nufld;
+  double rho_nufld_bg, p_nufld_bg;
   double rho_delta_nufld = 0.0;
   double rho_plus_p_theta_nufld = 0.0;
   double rho_plus_p_shear_nufld = 0.0;
   double delta_p_nufld = 0.0;
+  double cs2_nufld[pba->N_nufld];
+  double *cs2_nufld_ptr = cs2_nufld;
+  double temp_shear_nufld[pba->N_nufld]; // This is not very memory-efficient, but whatever
+  double *temp_shear_nufld_ptr = temp_shear_nufld;
   /** - nufld sector ends */
   double phi=0.,psi=0.,alpha=0.;
   double delta_temp=0., delta_chi=0.;
@@ -9097,62 +9158,66 @@ int perturbations_print_variables(double tau,
 
       if (pba->has_nufld == _TRUE_) {
       /** - --> Get delta, deltaP/rho, theta, shear and store in array */
-      idx = ppw->pv->index_pt_psi0_nufld1;
-      if (ppw->approx[ppw->index_ap_nufldfa] == (int)nufldfa_on){
+      // idx = ppw->pv->index_pt_psi0_nufld1;
+      // if (ppw->approx[ppw->index_ap_nufldfa] == (int)nufldfa_on){
         // The perturbations are evolved integrated:
+        class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, NULL, cs2_nufld_ptr), pba->error_message, pba->error_message);
+        class_call(shear_nufld_from_tower(ppw,pba,y,temp_shear_nufld_ptr), pba->error_message, pba->error_message);
+
         for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
           rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld];
           p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld];
-          // pseudo_p_nufld = pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld];
-          w_nufld = p_nufld_bg/rho_nufld_bg;
 
-          delta_nufld[n_nufld] = y[idx];
-          theta_nufld[n_nufld] = y[idx+1];
-          shear_nufld[n_nufld] = y[idx+2];
-          //This is the adiabatic sound speed:
-          // delta_p_over_delta_rho_nufld[n_nufld] = w_nufld*(1.0-1.0/(3.0+3.0*w_nufld)*(3.0*w_nufld-2.0+pseudo_p_nufld/p_nufld_bg));
-          delta_p_over_delta_rho_nufld[n_nufld] = 1./3.0; // NUFLD_PERT: Obviously wrong
-          idx += ppw->pv->l_max_nufld[n_nufld]+1;
+          delta_nufld[n_nufld] = y[ppw->pv->index_pt_delta_nufld1+n_nufld];
+          theta_nufld[n_nufld] = y[ppw->pv->index_pt_theta_nufld1+n_nufld];
+          shear_nufld[n_nufld] = temp_shear_nufld[n_nufld];
+          // This is the sound speed:
+          delta_p_over_delta_rho_nufld[n_nufld] = cs2_nufld[n_nufld]; // NUFLD_PERT: Obviously wrong
         }
-      }
-      else{
-        // We must integrate to find perturbations:
-        for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
-          rho_delta_nufld = 0.0;
-          rho_plus_p_theta_nufld = 0.0;
-          rho_plus_p_shear_nufld = 0.0;
-          delta_p_nufld = 0.0;
-          factor = pba->factor_nufld[n_nufld]/pow(a,4);
+      // }
+      // else{
+      //   // We must integrate to find perturbations:
+      //   for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
+      //     rho_delta_nufld = 0.0;
+      //     rho_plus_p_theta_nufld = 0.0;
+      //     rho_plus_p_shear_nufld = 0.0;
+      //     delta_p_nufld = 0.0;
+      //     factor = pba->factor_nufld[n_nufld]/pow(a,4);
 
-          for (index_q=0; index_q < ppw->pv->q_size_nufld[n_nufld]; index_q ++) {
+      //     for (index_q=0; index_q < ppw->pv->q_size_nufld[n_nufld]; index_q ++) {
 
-            q = pba->q_nufld[n_nufld][index_q];
-            q2 = q*q;
-            epsilon = sqrt(q2+pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]*a2);
+      //       q = pba->q_nufld[n_nufld][index_q];
+      //       q2 = q*q;
+      //       epsilon = sqrt(q2+pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]*a2);
 
-            rho_delta_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
-            rho_plus_p_theta_nufld += q2*q*pba->w_nufld[n_nufld][index_q]*y[idx+1];
-            rho_plus_p_shear_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx+2];
-            delta_p_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
+      //       rho_delta_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
+      //       // rho_plus_p_theta_nufld += q2*q*pba->w_nufld[n_nufld][index_q]*y[idx+1];
+            
+      //       rho_plus_p_shear_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx+2];
+      //       delta_p_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
 
-            //Jump to next momentum bin:
-            idx+=(ppw->pv->l_max_nufld[n_nufld]+1);
-          }
+      //       //Jump to next momentum bin:
+      //       idx+=(ppw->pv->l_max_nufld[n_nufld]+1);
+      //     }
 
-          rho_delta_nufld *= factor;
-          rho_plus_p_theta_nufld *= k*factor;
-          rho_plus_p_shear_nufld *= 2.0/3.0*factor;
-          delta_p_nufld *= factor/3.;
+      //     rho_delta_nufld *= factor;
+      //     rho_plus_p_theta_nufld *= k*factor;
+      //     rho_plus_p_shear_nufld *= 2.0/3.0*factor;
+      //     delta_p_nufld *= factor/3.;
+      //     // sound_speed_nufld = delta_p_nufld/rho_delta_nufld;
 
-          delta_nufld[n_nufld] = rho_delta_nufld/ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
-          theta_nufld[n_nufld] = rho_plus_p_theta_nufld/
-            (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
-          shear_nufld[n_nufld] = rho_plus_p_shear_nufld/
-            (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
-          delta_p_over_delta_rho_nufld[n_nufld] = delta_p_nufld/rho_delta_nufld;
+      //     delta_nufld[n_nufld] = y[ppw->pv->index_pt_delta_nufld1+n_nufld];
+      //     theta_nufld[n_nufld] = y[ppw->pv->index_pt_theta_nufld1+n_nufld];
 
-        }
-      }
+      //     // delta_nufld[n_nufld] = rho_delta_nufld/ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
+      //     // theta_nufld[n_nufld] = rho_plus_p_theta_nufld/
+      //     //   (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
+      //     shear_nufld[n_nufld] = rho_plus_p_shear_nufld/
+      //       (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
+      //     delta_p_over_delta_rho_nufld[n_nufld] = delta_p_nufld/rho_delta_nufld;
+
+      //   }
+      // }
     }
 
 
@@ -9457,6 +9522,8 @@ int perturbations_print_variables(double tau,
     /* Non-cold Dark Matter */
     if (ppt->evolve_tensor_nufld == _TRUE_) {
 
+      printf("nufld species not yet implemented in tensor perturbations\n.");
+
       idx = ppw->pv->index_pt_psi0_nufld1;
 
       for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
@@ -9521,6 +9588,107 @@ int perturbations_print_variables(double tau,
   return _SUCCESS_;
 
 }
+
+
+/**
+ * Computes the sound speed of the nufld species from the Boltzmann tower
+ * 
+ * 
+*/
+
+int sound_speed_nufld_from_tower(struct perturbations_workspace * ppw,
+                                 struct background * pba, 
+                                 double * y,
+                                 double * delta_rho,
+                                 double * delta_p,
+                                 double * c_s2) {
+
+  int idx;
+  double a, a2, factor;
+  double rho_delta_nufld, delta_p_nufld, q, q2, epsilon;
+
+  // FILE *cs2_file;
+  // cs2_file = fopen("cs2_inside.dat", "a");
+
+  a = ppw->pvecback[pba->index_bg_a];
+  a2 = a*a;
+
+  idx = ppw->pv->index_pt_psi0_nufld1;
+
+  for (int n_nufld = 0; n_nufld < pba->N_nufld; n_nufld++) {
+    
+    factor = pba->factor_nufld[n_nufld]/pow(a,4);
+    rho_delta_nufld = 0.0;
+    delta_p_nufld   = 0.0;
+
+    for (int index_q = 0; index_q < ppw->pv-> q_size_nufld[n_nufld]; index_q++) {
+
+      q = pba->q_nufld[n_nufld][index_q];
+      q2 = q*q;
+      epsilon = sqrt(q2+pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]*a2);
+
+      rho_delta_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
+      delta_p_nufld   += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
+      // fprintf(cs2_file, "a: %.5e, index: %d, rho_delta_nufld: %.5e, delta_p_nufld: %.5e\n", a, idx - ppw->pv->index_pt_psi0_nufld1, q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx], q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx]);
+      // fprintf(cs2_file, "q: %.3e, f: %.5e, psi: %.5e, delta_rho(q): %.5e, delta_p(q): %.5e\n", q, pba->w_nufld[n_nufld][index_q], y[idx], q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx], q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx]);
+      idx += ppw->pv->l_max_nufld[n_nufld]+1;
+    }
+    // if (ppaw != NULL) fprintf(cs2_file, "a: %.5e, k: %.5e, rho_delta_nufld: %.5e, delta_p_nufld: %.5e, cs2: %.5e\n", a, ppaw->k, rho_delta_nufld, delta_p_nufld/3.0, delta_p_nufld/3.0/rho_delta_nufld);
+    rho_delta_nufld *= factor;
+    delta_p_nufld *= factor/3.;
+    if (delta_rho != NULL) delta_rho[n_nufld] = rho_delta_nufld;
+    if (delta_p   != NULL) delta_p[n_nufld] = delta_p_nufld;
+    if (c_s2      != NULL) c_s2[n_nufld] = delta_p_nufld/rho_delta_nufld;
+  }      
+  // fclose(cs2_file);
+  return _SUCCESS_;                
+}
+
+/**
+ * Computes the shear stress of the nufld species from the Boltzmann tower
+ * 
+*/
+
+int shear_nufld_from_tower(struct perturbations_workspace *ppw,
+                           struct background *pba, 
+                           double * y,
+                           double * shear) {
+
+  int idx;
+  double a, a2, factor;
+  double rho_plus_p_shear_nufld, q, q2, epsilon;
+
+  a = ppw->pvecback[pba->index_bg_a];
+  a2 = a*a;
+
+  idx = ppw->pv->index_pt_psi0_nufld1;
+
+  for (int n_nufld = 0; n_nufld < pba->N_nufld; n_nufld++) {
+    factor = 2.0/3.0*pba->factor_nufld[n_nufld]/pow(a,4);
+
+    rho_plus_p_shear_nufld = 0.0;
+
+    for (int index_q = 0; index_q < ppw->pv-> q_size_nufld[n_nufld]; index_q++) {
+
+      q = pba->q_nufld[n_nufld][index_q];
+      q2 = q*q;
+      epsilon = sqrt(q2+pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]*a2);
+
+      rho_plus_p_shear_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx+2];
+
+      idx += ppw->pv->l_max_nufld[n_nufld]+1;
+    }
+  
+    rho_plus_p_shear_nufld *= factor;
+    
+    shear[n_nufld] = rho_plus_p_shear_nufld/
+          (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);  
+    
+  }      
+
+  return _SUCCESS_;                
+}                            
+
 
 /**
  * Compute derivative of all perturbations to be integrated
@@ -9609,9 +9777,17 @@ int perturbations_derivs(double tau,
   double q,epsilon,dlnf0_dlnq,qk_div_epsilon;
   double rho_ncdm_bg,p_ncdm_bg,pseudo_p_ncdm,w_ncdm,ca2_ncdm,ceff2_ncdm=0.,cvis2_ncdm=0.;
 
-  /* for use with non-cold dark matter with generalized Boltzmann hierarchy (nufld): */
+  /* for use with non-cold dark matter with continuity equations (nufld): */
   int n_nufld;
-  double rho_nufld_bg,p_nufld_bg,pseudo_p_nufld,w_nufld,ca2_nufld,ceff2_nufld=0.,cvis2_nufld=0.;
+  double rho_nufld_bg,p_nufld_bg,pseudo_p_nufld,w_nufld, w_prime_nufld, delta_nufld, theta_nufld;
+  double cs2_nufld[3]; // NUFLD_ERROR: This is not very general, but whatever
+  double * cs2_nufld_ptr = cs2_nufld;
+  double delta_rho_nufld_bltz[3];
+  double * delta_rho_nufld_bltz_ptr = delta_rho_nufld_bltz;
+  double delta_p_nufld_bltz[3];
+  double * delta_p_nufld_bltz_ptr = delta_p_nufld_bltz;  
+  double shear_nufld[3];
+  double * shear_nufld_ptr = shear_nufld;
 
   /* for use with curvature */
   double cotKgen, sqrt_absK;
@@ -9619,6 +9795,8 @@ int perturbations_derivs(double tau,
 
   /* for use with dcdm and dr */
   double f_dr, fprime_dr;
+
+  FILE * myfile;
 
   /** - rename the fields of the input structure (just to avoid heavy notations) */
 
@@ -10340,7 +10518,7 @@ int perturbations_derivs(double tau,
           pseudo_p_ncdm = pvecback[pba->index_bg_pseudo_p_ncdm1+n_ncdm]; /* pseudo-pressure (see CLASS IV paper) */
           w_ncdm = p_ncdm_bg/rho_ncdm_bg; /* equation of state parameter */
           ca2_ncdm = w_ncdm/3.0/(1.0+w_ncdm)*(5.0-pseudo_p_ncdm/p_ncdm_bg); /* adiabatic sound speed */
-
+          // printf("w_prime_ncdm: %.5e\n", 3./(1.+w_ncdm)/a_prime_over_a*(w_ncdm-ca2_ncdm));
           /* c_eff is (delta p / delta rho) in the gauge under
              consideration (not in the gauge comoving with the
              fluid) */
@@ -10410,7 +10588,9 @@ int perturbations_derivs(double tau,
         for (n_ncdm=0; n_ncdm<pv->N_ncdm; n_ncdm++) {
 
           /** - -----> loop over momentum */
-
+          // myfile = fopen("psi_0_ncdm.dat", "a");
+          // fprintf(myfile,"a: %.5e, psi0: %.5e, psi10: %.5e, psi20: %.5e\n",a, y[idx],y[idx+10], y[idx+20]);
+          // fclose(myfile);          
           for (index_q=0; index_q < pv->q_size_ncdm[n_ncdm]; index_q++) {
 
             /** - -----> define intermediate quantities */
@@ -10463,18 +10643,20 @@ int perturbations_derivs(double tau,
       //TBC: curvature
       if (ppw->approx[ppw->index_ap_nufldfa] == (int)nufldfa_on) {
 
+        class_test(_FALSE_,pba->error_message, "You're trying to use a fluid approximation for the nufld species, which you shouldn't use.")
+
         /** - -----> loop over species */
 
         for (n_nufld=0; n_nufld<pv->N_nufld; n_nufld++) {
 
           /** - -----> define intermediate quantitites */
 
-          rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld]; /* background density */
-          p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld]; /* background pressure */
+          // rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld]; /* background density */
+          // p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld]; /* background pressure */
           // pseudo_p_nufld = pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld]; /* pseudo-pressure (see CLASS IV paper) */
-          w_nufld = p_nufld_bg/rho_nufld_bg; /* equation of state parameter */
+          // w_nufld = p_nufld_bg/rho_nufld_bg; /* equation of state parameter */
           // ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.0-pseudo_p_nufld/p_nufld_bg); /* adiabatic sound speed */
-          ca2_nufld = 1./3.0; // NUFLD_PERT: Obviously wrong.
+          // ca2_nufld = 1./3.0; // NUFLD_PERT: Obviously wrong.
 
           /* c_eff is (delta p / delta rho) in the gauge under
              consideration (not in the gauge comoving with the
@@ -10483,59 +10665,59 @@ int perturbations_derivs(double tau,
           /* c_vis is introduced in order to close the system */
 
           /* different ansatz for sound speed c_eff and viscosity speed c_vis */
-          if (ppr->nufld_fluid_approximation == nufldfa_mb) {
-            ceff2_nufld = ca2_nufld;
-            cvis2_nufld = 3.*w_nufld*ca2_nufld;
-          }
-          if (ppr->nufld_fluid_approximation == nufldfa_hu) {
-            ceff2_nufld = ca2_nufld;
-            cvis2_nufld = w_nufld;
-          }
-          if (ppr->nufld_fluid_approximation == nufldfa_CLASS) {
-            ceff2_nufld = ca2_nufld;
-            cvis2_nufld = 3.*w_nufld*ca2_nufld;
-          }
+          // if (ppr->nufld_fluid_approximation == nufldfa_mb) {
+          //   ceff2_nufld = ca2_nufld;
+          //   cvis2_nufld = 3.*w_nufld*ca2_nufld;
+          // }
+          // if (ppr->nufld_fluid_approximation == nufldfa_hu) {
+          //   ceff2_nufld = ca2_nufld;
+          //   cvis2_nufld = w_nufld;
+          // }
+          // if (ppr->nufld_fluid_approximation == nufldfa_CLASS) {
+          //   ceff2_nufld = ca2_nufld;
+          //   cvis2_nufld = 3.*w_nufld*ca2_nufld;
+          // }
 
-          /** - -----> exact continuity equation */
+          // /** - -----> exact continuity equation */
 
-          dy[idx] = -(1.0+w_nufld)*(y[idx+1]+metric_continuity)-
-            3.0*a_prime_over_a*(ceff2_nufld-w_nufld)*y[idx];
+          // dy[idx] = -(1.0+w_nufld)*(y[idx+1]+metric_continuity)-
+          //   3.0*a_prime_over_a*(ceff2_nufld-w_nufld)*y[idx];
 
-          /** - -----> exact euler equation */
+          // /** - -----> exact euler equation */
 
-          dy[idx+1] = -a_prime_over_a*(1.0-3.0*ca2_nufld)*y[idx+1]+
-            ceff2_nufld/(1.0+w_nufld)*k2*y[idx]-k2*y[idx+2]
-            + metric_euler;
+          // dy[idx+1] = -a_prime_over_a*(1.0-3.0*ca2_nufld)*y[idx+1]+
+          //   ceff2_nufld/(1.0+w_nufld)*k2*y[idx]-k2*y[idx+2]
+          //   + metric_euler;
 
-          /** - -----> different ansatz for approximate shear derivative */
+          // /** - -----> different ansatz for approximate shear derivative */
 
-          if (ppr->nufld_fluid_approximation == nufldfa_mb) {
+          // if (ppr->nufld_fluid_approximation == nufldfa_mb) {
 
-            // dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-pseudo_p_nufld/p_nufld_bg/3.)+1./tau)*y[idx+2]
-            //   +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_shear);
-            dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-1/3.)+1./tau)*y[idx+2]
-              +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_shear); // NUFLD_PERT: Obviously wrong.
-          }
+          //   // dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-pseudo_p_nufld/p_nufld_bg/3.)+1./tau)*y[idx+2]
+          //   //   +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_shear);
+          //   dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-1/3.)+1./tau)*y[idx+2]
+          //     +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_shear); // NUFLD_PERT: Obviously wrong.
+          // }
 
-          if (ppr->nufld_fluid_approximation == nufldfa_hu) {
+          // if (ppr->nufld_fluid_approximation == nufldfa_hu) {
 
-            dy[idx+2] = -3.0*a_prime_over_a*ca2_nufld/w_nufld*y[idx+2]
-              +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_shear);
+          //   dy[idx+2] = -3.0*a_prime_over_a*ca2_nufld/w_nufld*y[idx+2]
+          //     +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_shear);
 
-          }
+          // }
 
-          if (ppr->nufld_fluid_approximation == nufldfa_CLASS) {
+          // if (ppr->nufld_fluid_approximation == nufldfa_CLASS) {
 
-            // dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-pseudo_p_nufld/p_nufld_bg/3.)+1./tau)*y[idx+2]
-            //   +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_ufa_class);
-            dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-1/3.)+1./tau)*y[idx+2]
-              +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_ufa_class); // NUFLD_PERT: Obviously wrong.
+          //   // dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-pseudo_p_nufld/p_nufld_bg/3.)+1./tau)*y[idx+2]
+          //   //   +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_ufa_class);
+          //   dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-1/3.)+1./tau)*y[idx+2]
+          //     +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_ufa_class); // NUFLD_PERT: Obviously wrong.
 
-          }
+          // }
 
-          /** - -----> jump to next species */
+          // /** - -----> jump to next species */
 
-          idx += pv->l_max_nufld[n_nufld]+1;
+          // idx += pv->l_max_nufld[n_nufld]+1;
         }
       }
 
@@ -10543,12 +10725,63 @@ int perturbations_derivs(double tau,
 
       else {
 
+        class_call(sound_speed_nufld_from_tower(ppw,pba,y,delta_rho_nufld_bltz_ptr, delta_p_nufld_bltz_ptr, cs2_nufld_ptr),pba->error_message,pba->error_message);
+        class_call(shear_nufld_from_tower(ppw,pba,y,shear_nufld_ptr),pba->error_message,pba->error_message);
+
         /** - -----> loop over species */
 
         for (n_nufld=0; n_nufld<pv->N_nufld; n_nufld++) {
+          rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld]; /* background density */
+          p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld]; /* background pressure */
+          w_nufld = p_nufld_bg/rho_nufld_bg; /* equation of state parameter */
+          w_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]; /* derivative of the equation of state parameter */
+
+          // if (_TRUE_) {
+          //   // This is just a flag to implement (or not) the correct k->0 limit in non-standard neutrinos.
+          //   cs2_nufld[n_nufld] -= w_mass_nufld - w_prime_mass_nufld/(3*a_prime_over_a*(1+w_mass_nufld)); // How can I define the massive equation of state? It might be nice to have them saved in the background, right?
+          //   cs2_nufld[n_nufld] += w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
+          // }
+          // w_prime_nufld = 0.0;
+          // if (isnan(w_prime_nufld)) printf("w: %.5e, w': %.5e\n", w_nufld, w_prime_nufld);
 
           /** - -----> loop over momentum */
 
+          delta_nufld = y[pv->index_pt_delta_nufld1+n_nufld];
+          theta_nufld = y[pv->index_pt_theta_nufld1+n_nufld];
+
+          // dy[pv->index_pt_delta_nufld1+n_nufld] = -(1.0+w_nufld)*(theta_nufld+metric_continuity)-
+          //   3.0*a_prime_over_a*(cs2_nufld[n_nufld]-w_nufld)*delta_nufld;
+          // dy[pv->index_pt_theta_nufld1+n_nufld] = -a_prime_over_a*(1.0-3.0*w_nufld)*theta_nufld
+          //   - w_prime_nufld/(1.0+w_nufld)*theta_nufld +
+          //   + cs2_nufld[n_nufld]/(1.0+w_nufld)*k2*delta_nufld-k2*shear_nufld[n_nufld]
+          //   + metric_euler;
+          
+          // if (a <= 0.01047120) cs2_nufld[n_nufld] = 1./3.;
+          // if (a > 0.01047120)  cs2_nufld[n_nufld] = 0.;
+          dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity);
+          dy[pv->index_pt_delta_nufld1+n_nufld] += -3.0*a_prime_over_a*w_nufld*delta_nufld;
+          if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
+          // if (_FALSE_) {
+            dy[pv->index_pt_delta_nufld1+n_nufld] += 3.0*a_prime_over_a*delta_p_nufld_bltz[n_nufld];
+          } else {
+            dy[pv->index_pt_delta_nufld1+n_nufld] += 3.0*a_prime_over_a*cs2_nufld[n_nufld]*delta_nufld;
+          }
+          // dy[pv->index_pt_delta_nufld1+n_nufld] += 3.0*a_prime_over_a*(cs2_nufld[n_nufld]-w_nufld)*delta_nufld;
+          
+          dy[pv->index_pt_theta_nufld1+n_nufld]  = -k2*shear_nufld[n_nufld]
+                                                   +metric_euler;
+          dy[pv->index_pt_theta_nufld1+n_nufld] += -a_prime_over_a*(1.0-3.0*w_nufld)*theta_nufld
+                                                   -w_prime_nufld/(1.0+w_nufld)*theta_nufld;
+          if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
+          // if (_FALSE_) {
+            dy[pv->index_pt_theta_nufld1+n_nufld] += +k2*delta_p_nufld_bltz[n_nufld]/(1.+w_nufld);
+          } else {
+            dy[pv->index_pt_theta_nufld1+n_nufld] += +k2*cs2_nufld[n_nufld]/(1.+w_nufld)*delta_nufld;
+          }                                                                               
+
+          // myfile = fopen("psi_0_nufld.dat", "a");
+          // fprintf(myfile,"a: %.5e, psi0: %.5e, psi10: %.5e, psi20: %.5e, cs2: %.5e\n",a, y[idx],y[idx+10], y[idx+20], cs2_nufld[n_nufld]);
+          // fclose(myfile);
           for (index_q=0; index_q < pv->q_size_nufld[n_nufld]; index_q++) {
 
             /** - -----> define intermediate quantities */
@@ -10561,7 +10794,7 @@ int perturbations_derivs(double tau,
             /** - -----> nufld density for given momentum bin */
 
             dy[idx] = -qk_div_epsilon*y[idx+1]+metric_continuity*dlnf0_dlnq/3.;
-
+            
             /** - -----> nufld velocity for given momentum bin */
 
             dy[idx+1] = qk_div_epsilon/3.0*(y[idx] - 2*s_l[2]*y[idx+2])
@@ -10910,43 +11143,45 @@ int perturbations_derivs(double tau,
     //TBC: curvature in all nufld
     if (ppt->evolve_tensor_nufld == _TRUE_) {
 
-      idx = pv->index_pt_psi0_nufld1;
+      printf("You're trying to use nufld species for tensor perturbations, not yet implemented.\n");
 
-      /** - ---> loop over species */
+      // idx = pv->index_pt_psi0_nufld1;
 
-      for (n_nufld=0; n_nufld<pv->N_nufld; n_nufld++) {
+      // /** - ---> loop over species */
 
-        /** - ----> loop over momentum */
+      // for (n_nufld=0; n_nufld<pv->N_nufld; n_nufld++) {
 
-        for (index_q=0; index_q < pv->q_size_nufld[n_nufld]; index_q++) {
+      //   /** - ----> loop over momentum */
 
-          /** - ----> define intermediate quantities */
+      //   for (index_q=0; index_q < pv->q_size_nufld[n_nufld]; index_q++) {
 
-          dlnf0_dlnq = pba->dlnf0_dlnq_nufld[n_nufld][index_q];
-          q = pba->q_nufld[n_nufld][index_q];
-          epsilon = sqrt(q*q+a2*pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]);
-          qk_div_epsilon = k*q/epsilon;
+      //     /** - ----> define intermediate quantities */
 
-          /** - ----> nufld density for given momentum bin */
+      //     dlnf0_dlnq = pba->dlnf0_dlnq_nufld[n_nufld][index_q];
+      //     q = pba->q_nufld[n_nufld][index_q];
+      //     epsilon = sqrt(q*q+a2*pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]);
+      //     qk_div_epsilon = k*q/epsilon;
 
-          dy[idx] = -qk_div_epsilon*y[idx+1]-0.25*_SQRT6_*y[pv->index_pt_gwdot]*dlnf0_dlnq;
+      //     /** - ----> nufld density for given momentum bin */
 
-          /** - ----> nufld l>0 for given momentum bin */
+      //     dy[idx] = -qk_div_epsilon*y[idx+1]-0.25*_SQRT6_*y[pv->index_pt_gwdot]*dlnf0_dlnq;
 
-          for (l=1; l<pv->l_max_nufld[n_nufld]; l++){
-            dy[idx+l] = qk_div_epsilon/(2.*l+1.0)*(l*s_l[l]*y[idx+(l-1)]-(l+1.)*s_l[l+1]*y[idx+(l+1)]);
-          }
+      //     /** - ----> nufld l>0 for given momentum bin */
 
-          /** - ----> nufld lmax for given momentum bin (truncation as in Ma and Bertschinger)
-              but with curvature taken into account a la arXiv:1305.3261 */
+      //     for (l=1; l<pv->l_max_nufld[n_nufld]; l++){
+      //       dy[idx+l] = qk_div_epsilon/(2.*l+1.0)*(l*s_l[l]*y[idx+(l-1)]-(l+1.)*s_l[l+1]*y[idx+(l+1)]);
+      //     }
 
-          dy[idx+l] = qk_div_epsilon*y[idx+l-1]-(1.+l)*k*cotKgen*y[idx+l];
+      //     /** - ----> nufld lmax for given momentum bin (truncation as in Ma and Bertschinger)
+      //         but with curvature taken into account a la arXiv:1305.3261 */
 
-          /** - ----> jump to next momentum bin or species */
+      //     dy[idx+l] = qk_div_epsilon*y[idx+l-1]-(1.+l)*k*cotKgen*y[idx+l];
 
-          idx += (pv->l_max_nufld[n_nufld]+1);
-        }
-      }
+      //     /** - ----> jump to next momentum bin or species */
+
+      //     idx += (pv->l_max_nufld[n_nufld]+1);
+      //   }
+      // }
     }
 
 

@@ -507,6 +507,8 @@ struct perturbations_vector
   int* l_max_ncdm;	/**< mutipole l at which Boltzmann hierarchy is truncated (for each ncdm species) */
   int* q_size_ncdm;	/**< number of discrete momenta (for each ncdm species) */
 
+  int index_pt_delta_nufld1; /**< density of nufld species */
+  int index_pt_theta_nufld1; /**< velocity of nufld species */
   int index_pt_psi0_nufld1; /**< first multipole of perturbation of first nufld species, Psi_0 */
   int N_nufld;		/**< number of distinct non-cold-dark-matter (nufld) species */
   int* l_max_nufld;	/**< mutipole l at which Boltzmann hierarchy is truncated (for each nufld species) */
@@ -986,6 +988,18 @@ extern "C" {
                                             struct perturbations_workspace * ppw,
                                             ErrorMsg error_message
                                             );
+
+  int sound_speed_nufld_from_tower(struct perturbations_workspace * ppw,
+                                    struct background * pba, 
+                                    double * y,
+                                    double * delta_rho,
+                                    double * delta_p,
+                                    double * c_s2);
+
+  int shear_nufld_from_tower(struct perturbations_workspace *ppw,
+                            struct background *pba, 
+                            double * y,
+                            double * shear);
 
 #ifdef __cplusplus
 }

@@ -592,6 +592,7 @@ int background_functions(
       //                                                                          p_nufld);
       // fclose(myfile);                                                                               
       pvecback[pba->index_bg_w_nufld1+n_nufld] = w_nufld[n_nufld];
+      pvecback[pba->index_bg_intw_nufld1+n_nufld] = intw_nufld[n_nufld];
       // p_nufld = rho_nufld*w_nufld[n_nufld]; // In principle it is already computed in the previous function
       // NUFLD_TODO: I need to save in the background the derivative of w_nufld as a function of time, for the perturbations.
 
@@ -685,10 +686,9 @@ int background_functions(
     /** In order to compute the derivative of the equation of state with
      * respect to time, we needed the expansion rate */
     for (n_nufld=0; n_nufld<pba->N_nufld; n_nufld++) {
-      // NUFLD_ERROR! H is in proper time, but you're thinking it is the one in conformal time!
-      pvecback[pba->index_bg_w_prime_nufld1+n_nufld] = a*pvecback[pba->index_bg_H]*dw_over_da_nufld[n_nufld];
+      pvecback[pba->index_bg_w_prime_nufld1+n_nufld] = a*a*pvecback[pba->index_bg_H]*dw_over_da_nufld[n_nufld];
       p_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]*pvecback[pba->index_bg_rho_nufld1+n_nufld]
-                     -3*pvecback[pba->index_bg_H]*w_nufld[n_nufld]*(1.+w_nufld[n_nufld])*pvecback[pba->index_bg_rho_nufld1+n_nufld];
+                     -3*a*pvecback[pba->index_bg_H]*w_nufld[n_nufld]*(1.+w_nufld[n_nufld])*pvecback[pba->index_bg_rho_nufld1+n_nufld];
       pvecback[pba->index_bg_p_tot_prime] += p_prime_nufld;
     }
   }
@@ -1275,6 +1275,7 @@ int background_indices(
   class_define_index(pba->index_bg_p_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   class_define_index(pba->index_bg_w_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   class_define_index(pba->index_bg_w_prime_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
+  class_define_index(pba->index_bg_intw_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   // class_define_index(pba->index_bg_pseudo_p_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
 
   /* - index for dcdm */
@@ -2395,11 +2396,11 @@ int background_nufld_momenta(
     q2 = qvec[index_q]*qvec[index_q];
 
     /* energy */
-    epsilon = sqrt(q2+M*M/(1.+z)/(1.+z));
+    // epsilon = sqrt(q2+M*M/(1.+z)/(1.+z));
 
     /* integrand of the various quantities */
     if (n!=NULL) *n += q2*wvec[index_q];
-    if (rho!=NULL) *rho += q2*epsilon*wvec[index_q]; // NUFLD_DOUBT: epsilon = sqrt(q2) ?
+    if (rho!=NULL) *rho += q2*qvec[index_q]*wvec[index_q]; // NUFLD_DOUBT: epsilon = sqrt(q2) ?
     // if (p!=NULL) *p += q2*q2/3./epsilon*wvec[index_q];
     // if (drho_dM!=NULL) *drho_dM += q2*M/(1.+z)/(1.+z)/epsilon*wvec[index_q];
     // if (pseudo_p!=NULL) *pseudo_p += pow(q2/epsilon,3)/3.0*wvec[index_q];

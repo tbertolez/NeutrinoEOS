@@ -1,0 +1,740 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     26177,        732]
+NotebookOptionsPosition[     22430,        673]
+NotebookOutlinePosition[     22842,        689]
+CellTagsIndexPosition[     22799,        686]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["An analytic equation of state for a neutrino", "Chapter",
+ CellChangeTimes->{{3.911384563421531*^9, 
+  3.911384579668782*^9}},ExpressionUUID->"6cce51b8-d74b-40e0-bc35-\
+9757b6626cb1"],
+
+Cell[CellGroupData[{
+
+Cell["Option 1: tanh", "Section",
+ CellChangeTimes->{{3.9113845815887737`*^9, 
+  3.9113846001811943`*^9}},ExpressionUUID->"5dce3987-434b-4ead-b480-\
+f2a5db94c353"],
+
+Cell["\<\
+A tanh can describe the standard neutrino equation of state quite well:\
+\>", "Text",
+ CellChangeTimes->{{3.911384630270768*^9, 
+  3.9113846712936296`*^9}},ExpressionUUID->"266e5a9a-bb4b-42a7-83d1-\
+e2c094166545"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"w", "[", "a_", "]"}], ":=", 
+  RowBox[{
+   FractionBox["1", "6"], 
+   RowBox[{"(", 
+    RowBox[{"1", "-", 
+     RowBox[{"Tanh", "[", 
+      RowBox[{"k", " ", 
+       RowBox[{"Log", "[", 
+        FractionBox["a", "a0"], "]"}]}], "]"}]}], ")"}]}]}]], "Input",
+ CellChangeTimes->{{3.9113846017912283`*^9, 3.911384627512437*^9}},
+ CellLabel->"In[1]:=",ExpressionUUID->"5573701b-cf0b-44b5-bc90-5879bafbdf52"],
+
+Cell[TextData[{
+ "Where we have already forced that the w(a \[RightArrow] 0) = 1/3 and w(a \
+\[RightArrow] \[Infinity]) = 0. Here ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["a", "0"], TraditionalForm]],ExpressionUUID->
+  "0958c00f-0228-471f-b92b-6faf1c7bf13f"],
+ " is defined as ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"w", "(", 
+     RowBox[{"a", "=", 
+      SubscriptBox["a", "0"]}], ")"}], "=", 
+    RowBox[{"1", "/", "6"}]}], TraditionalForm]],ExpressionUUID->
+  "9112ca61-2dfe-4c65-b86d-6c80c9b5b5a3"],
+ ", and ",
+ StyleBox["k",
+  FontSlant->"Italic"],
+ " describes the slope of the change.\n\nAmong other things, we\
+\[CloseCurlyQuote]re interested in its derivative:"
+}], "Text",
+ CellChangeTimes->{{3.9113846743417225`*^9, 3.911384790454937*^9}, {
+  3.911384997766635*^9, 
+  3.9113850093822165`*^9}},ExpressionUUID->"e81dc8a6-4e87-4b04-bfb4-\
+1958fa1d2b1e"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"D", "[", 
+  RowBox[{
+   RowBox[{"w", "[", "a", "]"}], ",", "a"}], "]"}]], "Input",
+ CellChangeTimes->{{3.9113847935626016`*^9, 3.911384796091643*^9}},
+ CellLabel->"In[2]:=",ExpressionUUID->"20d6a27f-9407-40d6-ac84-4a064fd6be22"],
+
+Cell[BoxData[
+ RowBox[{"-", 
+  FractionBox[
+   RowBox[{"k", " ", 
+    SuperscriptBox[
+     RowBox[{"Sech", "[", 
+      RowBox[{"k", " ", 
+       RowBox[{"Log", "[", 
+        FractionBox["a", "a0"], "]"}]}], "]"}], "2"]}], 
+   RowBox[{"6", " ", "a"}]]}]], "Output",
+ CellChangeTimes->{3.9113847965356026`*^9, 3.911384959925485*^9},
+ CellLabel->"Out[2]=",ExpressionUUID->"e00b8a34-204a-4883-ac5c-df352f0c638f"]
+}, Open  ]],
+
+Cell["\<\
+Now, our goal is to compute the evolution of the energy density, given by\
+\>", "Text",
+ CellChangeTimes->{{3.9113849886591835`*^9, 3.911384996101013*^9}, {
+  3.9113850913568106`*^9, 
+  3.911385097750266*^9}},ExpressionUUID->"5fd3d6be-84fb-414f-8c44-\
+bb6f1464c357"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"\[Rho]", 
+    RowBox[{"(", "a", ")"}]}], "=", 
+   RowBox[{
+    SubscriptBox["\[Rho]", "ini"], "exp", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"-", "3"}], 
+      RowBox[{
+       SuperscriptBox[
+        SubscriptBox["\[Integral]", 
+         SubscriptBox["a", "ini"]], "a"], 
+       RowBox[{
+        FractionBox["da", "a"], 
+        RowBox[{"(", 
+         RowBox[{"1", "+", 
+          RowBox[{"w", 
+           RowBox[{"(", "a", ")"}]}]}], ")"}]}]}]}], "}"}]}]}], " ", ",", 
+  "                         ", 
+  RowBox[{"(", "1", ")"}]}]], "DisplayFormula",
+ CellChangeTimes->{{3.9113850456948204`*^9, 3.911385134878477*^9}, {
+   3.911386165886265*^9, 3.9113861729175596`*^9}, {3.911386954533805*^9, 
+   3.9113869581492624`*^9}, 
+   3.911387526527011*^9},ExpressionUUID->"2f2193fa-f04b-493c-81f3-\
+588da7cbabed"],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["a", "ini"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "eb9e7256-4503-4211-89e1-608fa2f6955f"],
+ "  is a scale factor in which neutrinos are relativistic for sure (by \
+default this is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["a", "ini"], "=", 
+    SuperscriptBox["10", 
+     RowBox[{"-", "14"}]]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "6e8945bf-e80e-40bd-984f-b8ade56bd84f"],
+ "). \nThen, this integral is easily computed by changing variables to u = \
+log(a):"
+}], "Text",
+ CellChangeTimes->{{3.9113851384946985`*^9, 3.9113851638375797`*^9}, {
+  3.911385281837632*^9, 3.9113852896770897`*^9}, {3.911387528294987*^9, 
+  3.911387545125286*^9}},ExpressionUUID->"7d313f19-25b7-49fd-afff-\
+d259512b56db"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"wlog", "[", "u_", "]"}], ":=", " ", 
+   RowBox[{
+    FractionBox["1", "6"], 
+    RowBox[{"(", 
+     RowBox[{"1", "-", 
+      RowBox[{"Tanh", "[", 
+       RowBox[{"k", " ", 
+        RowBox[{"(", 
+         RowBox[{"u", " ", "-", " ", 
+          RowBox[{"Log", "[", "a0", "]"}]}], ")"}]}], "]"}]}], ")"}]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"intw", "[", "a_", "]"}], ":=", 
+  RowBox[{
+   RowBox[{"Integrate", "[", 
+    RowBox[{
+     RowBox[{"1", "+", 
+      RowBox[{"wlog", "[", "u", "]"}]}], ",", "u"}], "]"}], "/.", " ", 
+   RowBox[{"u", "\[Rule]", " ", 
+    RowBox[{"Log", "[", "a", "]"}]}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"intw", "[", "a", "]"}]}], "Input",
+ CellChangeTimes->{{3.911385177150029*^9, 3.911385237213564*^9}, {
+  3.911388840919427*^9, 3.9113888629980826`*^9}},
+ CellLabel->"In[7]:=",ExpressionUUID->"d3e8bbe4-3388-4faa-b8e5-91b9e5f34bb6"],
+
+Cell[BoxData[
+ RowBox[{
+  FractionBox[
+   RowBox[{"7", " ", 
+    RowBox[{"Log", "[", "a", "]"}]}], "6"], "-", 
+  FractionBox[
+   RowBox[{"Log", "[", 
+    RowBox[{"Cosh", "[", 
+     RowBox[{"k", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"Log", "[", "a", "]"}], "-", 
+        RowBox[{"Log", "[", "a0", "]"}]}], ")"}]}], "]"}], "]"}], 
+   RowBox[{"6", " ", "k"}]]}]], "Output",
+ CellChangeTimes->{3.9113888632540855`*^9},
+ CellLabel->"Out[9]=",ExpressionUUID->"5dab29fa-7237-489c-a493-6f406d0248b0"]
+}, Open  ]],
+
+Cell["\<\
+Now, in order for our procedure to be compatible with CLASS, this is not \
+enough. With massive neutrinos, CLASS computes \[Rho] by integrating the \
+distribution function:\
+\>", "Text",
+ CellChangeTimes->{{3.9113852734461575`*^9, 3.911385277324521*^9}, {
+   3.911385329708945*^9, 3.9113853366691575`*^9}, {3.9113856866296377`*^9, 
+   3.911385712620862*^9}, {3.9113857654138503`*^9, 3.911385824029855*^9}, 
+   3.9113858948850822`*^9, {3.9113859926623964`*^9, 3.911385997125128*^9}, {
+   3.911386767517604*^9, 3.911386793195759*^9}, {3.911386878109813*^9, 
+   3.9113868848292627`*^9}},ExpressionUUID->"d54b6bb9-8010-4d4a-af40-\
+93afd6a1cf62"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[Rho]", " ", "=", " ", 
+   RowBox[{"4", "\[Pi]", " ", 
+    SuperscriptBox["a", 
+     RowBox[{"-", "4"}]], " ", 
+    RowBox[{"\[Integral]", 
+     RowBox[{"dq", " ", 
+      SuperscriptBox["q", "2"], " ", "\[Epsilon]", " ", 
+      SubscriptBox["f", "0"], 
+      RowBox[{"(", "q", ")"}]}]}]}]}], ",", " ", 
+  RowBox[{
+   RowBox[{"with", " ", "\[Epsilon]"}], " ", "=", " ", 
+   SqrtBox[
+    RowBox[{
+     SuperscriptBox["q", "2"], "+", 
+     RowBox[{
+      SuperscriptBox["a", "2"], 
+      SuperscriptBox["m", "2"]}]}]]}]}]], "DisplayFormula",
+ CellChangeTimes->{{3.911386802005718*^9, 3.9113868322144427`*^9}, {
+  3.911386889119105*^9, 
+  3.911386897157895*^9}},ExpressionUUID->"6c5cc5e2-4336-451c-a747-\
+bf85dcf696c7"],
+
+Cell[TextData[{
+ "The mass in the energy already implements the transition from ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["a", 
+    RowBox[{"-", "4"}]], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "aa83080d-d90f-4fa8-a3bc-f2ee950dfa84"],
+ " to ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["a", 
+    RowBox[{"-", "3"}]], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "8b33fd47-aa84-43c8-ac81-f836660567e2"],
+ ", i.e. the equation of state. \nWhat I want to do is to modify this formula \
+to replicate (1) with an arbitrary equation of state, i.e. "
+}], "Text",
+ CellChangeTimes->{{3.9113852734461575`*^9, 3.911385277324521*^9}, {
+   3.911385329708945*^9, 3.9113853366691575`*^9}, {3.9113856866296377`*^9, 
+   3.911385712620862*^9}, {3.9113857654138503`*^9, 3.911385824029855*^9}, 
+   3.9113858948850822`*^9, {3.9113859926623964`*^9, 3.911385997125128*^9}, {
+   3.911386767517604*^9, 3.911386789478654*^9}, {3.911386841341119*^9, 
+   3.911386873805632*^9}, {3.9113869069738083`*^9, 
+   3.911386990220543*^9}},ExpressionUUID->"bfd235dd-dc24-431e-b6d2-\
+e74fb87ac960"],
+
+Cell[BoxData[
+ StyleBox[
+  RowBox[{
+   RowBox[{"\[Rho]", " ", "=", " ", 
+    RowBox[{"4", "\[Pi]", "  ", "\[Eta]", 
+     RowBox[{"(", "a", ")"}], 
+     RowBox[{"\[Integral]", 
+      RowBox[{"dq", " ", 
+       SuperscriptBox["q", "2"], " ", "q", " ", 
+       SubscriptBox["f", "0"], 
+       RowBox[{"(", "q", ")"}]}]}]}]}], ",", "            ", 
+   RowBox[{"(", "2", ")"}]}],
+  FontWeight->"Bold"]], "DisplayFormula",
+ CellChangeTimes->{{3.911387019879157*^9, 3.9113870347579255`*^9}, 
+   3.911387713494484*^9, {3.9113886282544203`*^9, 
+   3.9113886308057785`*^9}},ExpressionUUID->"5719bec1-a4bb-4139-b8d9-\
+beb7c88439aa"],
+
+Cell["\<\
+where \[Eta](a) must be related to the exponential in (1) and fulfill\
+\>", "Text",
+ CellChangeTimes->{{3.9113870358554125`*^9, 3.9113871421578426`*^9}, {
+  3.9113877260391006`*^9, 
+  3.9113877469634347`*^9}},ExpressionUUID->"79e9dae4-4beb-4fed-8853-\
+1a3495513af5"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"\[Eta]", 
+    RowBox[{"(", 
+     RowBox[{"a", "\[RightArrow]", "0"}], ")"}]}], "\[Proportional]", " ", 
+   SuperscriptBox["a", 
+    RowBox[{"-", "4"}]]}], ",", 
+  RowBox[{
+   RowBox[{"\[Eta]", 
+    RowBox[{"(", 
+     RowBox[{"a", "\[RightArrow]", "\[Infinity]"}], ")"}]}], 
+   "\[Proportional]", " ", 
+   RowBox[{
+    SuperscriptBox["a", 
+     RowBox[{"-", "3"}]], ".", " "}]}]}]], "DisplayFormula",
+ CellChangeTimes->{{3.9113877531758575`*^9, 
+  3.9113877865986986`*^9}},ExpressionUUID->"31f2d96c-73b9-4325-9a05-\
+f138de56856f"],
+
+Cell[TextData[{
+ "That is, we want to compute the neutrino energy density as it they were \
+massless, but make them evolve in time arbitrarily, such that they evolve \
+with ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["a", 
+    RowBox[{
+     RowBox[{"-", "3"}], 
+     RowBox[{"(", 
+      RowBox[{"1", "+", "w"}], ")"}]}]], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "8373cdbc-8936-4e6b-95b8-1a6b48499c6f"],
+ " at any given time."
+}], "Text",
+ CellChangeTimes->{{3.9113870358554125`*^9, 3.9113871421578426`*^9}, {
+  3.9113877260391006`*^9, 3.911387743950757*^9}, {3.9113877905343904`*^9, 
+  3.911387791189691*^9}, {3.911387953893821*^9, 
+  3.9113879609829383`*^9}},ExpressionUUID->"9d248b0b-3e96-4244-868b-\
+72d760c1a8b5"],
+
+Cell["Now, what is \[Eta](a)? Naively, one could say that ", "Text",
+ CellChangeTimes->{{3.9113872701009626`*^9, 3.9113872870880384`*^9}, {
+  3.9113873227026443`*^9, 
+  3.9113873267992473`*^9}},ExpressionUUID->"dbe147dc-33e5-4860-943c-\
+4610ea92c81d"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"\[Eta]", 
+    RowBox[{"(", "a", ")"}]}], "=", 
+   RowBox[{
+    RowBox[{
+     SubscriptBox["\[Eta]", "naive"], 
+     RowBox[{"(", "a", ")"}]}], "=", " ", 
+    RowBox[{"exp", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "3"}], 
+       RowBox[{
+        SuperscriptBox[
+         SubscriptBox["\[Integral]", 
+          SubscriptBox["a", "ini"]], "a"], 
+        RowBox[{
+         FractionBox["da", "a"], 
+         RowBox[{"(", 
+          RowBox[{"1", "+", 
+           RowBox[{"w", 
+            RowBox[{"(", "a", ")"}]}]}], ")"}]}]}]}], "}"}]}]}]}], 
+  ","}]], "DisplayFormula",
+ CellChangeTimes->{{3.9113873009518905`*^9, 3.911387310663271*^9}, {
+  3.9113873667352886`*^9, 
+  3.9113873845577817`*^9}},ExpressionUUID->"b4b7f160-1115-424b-b81c-\
+813e5ba71773"],
+
+Cell[TextData[{
+ StyleBox["but this is wrong",
+  FontColor->RGBColor[1, 0, 0]],
+ StyleBox[" ",
+  FontWeight->"Bold"],
+ "(close to right, though). This is because ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["\[Eta]", "naive"], "(", "a", ")"}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "69f4cffc-17da-49e5-994c-d89393a507d4"],
+ " is dependent of ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["a", "ini"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "627b4659-4069-4f9e-83be-a6daea10ff99"],
+ ", which is an arbitrary choice by definition.\nNamely, one can obtain that ",
+ Cell[BoxData[
+  RowBox[{
+   RowBox[{
+    SubscriptBox["\[Eta]", "naive"], 
+    RowBox[{"(", "a", ")"}]}], "\[Proportional]", 
+   SuperscriptBox[
+    SubscriptBox["a", "ini"], "4"]}]],
+  CellChangeTimes->{{3.9113873009518905`*^9, 3.911387310663271*^9}, {
+   3.9113873667352886`*^9, 3.9113873845577817`*^9}},ExpressionUUID->
+  "2f932326-5a1a-40c7-b783-a4a1a89a95b2"],
+ " (if one notices that ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["a", "ini"], " ", 
+    RowBox[{"<<", " ", 
+     SubscriptBox["a", "0"]}]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "5670b012-f053-498b-a70d-fc34af4abca6"],
+ "). This should be a property of all equations of state which tend to w = \
+1/3. "
+}], "Text",
+ InitializationCell->True,
+ CellChangeTimes->{{3.9113873119120445`*^9, 3.9113874057267323`*^9}, {
+  3.9113874414861803`*^9, 3.911387505414092*^9}, {3.911387550941993*^9, 
+  3.9113876000464044`*^9}, {3.9113880311737576`*^9, 3.9113881610634985`*^9}, {
+  3.911388215174016*^9, 3.911388230406185*^9}, {3.911388312775092*^9, 
+  3.911388312775092*^9}, {3.911389313886471*^9, 3.9113893145181866`*^9}},
+ FontWeight->"Plain",ExpressionUUID->"7ffe192f-a525-4280-8f0d-755226191311"],
+
+Cell["Therefore, the right choice for \[Eta](a) is", "Text",
+ CellChangeTimes->{{3.9113876375619793`*^9, 3.911387666317294*^9}, {
+  3.9113882346941795`*^9, 
+  3.9113882559025087`*^9}},ExpressionUUID->"52c16ad4-5c2e-453d-ab85-\
+cf1a8be6e192"],
+
+Cell[BoxData[
+ StyleBox[
+  RowBox[{
+   RowBox[{
+    RowBox[{"\[Eta]", 
+     RowBox[{"(", "a", ")"}]}], " ", "=", 
+    RowBox[{
+     SuperscriptBox[
+      SubscriptBox["a", "ini"], 
+      RowBox[{"-", "4"}]], " ", "exp", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "3"}], 
+       RowBox[{
+        SuperscriptBox[
+         SubscriptBox["\[Integral]", 
+          SubscriptBox["a", "ini"]], "a"], 
+        StyleBox[
+         RowBox[{" ", " "}]], 
+        RowBox[{
+         FractionBox["da", "a"], 
+         RowBox[{"(", 
+          RowBox[{"1", "+", 
+           RowBox[{"w", 
+            RowBox[{"(", "a", ")"}]}]}], ")"}]}]}]}], "}"}]}]}], ",", 
+   "            ", 
+   RowBox[{"(", "3", ")"}]}],
+  FontWeight->"Bold"]], "DisplayFormula",
+ CellChangeTimes->{{3.9113882648144445`*^9, 3.9113883081900654`*^9}, {
+  3.9113884933827353`*^9, 3.9113884958658376`*^9}, {3.911388651149967*^9, 
+  3.9113886545663166`*^9}},ExpressionUUID->"33d6dd4d-7a08-44d8-8a0f-\
+c23564225a15"],
+
+Cell[TextData[{
+ "which is independent of ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["a", "ini"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "5b31b111-9a2b-4439-be3f-46e53abf34b9"],
+ ". \n\nIt is easy to see that this is the right choice by checking the \
+computation of ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["\[Rho]", "ini"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "849eb9e3-d8cc-4f8a-a2c2-e21025bcdf88"],
+ " from (2):"
+}], "Text",
+ CellChangeTimes->{{3.911388280550081*^9, 3.9113882931193657`*^9}, {
+   3.9113883259029765`*^9, 3.911388414372267*^9}, 3.91138848438233*^9, {
+   3.9113886375821185`*^9, 3.9113886397339487`*^9}, {3.911389289522089*^9, 
+   3.9113893026223035`*^9}},ExpressionUUID->"2de8e179-6598-45a6-b86b-\
+efe49e06bc4b"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   SubscriptBox["\[Rho]", "ini"], "=", " ", 
+   RowBox[{
+    RowBox[{"4", "\[Pi]", "  ", "\[Eta]", 
+     RowBox[{"(", 
+      SubscriptBox["a", "ini"], ")"}], 
+     RowBox[{"\[Integral]", 
+      RowBox[{"dq", " ", 
+       SuperscriptBox["q", "2"], " ", "q", " ", 
+       SubscriptBox["f", "0"], 
+       RowBox[{"(", "q", ")"}]}]}]}], " ", "=", " ", "\[IndentingNewLine]", 
+    "        ", 
+    RowBox[{
+     RowBox[{"4", "\[Pi]", " ", 
+      SuperscriptBox[
+       SubscriptBox["a", "ini"], 
+       RowBox[{"-", "4"}]], " ", "exp", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"-", "3"}], 
+        RowBox[{
+         SuperscriptBox[
+          SubscriptBox["\[Integral]", 
+           SubscriptBox["a", "ini"]], 
+          SubscriptBox["a", "ini"]], 
+         RowBox[{
+          FractionBox["da", "a"], 
+          RowBox[{"(", 
+           RowBox[{"1", "+", 
+            RowBox[{"w", 
+             RowBox[{"(", "a", ")"}]}]}], ")"}]}]}]}], "}"}], 
+      RowBox[{"\[Integral]", 
+       RowBox[{"dq", " ", 
+        SuperscriptBox["q", "2"], " ", "q", " ", 
+        SubscriptBox["f", "0"], 
+        RowBox[{"(", "q", ")"}]}]}]}], "=", "\[IndentingNewLine]", "      ", 
+     RowBox[{"4", "\[Pi]", " ", 
+      SuperscriptBox[
+       SubscriptBox["a", "ini"], 
+       RowBox[{"-", "4"}]], " ", 
+      RowBox[{"\[Integral]", 
+       RowBox[{"dq", " ", 
+        SuperscriptBox["q", "2"], " ", "q", " ", 
+        SubscriptBox["f", "0"], 
+        RowBox[{"(", "q", ")"}]}]}]}]}]}]}], ","}]], "DisplayFormula",
+ InitializationCell->True,
+ CellChangeTimes->{{3.9113884180446377`*^9, 3.911388473127722*^9}, {
+   3.911388506870444*^9, 3.911388516446729*^9}, 
+   3.911388642566654*^9},ExpressionUUID->"e85ae43b-02b2-4d47-b330-\
+0244b2bbb291"],
+
+Cell["which is what we where looking for.", "Text",
+ CellChangeTimes->{{3.9113884743361645`*^9, 3.9113884814463844`*^9}, {
+  3.9113885338456936`*^9, 
+  3.911388575192498*^9}},ExpressionUUID->"c82f7535-72b5-42b0-9927-\
+7cb94fb5802e"],
+
+Cell["\<\
+So, in principle, for our tanh formula what we are looking for is\
+\>", "Text",
+ CellChangeTimes->{{3.91138860092522*^9, 3.9113886112165346`*^9}, {
+  3.911388794062584*^9, 3.9113887978068075`*^9}, {3.9113893275896897`*^9, 
+  3.9113893362462325`*^9}},ExpressionUUID->"1160f702-cfef-4bdc-b239-\
+da9f4e14d271"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[Eta]", "[", "a_", "]"}], ":=", " ", 
+  RowBox[{
+   SuperscriptBox["aini", 
+    RowBox[{"-", "4"}]], 
+   RowBox[{"Exp", "[", 
+    RowBox[{
+     RowBox[{"-", "3"}], 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"intw", "[", "a", "]"}], "-", 
+       RowBox[{"intw", "[", "aini", "]"}]}], ")"}]}], "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.911388799181168*^9, 3.911388835934171*^9}, {
+  3.9113888715059843`*^9, 3.911388881322231*^9}},
+ CellLabel->"In[10]:=",ExpressionUUID->"d716ae20-025d-4ee3-8ca2-c3dfc17137a3"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullSimplify", "[", 
+  RowBox[{
+   RowBox[{"\[Eta]", "[", "a", "]"}], ",", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"aini", ">", "0"}], ",", 
+      RowBox[{"a0", ">", "0"}], ",", 
+      RowBox[{"k", ">", "0"}], ",", 
+      RowBox[{"a", ">", "0"}]}], "}"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.9113888861502028`*^9, 3.911388910943986*^9}, {
+  3.9113889596711655`*^9, 3.9113889987905645`*^9}},
+ CellLabel->"In[16]:=",ExpressionUUID->"5fa80bbf-fdaf-4aa2-8763-a44395fea386"],
+
+Cell[BoxData[
+ FractionBox[
+  SuperscriptBox[
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"Cosh", "[", 
+      RowBox[{"k", " ", 
+       RowBox[{"Log", "[", 
+        FractionBox["a", "a0"], "]"}]}], "]"}], " ", 
+     RowBox[{"Sech", "[", 
+      RowBox[{"k", " ", 
+       RowBox[{"Log", "[", 
+        FractionBox["aini", "a0"], "]"}]}], "]"}]}], ")"}], 
+   RowBox[{
+    FractionBox["1", "2"], "/", "k"}]], 
+  SqrtBox[
+   RowBox[{
+    SuperscriptBox["a", "7"], " ", "aini"}]]]], "Output",
+ CellChangeTimes->{{3.911388888079009*^9, 3.9113889124628305`*^9}, {
+  3.911388979687841*^9, 3.9113890035193405`*^9}},
+ CellLabel->"Out[16]=",ExpressionUUID->"48cbdba4-a4bb-41ec-8297-eb347b3224fc"]
+}, Open  ]],
+
+Cell[TextData[{
+ "However, this does not take profit of ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["a", "ini"], " ", 
+    RowBox[{"<<", 
+     SubscriptBox["a", "0"]}]}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "4b5c7c93-2ac2-49da-b81f-5b02c030e2c7"],
+ ". If one uses this (manually), one gets"
+}], "Text",
+ CellChangeTimes->{{3.9113889230798745`*^9, 3.911388952464095*^9}, {
+  3.9113890052221966`*^9, 3.9113890171903467`*^9}, {3.9113893488301463`*^9, 
+  3.9113893569339123`*^9}},ExpressionUUID->"25b8196d-7de3-4889-9756-\
+d4b64f09bb07"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[Eta]", "[", "a_", "]"}], ":=", " ", 
+  RowBox[{
+   FractionBox[
+    SuperscriptBox[
+     RowBox[{"Cosh", "[", 
+      RowBox[{"k", " ", 
+       RowBox[{"Log", "[", 
+        FractionBox["a", "a0"], "]"}]}], "]"}], 
+     FractionBox["1", 
+      RowBox[{"2", "k"}]]], 
+    SuperscriptBox["a", 
+     RowBox[{"7", "/", "2"}]]], " ", 
+   FractionBox[
+    SuperscriptBox["2", 
+     FractionBox["1", 
+      RowBox[{"2", "k"}]]], 
+    SqrtBox["a0"]]}]}]], "Input",
+ CellChangeTimes->{{3.911389053088584*^9, 3.911389069950706*^9}, {
+  3.9113891104627185`*^9, 3.9113891225981016`*^9}},
+ CellLabel->"In[17]:=",ExpressionUUID->"eb79f95d-a7a4-4ae4-8ada-5296492e3e6c"],
+
+Cell[TextData[{
+ "This formula has the benefit that one can analitically cancel ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["a", "ini"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "91ff8533-1bed-49a9-95c5-fe2db898f37b"],
+ ", and no need for it to be numerically cancelled. This is the formula which \
+has been implemented in my version of class with the name ",
+ StyleBox["integral_w_nufld_tanh", "Code"],
+ StyleBox[".", "Code",
+  FontWeight->"Plain"]
+}], "Text",
+ CellChangeTimes->{{3.9113891315133276`*^9, 
+  3.911389275117884*^9}},ExpressionUUID->"fd78b494-c675-493c-83d9-\
+bdb108d49662"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{574.5, 506.25},
+WindowMargins->{{Automatic, 287.25}, {Automatic, 105}},
+FrontEndVersion->"12.2 for Microsoft Windows (64-bit) (December 12, 2020)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"ccfc02d3-6233-4250-8f0a-c0fc8ca4055b"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 189, 3, 113, "Chapter",ExpressionUUID->"6cce51b8-d74b-40e0-bc35-9757b6626cb1"],
+Cell[CellGroupData[{
+Cell[794, 29, 163, 3, 66, "Section",ExpressionUUID->"5dce3987-434b-4ead-b480-f2a5db94c353"],
+Cell[960, 34, 223, 5, 34, "Text",ExpressionUUID->"266e5a9a-bb4b-42a7-83d1-e2c094166545"],
+Cell[1186, 41, 438, 12, 44, "Input",ExpressionUUID->"5573701b-cf0b-44b5-bc90-5879bafbdf52"],
+Cell[1627, 55, 880, 25, 122, "Text",ExpressionUUID->"e81dc8a6-4e87-4b04-bfb4-1958fa1d2b1e"],
+Cell[CellGroupData[{
+Cell[2532, 84, 252, 5, 28, "Input",ExpressionUUID->"20d6a27f-9407-40d6-ac84-4a064fd6be22"],
+Cell[2787, 91, 408, 11, 57, "Output",ExpressionUUID->"e00b8a34-204a-4883-ac5c-df352f0c638f"]
+}, Open  ]],
+Cell[3210, 105, 276, 6, 34, "Text",ExpressionUUID->"5fd3d6be-84fb-414f-8c44-bb6f1464c357"],
+Cell[3489, 113, 858, 26, 47, "DisplayFormula",ExpressionUUID->"2f2193fa-f04b-493c-81f3-588da7cbabed"],
+Cell[4350, 141, 845, 23, 78, "Text",ExpressionUUID->"7d313f19-25b7-49fd-afff-d259512b56db"],
+Cell[CellGroupData[{
+Cell[5220, 168, 930, 26, 83, "Input",ExpressionUUID->"d3e8bbe4-3388-4faa-b8e5-91b9e5f34bb6"],
+Cell[6153, 196, 512, 15, 49, "Output",ExpressionUUID->"5dab29fa-7237-489c-a493-6f406d0248b0"]
+}, Open  ]],
+Cell[6680, 214, 651, 11, 78, "Text",ExpressionUUID->"d54b6bb9-8010-4d4a-af40-93afd6a1cf62"],
+Cell[7334, 227, 751, 22, 43, "DisplayFormula",ExpressionUUID->"6c5cc5e2-4336-451c-a747-bf85dcf696c7"],
+Cell[8088, 251, 1117, 25, 100, "Text",ExpressionUUID->"bfd235dd-dc24-431e-b6d2-e74fb87ac960"],
+Cell[9208, 278, 621, 16, 43, "DisplayFormula",ExpressionUUID->"5719bec1-a4bb-4139-b8d9-beb7c88439aa"],
+Cell[9832, 296, 276, 6, 34, "Text",ExpressionUUID->"79e9dae4-4beb-4fed-8853-1a3495513af5"],
+Cell[10111, 304, 576, 18, 24, "DisplayFormula",ExpressionUUID->"31f2d96c-73b9-4325-9a05-f138de56856f"],
+Cell[10690, 324, 748, 19, 78, "Text",ExpressionUUID->"9d248b0b-3e96-4244-868b-72d760c1a8b5"],
+Cell[11441, 345, 251, 4, 34, "Text",ExpressionUUID->"dbe147dc-33e5-4860-943c-4610ea92c81d"],
+Cell[11695, 351, 809, 27, 47, "DisplayFormula",ExpressionUUID->"b4b7f160-1115-424b-b81c-813e5ba71773"],
+Cell[12507, 380, 1833, 47, 122, "Text",ExpressionUUID->"7ffe192f-a525-4280-8f0d-755226191311",
+ InitializationCell->True],
+Cell[14343, 429, 241, 4, 34, "Text",ExpressionUUID->"52c16ad4-5c2e-453d-ab85-cf1a8be6e192"],
+Cell[14587, 435, 975, 31, 49, "DisplayFormula",ExpressionUUID->"33d6dd4d-7a08-44d8-8a0f-c23564225a15"],
+Cell[15565, 468, 799, 20, 100, "Text",ExpressionUUID->"2de8e179-6598-45a6-b86b-efe49e06bc4b"],
+Cell[16367, 490, 1765, 51, 131, "DisplayFormula",ExpressionUUID->"e85ae43b-02b2-4d47-b330-0244b2bbb291",
+ InitializationCell->True],
+Cell[18135, 543, 232, 4, 34, "Text",ExpressionUUID->"c82f7535-72b5-42b0-9927-7cb94fb5802e"],
+Cell[18370, 549, 317, 6, 34, "Text",ExpressionUUID->"1160f702-cfef-4bdc-b239-da9f4e14d271"],
+Cell[18690, 557, 551, 15, 28, "Input",ExpressionUUID->"d716ae20-025d-4ee3-8ca2-c3dfc17137a3"],
+Cell[CellGroupData[{
+Cell[19266, 576, 545, 13, 28, "Input",ExpressionUUID->"5fa80bbf-fdaf-4aa2-8763-a44395fea386"],
+Cell[19814, 591, 682, 20, 67, "Output",ExpressionUUID->"48cbdba4-a4bb-41ec-8297-eb347b3224fc"]
+}, Open  ]],
+Cell[20511, 614, 579, 15, 56, "Text",ExpressionUUID->"25b8196d-7de3-4889-9756-d4b64f09bb07"],
+Cell[21093, 631, 689, 21, 64, "Input",ExpressionUUID->"eb79f95d-a7a4-4ae4-8ada-5296492e3e6c"],
+Cell[21785, 654, 617, 15, 100, "Text",ExpressionUUID->"fd78b494-c675-493c-83d9-bdb108d49662"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
