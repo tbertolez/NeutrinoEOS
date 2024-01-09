@@ -1,7 +1,7 @@
 README
 autosetup.py
 setup.py
-/home/tbertolez/Dropbox/Doctorat/Neutrinos/NeutrinoBoltzmann/class_ncdm_effboltz/python/../python/classy.pyx
+/home/tbertolez/Dropbox/Doctorat/Neutrinos/CosmoNeutrinos/NeutrinoEOS/class_nufld/python/../python/classy.pyx
 classy.egg-info/PKG-INFO
 classy.egg-info/SOURCES.txt
 classy.egg-info/dependency_links.txt

@@ -931,11 +931,11 @@ int perturbations_init(
                ppt->z_max_pk,
                pth->z_rec);
 
-    class_test(ppt->has_source_delta_m == _TRUE_,
-               ppt->error_message,
-               "You requested a very high z_pk=%e, higher than z_rec=%e. This works very well when you ask only transfer functions, e.g. with 'output=mTk' or 'output=mTk,vTk'. But if you need the total matter (e.g. with 'mPk', 'dCl', etc.) there is an issue with the calculation of delta_m at very early times. By default, delta_m is a gauge-invariant variable (the density fluctuation in comoving gauge) and this quantity is hard to get accurately at very early times. The solution is to define delta_m as the density fluctuation in the current gauge, synchronous or newtonian. For the moment this must be done manually by commenting the line 'ppw->delta_m += 3. *ppw->pvecback[pba->index_bg_a]*ppw->pvecback[pba->index_bg_H] * ppw->theta_m/k2;' in perturbations_sources(). In the future there will be an option for doing it in an easier way.",
-               ppt->z_max_pk,
-               pth->z_rec);
+    // class_test(ppt->has_source_delta_m == _TRUE_,
+    //            ppt->error_message,
+    //            "You requested a very high z_pk=%e, higher than z_rec=%e. This works very well when you ask only transfer functions, e.g. with 'output=mTk' or 'output=mTk,vTk'. But if you need the total matter (e.g. with 'mPk', 'dCl', etc.) there is an issue with the calculation of delta_m at very early times. By default, delta_m is a gauge-invariant variable (the density fluctuation in comoving gauge) and this quantity is hard to get accurately at very early times. The solution is to define delta_m as the density fluctuation in the current gauge, synchronous or newtonian. For the moment this must be done manually by commenting the line 'ppw->delta_m += 3. *ppw->pvecback[pba->index_bg_a]*ppw->pvecback[pba->index_bg_H] * ppw->theta_m/k2;' in perturbations_sources(). In the future there will be an option for doing it in an easier way.",
+    //            ppt->z_max_pk,
+    //            pth->z_rec);
 
   }
 
@@ -9779,7 +9779,8 @@ int perturbations_derivs(double tau,
 
   /* for use with non-cold dark matter with continuity equations (nufld): */
   int n_nufld;
-  double rho_nufld_bg,p_nufld_bg,pseudo_p_nufld,w_nufld, w_prime_nufld, delta_nufld, theta_nufld;
+  double rho_nufld_bg,p_nufld_bg,pseudo_p_nufld, delta_nufld, theta_nufld;
+  double w_nufld, w_prime_nufld, w_mass_nufld, w_prime_mass_nufld;
   double cs2_nufld[3]; // NUFLD_ERROR: This is not very general, but whatever
   double * cs2_nufld_ptr = cs2_nufld;
   double delta_rho_nufld_bltz[3];
@@ -10735,12 +10736,14 @@ int perturbations_derivs(double tau,
           p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld]; /* background pressure */
           w_nufld = p_nufld_bg/rho_nufld_bg; /* equation of state parameter */
           w_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]; /* derivative of the equation of state parameter */
-
-          // if (_TRUE_) {
-          //   // This is just a flag to implement (or not) the correct k->0 limit in non-standard neutrinos.
-          //   cs2_nufld[n_nufld] -= w_mass_nufld - w_prime_mass_nufld/(3*a_prime_over_a*(1+w_mass_nufld)); // How can I define the massive equation of state? It might be nice to have them saved in the background, right?
-          //   cs2_nufld[n_nufld] += w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
-          // }
+          w_mass_nufld = pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
+          w_prime_mass_nufld = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
+          // printf("w: %.5e, w': %.5e, w_mass: %.5e, w_mass': %.5e\n", w_nufld, w_prime_nufld, w_mass_nufld, w_prime_mass_nufld);
+          if (_TRUE_) {
+            // This is just a flag to implement (or not) the correct k->0 limit in non-standard neutrinos.
+            cs2_nufld[n_nufld] -= w_mass_nufld - w_prime_mass_nufld/(3*a_prime_over_a*(1+w_mass_nufld)); // How can I define the massive equation of state? It might be nice to have them saved in the background, right?
+            cs2_nufld[n_nufld] += w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
+          }
           // w_prime_nufld = 0.0;
           // if (isnan(w_prime_nufld)) printf("w: %.5e, w': %.5e\n", w_nufld, w_prime_nufld);
 

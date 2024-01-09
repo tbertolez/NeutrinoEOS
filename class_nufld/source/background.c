@@ -381,6 +381,8 @@ int background_functions(
 
   /** - define local variables */
 
+  /* hubble in conformal time */
+  double a_prime_over_a;
   /* total density */
   double rho_tot;
   /* critical density */
@@ -396,7 +398,7 @@ int background_functions(
   /* index for n_ncdm species */
   int n_ncdm;
   /* background nufld quantities */
-  double rho_nufld,p_nufld,pseudo_p_nufld;
+  double rho_nufld,p_nufld;
   /* index for n_nufld species */
   int n_nufld;
   /* equation of state of nufld species*/
@@ -408,6 +410,10 @@ int background_functions(
   /* exp(-3 int((1+w)/a)) of nufld species */
   double intw_nufld[pba->N_nufld];
   double * intw_nufld_ptr = intw_nufld;
+  /* background nufld quantities, using only m */
+  double rho_nufld_mass, p_nufld_mass, pseudo_p_nufld_mass;
+  /* equation of state of nufld, if massive and standard */
+  double w_nufld_mass, w_prime_nufld_mass, cg2_nufld_mass;
   /* derivative of the pressure of nufld species */
   double p_prime_nufld;
   /* fluid's time-dependent equation of state parameter */
@@ -612,6 +618,25 @@ int background_functions(
       /* (rho_nufld1 - 3 p_nufld1) is the "non-relativistic" contribution
          to rho_nufld1 */
       rho_m += rho_nufld - 3.* p_nufld;
+
+      // We now compute the massive equation of state:
+      class_call(background_ncdm_momenta(
+                                         pba->q_nufld_bg[n_nufld],
+                                         pba->w_nufld_bg[n_nufld],
+                                         pba->q_size_nufld_bg[n_nufld],
+                                         pba->M_nufld[n_nufld],
+                                         pba->factor_nufld[n_nufld],
+                                         1./a-1.,
+                                         NULL,
+                                         &rho_nufld_mass,
+                                         &p_nufld_mass,
+                                         NULL,
+                                         &pseudo_p_nufld_mass),
+                 pba->error_message,
+                 pba->error_message);      
+
+      w_nufld_mass = p_nufld_mass/rho_nufld_mass;
+      pvecback[pba->index_bg_w_nufld_mass1 + n_nufld] = w_nufld_mass;
     }
   }
 
@@ -686,10 +711,16 @@ int background_functions(
     /** In order to compute the derivative of the equation of state with
      * respect to time, we needed the expansion rate */
     for (n_nufld=0; n_nufld<pba->N_nufld; n_nufld++) {
-      pvecback[pba->index_bg_w_prime_nufld1+n_nufld] = a*a*pvecback[pba->index_bg_H]*dw_over_da_nufld[n_nufld];
+      a_prime_over_a = pvecback[pba->index_bg_H]*a;
+      pvecback[pba->index_bg_w_prime_nufld1+n_nufld] = a*a_prime_over_a*dw_over_da_nufld[n_nufld];
       p_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]*pvecback[pba->index_bg_rho_nufld1+n_nufld]
                      -3*a*pvecback[pba->index_bg_H]*w_nufld[n_nufld]*(1.+w_nufld[n_nufld])*pvecback[pba->index_bg_rho_nufld1+n_nufld];
       pvecback[pba->index_bg_p_tot_prime] += p_prime_nufld;
+
+      // NUFLD_ERROR: Ojo lorito! pseudo_p_nufld_mass i p_nufld_mass no estan definits diferentment per a cada neutrí!
+      cg2_nufld_mass = w_nufld_mass/3./(1.+w_nufld_mass)*(5.-pseudo_p_nufld_mass/p_nufld_mass);
+      w_prime_nufld_mass = 3*a_prime_over_a*(1.+w_nufld_mass)*(w_nufld_mass-cg2_nufld_mass);
+      pvecback[pba->index_bg_w_prime_nufld_mass1 + n_nufld] = w_prime_nufld_mass;
     }
   }
 
@@ -767,7 +798,7 @@ double dw_over_da_nufld_tanh(
 
   // b = -1./3./(1+tanh(k*log(1/a_0)));
   // return b*k/a/pow(cosh(k*log(a/a_0)),2);
-  return -1./6.*k/a/pow(cosh(k*log(a/a_0)),2);
+  return -k/(6.*a)/pow(cosh(k*log(a/a_0)),2.);
 }
 
 double integral_w_nufld_tanh(
@@ -805,7 +836,7 @@ int background_w_nufld(
     k = pars[0];
     a_0 = pars[1];
     if (w_nufld != NULL) *w_nufld = w_nufld_tanh(a,k,a_0);
-    if (dw_over_da_nufld != NULL) *dw_over_da_nufld = w_nufld_tanh(a,k,a_0);
+    if (dw_over_da_nufld != NULL) *dw_over_da_nufld = dw_over_da_nufld_tanh(a,k,a_0);
     if (integral_nufld != NULL) *integral_nufld = integral_w_nufld_tanh(a,k,a_0);
     // if (integral_nufld != NULL) *integral_nufld = integral_w_nufld_tanh(a,k,a_0);
     // printf("intw: %.5e, \n", integral_w_nufld_tanh(a,k,a_0));
@@ -1276,6 +1307,8 @@ int background_indices(
   class_define_index(pba->index_bg_w_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   class_define_index(pba->index_bg_w_prime_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   class_define_index(pba->index_bg_intw_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
+  class_define_index(pba->index_bg_w_nufld_mass1,pba->has_nufld,index_bg,pba->N_nufld);
+  class_define_index(pba->index_bg_w_prime_nufld_mass1,pba->has_nufld,index_bg,pba->N_nufld);
   // class_define_index(pba->index_bg_pseudo_p_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
 
   /* - index for dcdm */
@@ -2335,10 +2368,11 @@ int background_nufld_init(
 }
 
 /**
- * For a given nufld species: given the quadrature weights, the mass
+ * For a given nufld species: given the quadrature weights, the 
+ * arbitrary equation of state, its integral from z_ini to z,
  * and the redshift, find background quantities by a quick weighted
  * sum over.  Input parameters passed as NULL pointers are not
- * evaluated for speed-up
+ * evaluated for speed-up.
  *
  * @param qvec     Input: sampled momenta
  * @param wvec     Input: quadrature weights
@@ -2416,6 +2450,101 @@ int background_nufld_momenta(
 
   return _SUCCESS_;
 }
+
+/**
+ * For a given nufld species: given the quadrature weights, the mass
+ * and the redshift, find background quantities by a quick weighted
+ * sum over. The difference with the previous functions is that this
+ * one does not take into account an arbitrary equation of state,
+ * but just the mass, as with standard massive neutrinos (ncdm).
+ * Input parameters passed as NULL pointers are not
+ * evaluated for speed-up.
+ * 
+ *
+ * @param qvec     Input: sampled momenta
+ * @param wvec     Input: quadrature weights
+ * @param qsize    Input: number of momenta/weights
+ * @param M        Input: mass
+ * @param factor   Input: normalization factor for the p.s.d.
+ * @param z        Input: redshift
+ * @param n        Output: number density
+ * @param rho      Output: energy density
+ * @param p        Output: pressure
+ * @param drho_dM  Output: derivative used in next function
+ * @param pseudo_p Output: pseudo-pressure used in perturbation module for fluid approx
+ *
+ */
+
+int background_massive_nufld_momenta(
+                            /* Only calculate for non-NULL pointers: */
+                            double * qvec,
+                            double * wvec,
+                            int qsize,
+                            double M,
+                            double factor,
+                            double z,
+                            double * n,
+                            double * rho, // density
+                            double * p,   // pressure
+                            double * drho_dM,  // d rho / d M used in next function
+                            double * pseudo_p  // pseudo-p used in ncdm fluid approx
+                            ) {
+
+  class_call(background_ncdm_momenta(qvec, 
+                                     wvec, 
+                                     qsize, 
+                                     M, 
+                                     factor, 
+                                     z, 
+                                     n, 
+                                     rho, 
+                                     p, 
+                                     drho_dM, 
+                                     pseudo_p),
+             NULL, NULL); // This is wrong, but whatever.
+  // int index_q;
+  // double epsilon;
+  // double q2;
+  // double factor2;
+  // /** Summary: */
+
+  // /** - rescale normalization at given redshift */
+  // factor2 = factor*pow(1+z,4);
+
+  // /** - initialize quantities */
+  // if (n!=NULL) *n = 0.;
+  // if (rho!=NULL) *rho = 0.;
+  // if (p!=NULL) *p = 0.;
+  // if (drho_dM!=NULL) *drho_dM = 0.;
+  // if (pseudo_p!=NULL) *pseudo_p = 0.;
+
+  // /** - loop over momenta */
+  // for (index_q=0; index_q<qsize; index_q++) {
+
+  //   /* squared momentum */
+  //   q2 = qvec[index_q]*qvec[index_q];
+
+  //   /* energy */
+  //   epsilon = sqrt(q2+M*M/(1.+z)/(1.+z));
+
+  //   /* integrand of the various quantities */
+  //   if (n!=NULL) *n += q2*wvec[index_q];
+  //   if (rho!=NULL) *rho += q2*epsilon*wvec[index_q];
+  //   if (p!=NULL) *p += q2*q2/3./epsilon*wvec[index_q];
+  //   if (drho_dM!=NULL) *drho_dM += q2*M/(1.+z)/(1.+z)/epsilon*wvec[index_q];
+  //   if (pseudo_p!=NULL) *pseudo_p += pow(q2/epsilon,3)/3.0*wvec[index_q];
+  // }
+
+  // /** - adjust normalization */
+  // if (n!=NULL) *n *= factor2/(1.+z);
+  // if (rho!=NULL) *rho *= factor2;
+  // if (p!=NULL) *p *= factor2;
+  // if (drho_dM!=NULL) *drho_dM *= factor2;
+  // if (pseudo_p!=NULL) *pseudo_p *=factor2;
+
+  return _SUCCESS_;
+}
+
 
 /**
  * When the user passed the density fraction Omega_nufld or
@@ -3028,7 +3157,7 @@ int background_initial_conditions(
                                            NULL),
                    pba->error_message,
                    pba->error_message);
-        printf("a: %.5e, w: %.5e, rho: %.5e, p: %.5e\n", a, p_ncdm/rho_ncdm,rho_ncdm,p_ncdm);
+        // printf("a: %.5e, w: %.5e, rho: %.5e, p: %.5e\n", a, p_ncdm/rho_ncdm,rho_ncdm,p_ncdm);
         rho_ncdm_rel_tot += 3.*p_ncdm;
         if (fabs(p_ncdm/rho_ncdm-1./3.)>ppr->tol_ncdm_initial_w) {
           is_early_enough = _FALSE_;
@@ -3087,8 +3216,8 @@ int background_initial_conditions(
                    pba->error_message,
                    pba->error_message);
         rho_nufld_rel_tot += 3.*p_nufld;
-        printf("a^(3(1+w)): %.5e, intw: %.5e\n", pow(a,-3*(1+w_nufld[n_nufld])),intw_nufld[n_nufld]);
-        printf("a: %.5e, w: %.5e, rho: %.5e, p: %.5e\n", a, w_nufld[n_nufld],rho_nufld,p_nufld);
+        // printf("a^(3(1+w)): %.5e, intw: %.5e\n", pow(a,-3*(1+w_nufld[n_nufld])),intw_nufld[n_nufld]);
+        // printf("a: %.5e, w: %.5e, rho: %.5e, p: %.5e\n", a, w_nufld[n_nufld],rho_nufld,p_nufld);
 
         if (fabs(p_nufld/rho_nufld-1./3.)>ppr->tol_nufld_initial_w) {
           is_early_enough = _FALSE_;
@@ -3370,6 +3499,15 @@ int background_output_titles(
       class_store_columntitle(titles,tmp,_TRUE_);
       sprintf(tmp,"(.)p_nufld[%d]",n);
       class_store_columntitle(titles,tmp,_TRUE_);
+      sprintf(tmp,"(.)w_nufld[%d]",n);
+      class_store_columntitle(titles,tmp,_TRUE_);
+      sprintf(tmp,"(.)w_prime_nufld[%d]",n);
+      class_store_columntitle(titles,tmp,_TRUE_);
+      sprintf(tmp,"(.)w_mass_nufld[%d]",n);
+      class_store_columntitle(titles,tmp,_TRUE_);
+      sprintf(tmp,"(.)w_prime_mass_nufld[%d]",n);
+      class_store_columntitle(titles,tmp,_TRUE_);
+
     }
   }
   class_store_columntitle(titles,"(.)rho_lambda",pba->has_lambda);
@@ -3449,6 +3587,10 @@ int background_output_data(
       for (n=0; n<pba->N_nufld; n++) {
         class_store_double(dataptr,pvecback[pba->index_bg_rho_nufld1+n],_TRUE_,storeidx);
         class_store_double(dataptr,pvecback[pba->index_bg_p_nufld1+n],_TRUE_,storeidx);
+        class_store_double(dataptr,pvecback[pba->index_bg_w_nufld1+n],_TRUE_,storeidx);
+        class_store_double(dataptr,pvecback[pba->index_bg_w_prime_nufld1+n],_TRUE_,storeidx);
+        class_store_double(dataptr,pvecback[pba->index_bg_w_nufld_mass1+n],_TRUE_,storeidx);
+        class_store_double(dataptr,pvecback[pba->index_bg_w_prime_nufld_mass1+n],_TRUE_,storeidx);
       }
     }
     class_store_double(dataptr,pvecback[pba->index_bg_rho_lambda],pba->has_lambda,storeidx);

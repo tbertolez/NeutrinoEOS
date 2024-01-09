@@ -10,8 +10,9 @@ matplotlib.rcParams.update({'text.usetex': True})
 matplotlib.rcParams['text.latex.preamble']=[r"\usepackage{amsmath}"]
 matplotlib.rcParams['figure.facecolor'] = 'white'
 
-cols_nufld = ['z','t','tau','H','x','Dang','Dlum','rs','rho_g', 'rho_b','rho_cdm', 'rho_nufld[0]', 'p_nufld[0]', 'rho_lambda', 'rho_ur', 'rho_crit',
-        'rho_tot', 'p_tot', 'p_tot_prime', 'gr.fac.D', 'gr.fac.f']
+cols_nufld = ['z','t','tau','H','x','Dang','Dlum','rs','rho_g', 'rho_b','rho_cdm', 'rho_nufld[0]', 'p_nufld[0]', 'w_nufld[0]', 'w_prime_nufld[0]', 'w_mass_nufld[0]', 'w_prime_mass_nufld[0]',
+              'rho_lambda', 'rho_ur', 'rho_crit',
+              'rho_tot', 'p_tot', 'p_tot_prime', 'gr.fac.D', 'gr.fac.f']
 cols_ncdm = ['z','t','tau','H','x','Dang','Dlum','rs','rho_g', 'rho_b','rho_cdm', 'rho_ncdm[0]', 'p_ncdm[0]', 'rho_lambda', 'rho_ur', 'rho_crit',
         'rho_tot', 'p_tot', 'p_tot_prime', 'gr.fac.D', 'gr.fac.f']
 
@@ -61,8 +62,10 @@ fig_rho.tight_layout()
 fig_rho.savefig("1.00eV_evolution.png")
 
 fig_eos, ax_eos = plt.subplots(figsize=(6,5))
-ax_eos.plot(1/(nufld['z']+1),nufld['p_nufld[0]']/nufld['rho_nufld[0]'], color = 'k', lw = 3, label = r'$m_\nu = 0.01\, \mathrm{eV}$')
-ax_eos.plot(1/(ncdm['z']+1), ncdm['p_ncdm[0]']/ncdm['rho_ncdm[0]'], label = r'fluid, tanh')
+ax_eos.plot(1/(nufld['z']+1),nufld['p_nufld[0]']/nufld['rho_nufld[0]'], color = 'k', lw = 3, label = r'$p/\rho$')
+# ax_eos.plot(1/(ncdm['z']+1), ncdm['p_ncdm[0]']/ncdm['rho_ncdm[0]'], label = r'fluid, tanh')
+ax_eos.plot(1/(nufld['z']+1),nufld['w_nufld[0]'], color = 'r', lw = 2, label = r'$w_{\mathrm{tanh}}$')
+ax_eos.plot(1/(nufld['z']+1),nufld['w_mass_nufld[0]'], color = 'c', lw = 2, label = r'$w_{\mathrm{mass}}$')
 ax_eos.set_xscale('log')
 ax_eos.set_xlim(1e-5,1)
 ax_eos.set_ylabel(r'$p/\rho$')
@@ -70,3 +73,20 @@ ax_eos.set_xlabel(r'$a$')
 ax_eos.legend(fontsize = 16)
 fig_eos.tight_layout()
 fig_eos.savefig("eos.png")
+
+fig_eosp, ax_eosp = plt.subplots(figsize=(6,5))
+w_prime_nufld = np.gradient(nufld['w_nufld[0]'],nufld['tau'])
+w_prime_mass_nufld = np.gradient(nufld['w_mass_nufld[0]'],nufld['tau'])
+ax_eosp.plot(1/(nufld['z']+1),w_prime_nufld, color = 'r', lw = 2, ls = '--', label = r'${\mathrm{tanh, numpy}}$')
+ax_eosp.plot(1/(nufld['z']+1),nufld['w_prime_nufld[0]'], color = 'orange', lw = 3, label = r'${\mathrm{tanh}}$')
+ax_eosp.plot(1/(nufld['z']+1),nufld['w_prime_mass_nufld[0]'], color = 'c', lw = 3, label = r'${\mathrm{mass}}$')
+ax_eosp.plot(1/(nufld['z']+1),w_prime_mass_nufld, color = 'b', lw = 2, ls = '--', label = r'${\mathrm{mass, numpy}}$')
+ax_eosp.set_xscale('log')
+# ax_eosp.set_yscale('log')
+ax_eosp.set_xlim(1e-5,1)
+# ax_eosp.set_ylim(0,2.5e-4)
+ax_eosp.set_ylabel(r'$dw/d\tau$')
+ax_eosp.set_xlabel(r'$a$')
+ax_eosp.legend(fontsize = 16)
+fig_eosp.tight_layout()
+fig_eosp.savefig("eosp.png")

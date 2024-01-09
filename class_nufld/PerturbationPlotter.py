@@ -14,84 +14,85 @@ matplotlib.rcParams['figure.facecolor'] = 'white'
 # COSMIC MICROWAVE BACKGROUND PLOTS
 ####################################################
 
-cols = ['l', 'TT', 'EE', 'TE', 'BB', 'phiphi', 'TPhi', 'Ephi']
-def class_clout_to_df(file):
-    with open(file, 'r+') as myfile:
-        lines = []
-        i = 0
-        for line in myfile.readlines():
-            if i < 11:
-                i += 1
-                continue
-            # print(line.strip().split("\t"))
-            lines.append(line.strip().split("      "))
+if False:
+    cols = ['l', 'TT', 'EE', 'TE', 'BB', 'phiphi', 'TPhi', 'Ephi']
+    def class_clout_to_df(file):
+        with open(file, 'r+') as myfile:
+            lines = []
+            i = 0
+            for line in myfile.readlines():
+                if i < 11:
+                    i += 1
+                    continue
+                # print(line.strip().split("\t"))
+                lines.append(line.strip().split("      "))
 
-    npbkgdata = np.array(lines, dtype=np.float64)
-    bkgdata = pd.DataFrame(npbkgdata,columns=cols)
-    return bkgdata
+        npbkgdata = np.array(lines, dtype=np.float64)
+        bkgdata = pd.DataFrame(npbkgdata,columns=cols)
+        return bkgdata
 
-pert_lcdm  = class_clout_to_df('class_nufld/output/explanatory00_cl_lensed.dat')
-pert_nufld = class_clout_to_df('class_nufld/output/default_nufld_cl_lensed.dat')
-pert_ncdm  = class_clout_to_df('class_nufld/output/default_ncdm_cl_lensed.dat')
+    pert_lcdm  = class_clout_to_df('class_nufld/output/explanatory00_cl_lensed.dat')
+    pert_nufld = class_clout_to_df('class_nufld/output/default_nufld_cl_lensed.dat')
+    pert_ncdm  = class_clout_to_df('class_nufld/output/default_ncdm_cl_lensed.dat')
 
-# # pert_nofla = class_clout_to_df('output/no_fla_cl_lensed.dat')
-# # pert_class = class_clout_to_df('output/class_fla_cl_lensed.dat')
-# # pert_caio  = class_clout_to_df('output/caio_fla_cl_lensed.dat')
+    # # pert_nofla = class_clout_to_df('output/no_fla_cl_lensed.dat')
+    # # pert_class = class_clout_to_df('output/class_fla_cl_lensed.dat')
+    # # pert_caio  = class_clout_to_df('output/caio_fla_cl_lensed.dat')
 
 
-# # DIFFERENCE TO LAMBDA-CDM PLOTS
-# # --------------------------------------------------
+    # # DIFFERENCE TO LAMBDA-CDM PLOTS
+    # # --------------------------------------------------
 
-fig_cl, axs_cl = plt.subplots(ncols = 1, nrows = 2, figsize = (6,9))
-for ax_cl in axs_cl:
-    ax_cl.hlines(0.0,2,2500, ls = '--', lw = 1, color = 'gray')
-    ax_cl.plot(pert_nufld['l'], pert_nufld['l']*(pert_nufld['l']+1)/(2*np.pi)*pert_nufld['TT'], color = 'c', ls = '--', lw = 2, label = r'nufld')
-    ax_cl.plot(pert_ncdm['l'], pert_ncdm['l']*(pert_ncdm['l']+1)/(2*np.pi)*pert_ncdm['TT'], color = 'r', ls = '--', lw = 2, label = r'ncdm')
-    ax_cl.plot(pert_lcdm['l'], pert_lcdm['l']*(pert_lcdm['l']+1)/(2*np.pi)*pert_lcdm['TT'], color = 'k', ls = '--', lw = 1, label = r'lcdm')
-    # ax_cl.plot(pert_nofla['l'], (pert_nofla['TT']-pert_nofla['TT'])/pert_nofla['TT'], color = 'k', lw = 3, label = r'Exact')
-    # ax_cl.plot(pert_class['l'], (pert_class['TT']-pert_nofla['TT'])/pert_nofla['TT'], color = 'r', ls = '--', lw = 2, label = r'CLASS')
-    # ax_cl.plot(pert_caio['l'], (pert_caio['TT']-pert_nofla['TT'])/pert_nofla['TT'], color = 'c', ls = '--', lw = 2, label = r'Caio')
-    ax_cl.set_ylabel(r'$(C_\ell^\mathrm{TT}-C_{\ell,\mathrm{exact}}^\mathrm{TT})/C_{\ell,\mathrm{exact}}^\mathrm{TT}$')
-    ax_cl.set_ylabel(r'$\frac{l(l+1)}{2\pi}C_\ell^\mathrm{TT}$')
-    ax_cl.set_xlabel(r'$\ell$')
-    ax_cl.set_xlim(2,2500)
-    ax_cl.legend(fontsize = 12)
+    fig_cl, axs_cl = plt.subplots(ncols = 1, nrows = 2, figsize = (6,9))
+    for ax_cl in axs_cl:
+        ax_cl.hlines(0.0,2,2500, ls = '--', lw = 1, color = 'gray')
+        ax_cl.plot(pert_nufld['l'], pert_nufld['l']*(pert_nufld['l']+1)/(2*np.pi)*pert_nufld['TT'], color = 'c', ls = '--', lw = 2, label = r'nufld')
+        ax_cl.plot(pert_ncdm['l'], pert_ncdm['l']*(pert_ncdm['l']+1)/(2*np.pi)*pert_ncdm['TT'], color = 'r', ls = '--', lw = 2, label = r'ncdm')
+        ax_cl.plot(pert_lcdm['l'], pert_lcdm['l']*(pert_lcdm['l']+1)/(2*np.pi)*pert_lcdm['TT'], color = 'k', ls = '--', lw = 1, label = r'lcdm')
+        # ax_cl.plot(pert_nofla['l'], (pert_nofla['TT']-pert_nofla['TT'])/pert_nofla['TT'], color = 'k', lw = 3, label = r'Exact')
+        # ax_cl.plot(pert_class['l'], (pert_class['TT']-pert_nofla['TT'])/pert_nofla['TT'], color = 'r', ls = '--', lw = 2, label = r'CLASS')
+        # ax_cl.plot(pert_caio['l'], (pert_caio['TT']-pert_nofla['TT'])/pert_nofla['TT'], color = 'c', ls = '--', lw = 2, label = r'Caio')
+        ax_cl.set_ylabel(r'$(C_\ell^\mathrm{TT}-C_{\ell,\mathrm{exact}}^\mathrm{TT})/C_{\ell,\mathrm{exact}}^\mathrm{TT}$')
+        ax_cl.set_ylabel(r'$\frac{l(l+1)}{2\pi}C_\ell^\mathrm{TT}$')
+        ax_cl.set_xlabel(r'$\ell$')
+        ax_cl.set_xlim(2,2500)
+        ax_cl.legend(fontsize = 12)
 
-axs_cl[0].set_xscale('log')
-axs_cl[1].set_xscale('linear')
-# ax_cl.set_xscale('log')
+    axs_cl[0].set_xscale('log')
+    axs_cl[1].set_xscale('linear')
+    # ax_cl.set_xscale('log')
 
-# axs_cl[1].set_ylim(-0.2,0.2) # 1 eV
-# axs_cl[1].set_ylim(-0.03,0.03) # 0.1 eV
-# axs_cl[1].set_ylim(-0.002,0.002) # 0.01 eV
+    # axs_cl[1].set_ylim(-0.2,0.2) # 1 eV
+    # axs_cl[1].set_ylim(-0.03,0.03) # 0.1 eV
+    # axs_cl[1].set_ylim(-0.002,0.002) # 0.01 eV
 
-fig_cl.tight_layout()
-fig_cl.savefig("comparison_cl_lensed_TT.png")
+    fig_cl.tight_layout()
+    fig_cl.savefig("comparison_cl_lensed_TT.png")
 
-# PLOTTING THE CMB ANISOTROPIES AS IS
-# -----------------------------------------------------
+    # PLOTTING THE CMB ANISOTROPIES AS IS
+    # -----------------------------------------------------
 
-# fig_cl, ax_cl = plt.subplots(figsize = (6,5))
-# ax_cl.hlines(0.0,2,2500, ls = '--', lw = 1, color = 'gray')
-# ax_cl.plot(pert_lcdm['l'], pert_lcdm['l']*(pert_lcdm['l']+1)/(2*np.pi)*pert_nofla['TT'], color = 'gray', lw = 3, label = r'LCDM')
-# ax_cl.plot(pert_nofla['l'], pert_nofla['l']*(pert_nofla['l']+1)/(2*np.pi)*pert_nofla['TT'], color = 'k', lw = 3, label = r'Exact')
-# ax_cl.plot(pert_class['l'], pert_class['l']*(pert_class['l']+1)/(2*np.pi)*pert_class['TT'], color = 'r', ls = '--', lw = 2, label = r'CLASS')
-# ax_cl.plot(pert_caio['l'], pert_caio['l']*(pert_caio['l']+1)/(2*np.pi)*pert_caio['TT'], color = 'c', ls = '--', lw = 2, label = r'Caio')
-# ax_cl.set_ylabel(r'$\frac{l(l+1)}{2\pi}C_\ell^\mathrm{TT}$')
-# ax_cl.set_xlabel(r'$\ell$')
-# ax_cl.set_xlim(2,2500)
-# ax_cl.legend(fontsize = 12)
+    # fig_cl, ax_cl = plt.subplots(figsize = (6,5))
+    # ax_cl.hlines(0.0,2,2500, ls = '--', lw = 1, color = 'gray')
+    # ax_cl.plot(pert_lcdm['l'], pert_lcdm['l']*(pert_lcdm['l']+1)/(2*np.pi)*pert_nofla['TT'], color = 'gray', lw = 3, label = r'LCDM')
+    # ax_cl.plot(pert_nofla['l'], pert_nofla['l']*(pert_nofla['l']+1)/(2*np.pi)*pert_nofla['TT'], color = 'k', lw = 3, label = r'Exact')
+    # ax_cl.plot(pert_class['l'], pert_class['l']*(pert_class['l']+1)/(2*np.pi)*pert_class['TT'], color = 'r', ls = '--', lw = 2, label = r'CLASS')
+    # ax_cl.plot(pert_caio['l'], pert_caio['l']*(pert_caio['l']+1)/(2*np.pi)*pert_caio['TT'], color = 'c', ls = '--', lw = 2, label = r'Caio')
+    # ax_cl.set_ylabel(r'$\frac{l(l+1)}{2\pi}C_\ell^\mathrm{TT}$')
+    # ax_cl.set_xlabel(r'$\ell$')
+    # ax_cl.set_xlim(2,2500)
+    # ax_cl.legend(fontsize = 12)
 
-# axs_cl[0].set_xscale('log')
-# axs_cl[1].set_xscale('linear')
-# # ax_cl.set_xscale('log')
+    # axs_cl[0].set_xscale('log')
+    # axs_cl[1].set_xscale('linear')
+    # # ax_cl.set_xscale('log')
 
-# # axs_cl[1].set_ylim(-0.2,0.2) # 1 eV
-# # axs_cl[1].set_ylim(-0.03,0.03) # 0.1 eV
-# # axs_cl[1].set_ylim(-0.002,0.002) # 0.01 eV
+    # # axs_cl[1].set_ylim(-0.2,0.2) # 1 eV
+    # # axs_cl[1].set_ylim(-0.03,0.03) # 0.1 eV
+    # # axs_cl[1].set_ylim(-0.002,0.002) # 0.01 eV
 
-# fig_cl.tight_layout()
-# fig_cl.savefig("fla_cl_lensed_TT.png")
+    # fig_cl.tight_layout()
+    # fig_cl.savefig("fla_cl_lensed_TT.png")
 
 
 #######################################################

@@ -221,8 +221,10 @@ struct background
   int index_bg_p_nufld1;       /**< pressure of first nufld species (others contiguous) */
   // int index_bg_pseudo_p_nufld1;/**< another statistical momentum useful in nuflda approximation */
   int index_bg_w_nufld1;       /**< equation of state of first nufld species (others contiguous) */
-  int index_bg_w_prime_nufld1;       /**< equation of state of first nufld species (others contiguous) */
+  int index_bg_w_prime_nufld1;       /**< derivative wrt conformal time of equation of state of first nufld species (others contiguous) */
   int index_bg_intw_nufld1;   /**< integral exp(-3int(1+w)) between a_ini and a for the first nufld species (others contiguous)*/
+  int index_bg_w_nufld_mass1;  /**< equation of state of first nufld species, from standard mass (others contiguous)*/
+  int index_bg_w_prime_nufld_mass1;  /**< derivative wrt conformal time of equation of state of first nufld species, from standard mass (others contiguous)*/
   int index_bg_rho_tot;       /**< Total density */
   int index_bg_p_tot;         /**< Total pressure */
   int index_bg_p_tot_prime;   /**< Conf. time derivative of total pressure */
