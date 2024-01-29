@@ -576,18 +576,20 @@ int background_functions(
 
       /* function returning background nufld[n_nufld] quantities (only
          those for which non-NULL pointers are passed) */
-      class_call(background_nufld_momenta(
+      class_call(background_ncdm_momenta(
                                          pba->q_nufld_bg[n_nufld],
                                          pba->w_nufld_bg[n_nufld],
                                          pba->q_size_nufld_bg[n_nufld],
                                          pba->M_nufld[n_nufld], // NUFLD_CHECK: The mass enters, but should be redundant at background level
                                          pba->factor_nufld[n_nufld],
                                          1./a-1.,
-                                         w_nufld_ptr[n_nufld],
-                                         intw_nufld_ptr[n_nufld],
+                                        //  w_nufld_ptr[n_nufld],
+                                        //  intw_nufld_ptr[n_nufld],
                                          NULL,
                                          &rho_nufld,
-                                         &p_nufld),
+                                         &p_nufld,
+                                         NULL,
+                                         NULL),
                  pba->error_message,
                  pba->error_message);
 
@@ -597,7 +599,7 @@ int background_functions(
       //                                                                          rho_nufld,
       //                                                                          p_nufld);
       // fclose(myfile);                                                                               
-      pvecback[pba->index_bg_w_nufld1+n_nufld] = w_nufld[n_nufld];
+      pvecback[pba->index_bg_w_nufld1+n_nufld] = p_nufld/rho_nufld;
       pvecback[pba->index_bg_intw_nufld1+n_nufld] = intw_nufld[n_nufld];
       // p_nufld = rho_nufld*w_nufld[n_nufld]; // In principle it is already computed in the previous function
       // NUFLD_TODO: I need to save in the background the derivative of w_nufld as a function of time, for the perturbations.
@@ -712,15 +714,17 @@ int background_functions(
      * respect to time, we needed the expansion rate */
     for (n_nufld=0; n_nufld<pba->N_nufld; n_nufld++) {
       a_prime_over_a = pvecback[pba->index_bg_H]*a;
-      pvecback[pba->index_bg_w_prime_nufld1+n_nufld] = a*a_prime_over_a*dw_over_da_nufld[n_nufld];
-      p_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]*pvecback[pba->index_bg_rho_nufld1+n_nufld]
-                     -3*a*pvecback[pba->index_bg_H]*w_nufld[n_nufld]*(1.+w_nufld[n_nufld])*pvecback[pba->index_bg_rho_nufld1+n_nufld];
-      pvecback[pba->index_bg_p_tot_prime] += p_prime_nufld;
 
       // NUFLD_ERROR: Ojo lorito! pseudo_p_nufld_mass i p_nufld_mass no estan definits diferentment per a cada neutrí!
       cg2_nufld_mass = w_nufld_mass/3./(1.+w_nufld_mass)*(5.-pseudo_p_nufld_mass/p_nufld_mass);
       w_prime_nufld_mass = 3*a_prime_over_a*(1.+w_nufld_mass)*(w_nufld_mass-cg2_nufld_mass);
       pvecback[pba->index_bg_w_prime_nufld_mass1 + n_nufld] = w_prime_nufld_mass;
+
+      // pvecback[pba->index_bg_w_prime_nufld1+n_nufld] = a*a_prime_over_a*dw_over_da_nufld[n_nufld];
+      pvecback[pba->index_bg_w_prime_nufld1+n_nufld] = w_prime_nufld_mass;
+      p_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]*pvecback[pba->index_bg_rho_nufld1+n_nufld]
+                     -3*a*pvecback[pba->index_bg_H]*w_nufld[n_nufld]*(1.+w_nufld[n_nufld])*pvecback[pba->index_bg_rho_nufld1+n_nufld];
+      pvecback[pba->index_bg_p_tot_prime] += p_prime_nufld;
     }
   }
 
@@ -2783,16 +2787,18 @@ int background_checks(
                    pba->error_message);
 
         /* call this function to get rho_nufld */
-        background_nufld_momenta(pba->q_nufld_bg[n_nufld],
+        background_ncdm_momenta(pba->q_nufld_bg[n_nufld],
                                 pba->w_nufld_bg[n_nufld],
                                 pba->q_size_nufld_bg[n_nufld],
-                                0.,
+                                pba->M_nufld[n_nufld],
                                 pba->factor_nufld[n_nufld],
                                 0.,
-                                w_nufld_ptr[n_nufld],
-                                intw_nufld_ptr[n_nufld], // This should be 1, or something is wrong
+                                // w_nufld_ptr[n_nufld],
+                                // intw_nufld_ptr[n_nufld], // This should be 1, or something is wrong
                                 NULL,
                                 &rho_nufld_rel,
+                                NULL,
+                                NULL,
                                 NULL);
 
         /* inform user of the contribution of each species to
@@ -3201,18 +3207,20 @@ int background_initial_conditions(
                    pba->error_message);
 
 
-        class_call(background_nufld_momenta(pba->q_nufld_bg[n_nufld],
+        class_call(background_ncdm_momenta(pba->q_nufld_bg[n_nufld],
                                            pba->w_nufld_bg[n_nufld],
                                            pba->q_size_nufld_bg[n_nufld],
                                            pba->M_nufld[n_nufld],
                                            pba->factor_nufld[n_nufld],
                                            1./a-1.0,
-                                           w_nufld[n_nufld],
+                                          //  w_nufld[n_nufld],
                                           //  1.,
-                                           intw_nufld_ptr[n_nufld], // We're computing rho_ini, this factor is always with respect to rho_ini
+                                          //  intw_nufld_ptr[n_nufld], // We're computing rho_ini, this factor is always with respect to rho_ini
                                            NULL,
                                            &rho_nufld,
-                                           &p_nufld),
+                                           &p_nufld,
+                                           NULL,
+                                           NULL),
                    pba->error_message,
                    pba->error_message);
         rho_nufld_rel_tot += 3.*p_nufld;
