@@ -7388,10 +7388,12 @@ int perturbations_total_stress_energy(
   double rho_plus_p_nufld;
   int n_nufld;
   double rho_nufld_bg,p_nufld_bg;
-  double cs2_nufld[pba->N_nufld];
+  double cs2_nufld[3];
   double *cs2_nufld_ptr = cs2_nufld;
-  double shear_nufld[pba->N_nufld];
+  double shear_nufld[3];
   double *shear_nufld_ptr = shear_nufld;
+  double delta_p_nufld_bltz[3];
+  double *delta_p_nufld_bltz_ptr = delta_p_nufld_bltz;
   double gwnufld;
   double rho_relativistic;
   double rho_dr_over_f;
@@ -7744,7 +7746,7 @@ int perturbations_total_stress_energy(
       // if (ppw->approx[ppw->index_ap_nufldfa] == (int)nufldfa_on){
         // The perturbations are evolved integrated:
       
-      class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, NULL, cs2_nufld_ptr), pba->error_message, pba->error_message);
+      class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, delta_p_nufld_bltz_ptr, cs2_nufld_ptr), pba->error_message, pba->error_message);
       class_call(shear_nufld_from_tower(ppw,pba,y,shear_nufld_ptr), pba->error_message, pba->error_message);
 
       for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
@@ -8900,9 +8902,9 @@ int perturbations_print_variables(double tau,
   double rho_plus_p_theta_nufld = 0.0;
   double rho_plus_p_shear_nufld = 0.0;
   double delta_p_nufld = 0.0;
-  double cs2_nufld[pba->N_nufld];
+  double cs2_nufld[3];
   double *cs2_nufld_ptr = cs2_nufld;
-  double temp_shear_nufld[pba->N_nufld]; // This is not very memory-efficient, but whatever
+  double temp_shear_nufld[3]; // This is not very memory-efficient, but whatever
   double *temp_shear_nufld_ptr = temp_shear_nufld;
   /** - nufld sector ends */
   double phi=0.,psi=0.,alpha=0.;
@@ -10739,7 +10741,7 @@ int perturbations_derivs(double tau,
           w_mass_nufld = pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
           w_prime_mass_nufld = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
           // printf("w: %.5e, w': %.5e, w_mass: %.5e, w_mass': %.5e\n", w_nufld, w_prime_nufld, w_mass_nufld, w_prime_mass_nufld);
-          if (_TRUE_) {
+          if (_FALSE_) {
             // This is just a flag to implement (or not) the correct k->0 limit in non-standard neutrinos.
             cs2_nufld[n_nufld] -= w_mass_nufld - w_prime_mass_nufld/(3*a_prime_over_a*(1+w_mass_nufld)); // How can I define the massive equation of state? It might be nice to have them saved in the background, right?
             cs2_nufld[n_nufld] += w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
@@ -10758,11 +10760,22 @@ int perturbations_derivs(double tau,
           //   - w_prime_nufld/(1.0+w_nufld)*theta_nufld +
           //   + cs2_nufld[n_nufld]/(1.0+w_nufld)*k2*delta_nufld-k2*shear_nufld[n_nufld]
           //   + metric_euler;
-          
+
+
+          if (k > 0.04) {
+            cs2_nufld[n_nufld] = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
+          }
+
+
           // if (a <= 0.01047120) cs2_nufld[n_nufld] = 1./3.;
           // if (a > 0.01047120)  cs2_nufld[n_nufld] = 0.;
           dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity);
           dy[pv->index_pt_delta_nufld1+n_nufld] += -3.0*a_prime_over_a*w_nufld*delta_nufld;
+          if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
+            myfile = fopen("cs2_nufld.dat", "a");
+            fprintf(myfile, "a: %.5e, k: %.5e, delta: %.5e, cs2: %.5e\n", a, k, delta_nufld, cs2_nufld[n_nufld]);
+            fclose(myfile);
+          }
           if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
           // if (_FALSE_) {
             dy[pv->index_pt_delta_nufld1+n_nufld] += 3.0*a_prime_over_a*delta_p_nufld_bltz[n_nufld];
@@ -10782,9 +10795,7 @@ int perturbations_derivs(double tau,
             dy[pv->index_pt_theta_nufld1+n_nufld] += +k2*cs2_nufld[n_nufld]/(1.+w_nufld)*delta_nufld;
           }                                                                               
 
-          // myfile = fopen("psi_0_nufld.dat", "a");
           // fprintf(myfile,"a: %.5e, psi0: %.5e, psi10: %.5e, psi20: %.5e, cs2: %.5e\n",a, y[idx],y[idx+10], y[idx+20], cs2_nufld[n_nufld]);
-          // fclose(myfile);
           for (index_q=0; index_q < pv->q_size_nufld[n_nufld]; index_q++) {
 
             /** - -----> define intermediate quantities */
