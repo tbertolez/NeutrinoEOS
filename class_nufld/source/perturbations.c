@@ -8900,9 +8900,9 @@ int perturbations_print_variables(double tau,
   double rho_plus_p_theta_nufld = 0.0;
   double rho_plus_p_shear_nufld = 0.0;
   double delta_p_nufld = 0.0;
-  double cs2_nufld[pba->N_nufld];
+  double cs2_nufld[3];
   double *cs2_nufld_ptr = cs2_nufld;
-  double temp_shear_nufld[pba->N_nufld]; // This is not very memory-efficient, but whatever
+  double temp_shear_nufld[3]; // This is not very memory-efficient, but whatever
   double *temp_shear_nufld_ptr = temp_shear_nufld;
   /** - nufld sector ends */
   double phi=0.,psi=0.,alpha=0.;
@@ -10739,11 +10739,16 @@ int perturbations_derivs(double tau,
           w_mass_nufld = pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
           w_prime_mass_nufld = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
           // printf("w: %.5e, w': %.5e, w_mass: %.5e, w_mass': %.5e\n", w_nufld, w_prime_nufld, w_mass_nufld, w_prime_mass_nufld);
-          if (_TRUE_) {
+          if (_FALSE_) {
             // This is just a flag to implement (or not) the correct k->0 limit in non-standard neutrinos.
             cs2_nufld[n_nufld] -= w_mass_nufld - w_prime_mass_nufld/(3*a_prime_over_a*(1+w_mass_nufld)); // How can I define the massive equation of state? It might be nice to have them saved in the background, right?
             cs2_nufld[n_nufld] += w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
           }
+          if (k > 0.04) {
+            // This is just a flag to implement (or not) the correct k->0 limit in non-standard neutrinos.
+            // cs2_nufld[n_nufld] -= w_mass_nufld - w_prime_mass_nufld/(3*a_prime_over_a*(1+w_mass_nufld)); // How can I define the massive equation of state? It might be nice to have them saved in the background, right?
+            cs2_nufld[n_nufld] = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
+          }          
           // w_prime_nufld = 0.0;
           // if (isnan(w_prime_nufld)) printf("w: %.5e, w': %.5e\n", w_nufld, w_prime_nufld);
 
@@ -10763,8 +10768,8 @@ int perturbations_derivs(double tau,
           // if (a > 0.01047120)  cs2_nufld[n_nufld] = 0.;
           dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity);
           dy[pv->index_pt_delta_nufld1+n_nufld] += -3.0*a_prime_over_a*w_nufld*delta_nufld;
-          if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
-          // if (_FALSE_) {
+          // if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
+          if (_FALSE_) {
             dy[pv->index_pt_delta_nufld1+n_nufld] += 3.0*a_prime_over_a*delta_p_nufld_bltz[n_nufld];
           } else {
             dy[pv->index_pt_delta_nufld1+n_nufld] += 3.0*a_prime_over_a*cs2_nufld[n_nufld]*delta_nufld;
@@ -10775,8 +10780,8 @@ int perturbations_derivs(double tau,
                                                    +metric_euler;
           dy[pv->index_pt_theta_nufld1+n_nufld] += -a_prime_over_a*(1.0-3.0*w_nufld)*theta_nufld
                                                    -w_prime_nufld/(1.0+w_nufld)*theta_nufld;
-          if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
-          // if (_FALSE_) {
+          // if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
+          if (_FALSE_) {
             dy[pv->index_pt_theta_nufld1+n_nufld] += +k2*delta_p_nufld_bltz[n_nufld]/(1.+w_nufld);
           } else {
             dy[pv->index_pt_theta_nufld1+n_nufld] += +k2*cs2_nufld[n_nufld]/(1.+w_nufld)*delta_nufld;
