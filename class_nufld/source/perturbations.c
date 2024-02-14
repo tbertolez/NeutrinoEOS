@@ -7766,8 +7766,12 @@ int perturbations_total_stress_energy(
         ppw->rho_plus_p_theta += rho_plus_p_nufld*ppw->theta_nufld[n_nufld];
         ppw->rho_plus_p_shear += rho_plus_p_nufld*ppw->shear_nufld[n_nufld];
         // Right now, we will leave this as is, but nye!
-        // ppw->delta_p += cs2_nufld[n_nufld]*ppw->delta_rho;
-        ppw->delta_p += delta_p_nufld_tow[n_nufld];
+        if (_TRUE_) {
+        // if (k > 0.04) {
+          ppw->delta_p += delta_p_nufld_tow[n_nufld];
+        } else {
+          ppw->delta_p += cs2_nufld[n_nufld]*ppw->delta_rho;
+        }
 
         ppw->rho_plus_p_tot += rho_plus_p_nufld;
 
@@ -10773,7 +10777,8 @@ int perturbations_derivs(double tau,
           dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity);
           dy[pv->index_pt_delta_nufld1+n_nufld] += -3.0*a_prime_over_a*w_nufld*delta_nufld;
           // if (fabs(cs2_nufld[n_nufld]) > 1.e1) {
-          if (_TRUE_) {
+          // if (_TRUE_) {
+          if (k > 0.04) {
           // myfile = fopen("cs2_ks.dat", "a");
           // fprintf(myfile,"a: %.5e, k: %.5e, cs2: %.5e\n", a, k, cs2_nufld[n_nufld]);
           // if (_FALSE_) {
@@ -10788,7 +10793,8 @@ int perturbations_derivs(double tau,
           dy[pv->index_pt_theta_nufld1+n_nufld] += -a_prime_over_a*(1.0-3.0*w_nufld)*theta_nufld
                                                    -w_prime_nufld/(1.0+w_nufld)*theta_nufld;
           // if (fabs(cs2_nufld[n_nufld]) > 1.e1) {
-          if (_TRUE_) {
+          // if (_TRUE_) {
+          if (k > 0.04) {
           // if (_FALSE_) {
             dy[pv->index_pt_theta_nufld1+n_nufld] += +k2*delta_p_nufld_bltz[n_nufld]/(1.+w_nufld);
           } else {
