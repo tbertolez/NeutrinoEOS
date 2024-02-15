@@ -7392,6 +7392,8 @@ int perturbations_total_stress_energy(
   double *cs2_nufld_ptr = cs2_nufld;
   double shear_nufld[pba->N_nufld];
   double *shear_nufld_ptr = shear_nufld;
+  double delta_p_nufld_bltz[pba->N_nufld];
+  double *delta_p_nufld_bltz_ptr = delta_p_nufld_bltz;
   double gwnufld;
   double rho_relativistic;
   double rho_dr_over_f;
@@ -7744,7 +7746,7 @@ int perturbations_total_stress_energy(
       // if (ppw->approx[ppw->index_ap_nufldfa] == (int)nufldfa_on){
         // The perturbations are evolved integrated:
       
-      class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, NULL, cs2_nufld_ptr), pba->error_message, pba->error_message);
+      class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, delta_p_nufld_bltz_ptr, cs2_nufld_ptr), pba->error_message, pba->error_message);
       class_call(shear_nufld_from_tower(ppw,pba,y,shear_nufld_ptr), pba->error_message, pba->error_message);
 
       for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
@@ -7764,8 +7766,9 @@ int perturbations_total_stress_energy(
         ppw->rho_plus_p_theta += rho_plus_p_nufld*ppw->theta_nufld[n_nufld];
         ppw->rho_plus_p_shear += rho_plus_p_nufld*ppw->shear_nufld[n_nufld];
         // Right now, we will leave this as is, but nye!
-        ppw->delta_p += cs2_nufld[n_nufld]*ppw->delta_rho;
-
+        // cs2_nufld[n_nufld] = p_nufld_bg/rho_nufld_bg - ppw->pvecback[pba->index_bg_w_prime_nufld1+n_nufld]/(3*a_prime_over_a*(1+p_nufld_bg/rho_nufld_bg));
+        // ppw->delta_p += cs2_nufld[n_nufld]*ppw->delta_nufld[n_nufld]*rho_nufld_bg;
+        ppw->delta_p += delta_p_nufld_bltz[n_nufld];
         ppw->rho_plus_p_tot += rho_plus_p_nufld;
 
         // idx += ppw->pv->l_max_nufld[n_nufld]+1;
@@ -10744,9 +10747,12 @@ int perturbations_derivs(double tau,
             cs2_nufld[n_nufld] -= w_mass_nufld - w_prime_mass_nufld/(3*a_prime_over_a*(1+w_mass_nufld)); // How can I define the massive equation of state? It might be nice to have them saved in the background, right?
             cs2_nufld[n_nufld] += w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
           }
-          if (k > 0.04) {
-            // This is just a flag to implement (or not) the correct k->0 limit in non-standard neutrinos.
-            // cs2_nufld[n_nufld] -= w_mass_nufld - w_prime_mass_nufld/(3*a_prime_over_a*(1+w_mass_nufld)); // How can I define the massive equation of state? It might be nice to have them saved in the background, right?
+          if (_FALSE_) {
+          // if (k > 0.04) {
+          // if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
+          // // if (k > 1e-10) {
+          //   // This is just a flag to implement (or not) the correct k->0 limit in non-standard neutrinos.
+          //   // cs2_nufld[n_nufld] -= w_mass_nufld - w_prime_mass_nufld/(3*a_prime_over_a*(1+w_mass_nufld)); // How can I define the massive equation of state? It might be nice to have them saved in the background, right?
             cs2_nufld[n_nufld] = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
           }          
           // w_prime_nufld = 0.0;
@@ -10769,8 +10775,8 @@ int perturbations_derivs(double tau,
           dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity);
           dy[pv->index_pt_delta_nufld1+n_nufld] += -3.0*a_prime_over_a*w_nufld*delta_nufld;
           // if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
-          if (_FALSE_) {
-            dy[pv->index_pt_delta_nufld1+n_nufld] += 3.0*a_prime_over_a*delta_p_nufld_bltz[n_nufld];
+          if (_TRUE_) {
+            dy[pv->index_pt_delta_nufld1+n_nufld] += 3.0*a_prime_over_a*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg;
           } else {
             dy[pv->index_pt_delta_nufld1+n_nufld] += 3.0*a_prime_over_a*cs2_nufld[n_nufld]*delta_nufld;
           }
@@ -10781,14 +10787,15 @@ int perturbations_derivs(double tau,
           dy[pv->index_pt_theta_nufld1+n_nufld] += -a_prime_over_a*(1.0-3.0*w_nufld)*theta_nufld
                                                    -w_prime_nufld/(1.0+w_nufld)*theta_nufld;
           // if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
-          if (_FALSE_) {
-            dy[pv->index_pt_theta_nufld1+n_nufld] += +k2*delta_p_nufld_bltz[n_nufld]/(1.+w_nufld);
+          if (_TRUE_) {
+            dy[pv->index_pt_theta_nufld1+n_nufld] += +k2*delta_p_nufld_bltz[n_nufld]/(1.+w_nufld)/rho_nufld_bg;
           } else {
             dy[pv->index_pt_theta_nufld1+n_nufld] += +k2*cs2_nufld[n_nufld]/(1.+w_nufld)*delta_nufld;
           }                                                                               
 
-          // myfile = fopen("psi_0_nufld.dat", "a");
-          // fprintf(myfile,"a: %.5e, psi0: %.5e, psi10: %.5e, psi20: %.5e, cs2: %.5e\n",a, y[idx],y[idx+10], y[idx+20], cs2_nufld[n_nufld]);
+          // myfile = fopen("akdd_nufld.dat", "a");
+          // fprintf(myfile, "a: %.5e, k: %.5e, delta: %.5e, deltaP: %.5e\n", a, k, delta_nufld,delta_p_nufld_bltz[n_nufld]/rho_nufld_bg);
+          // // fprintf(myfile,"a: %.5e, psi0: %.5e, psi10: %.5e, psi20: %.5e, cs2: %.5e\n",a, y[idx],y[idx+10], y[idx+20], cs2_nufld[n_nufld]);
           // fclose(myfile);
           for (index_q=0; index_q < pv->q_size_nufld[n_nufld]; index_q++) {
 
