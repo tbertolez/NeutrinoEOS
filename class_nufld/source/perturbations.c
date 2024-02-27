@@ -7390,15 +7390,11 @@ int perturbations_total_stress_energy(
   double delta_p_nufld=0.;
   double rho_plus_p_nufld;
   int n_nufld;
-  double rho_nufld_bg,p_nufld_bg;
-  double cs2_nufld[3];
   double rho_nufld_bg,p_nufld_bg,pseudo_p_nufld;
   double cs2_nufld[pba->N_nufld];
   double *cs2_nufld_ptr = cs2_nufld;
-  double shear_nufld[3];
+  double shear_nufld[pba->N_nufld];
   double *shear_nufld_ptr = shear_nufld;
-  double delta_p_nufld_bltz[3];
-  double *delta_p_nufld_bltz_ptr = delta_p_nufld_bltz;
   double delta_p_nufld_bltz[pba->N_nufld];
   double *delta_p_nufld_bltz_ptr = delta_p_nufld_bltz;
   double w_nufld,w_prime_nufld,ca2_nufld;
