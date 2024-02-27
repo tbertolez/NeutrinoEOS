@@ -3544,8 +3544,10 @@ int perturbations_prepare_k_output(struct background * pba,
           class_store_columntitle(ppt->scalar_titles,tmp,_TRUE_);
           sprintf(tmp,"shear_nufld[%d]",n_nufld);
           class_store_columntitle(ppt->scalar_titles,tmp,_TRUE_);
-          sprintf(tmp,"cs2_nufld[%d]",n_nufld);
+          sprintf(tmp,"cs2_nufld_gau[%d]",n_nufld);
           class_store_columntitle(ppt->scalar_titles,tmp,_TRUE_);
+          sprintf(tmp,"cs2_nufld_fld[%d]",n_nufld);
+          class_store_columntitle(ppt->scalar_titles,tmp,_TRUE_);          
         }
       }
       /* Decaying cold dark matter */
@@ -4508,7 +4510,8 @@ int perturbations_vector_init(
       for (n_nufld = 0; n_nufld < ppv-> N_nufld; n_nufld++){
         for (index_q=0; index_q < ppv->q_size_nufld[n_nufld]; index_q++){
           for (l=0; l<=ppv->l_max_nufld[n_nufld]; l++){
-            ppv->used_in_sources[index_pt]=_FALSE_;
+            // NCDM_CHECK: This is a line I don't really understand. Should I remove l>2 or not? Imho, yes. but breaks.
+            if (l>2) ppv->used_in_sources[index_pt]=_FALSE_;
             index_pt++;
           }
         }
@@ -7387,13 +7390,14 @@ int perturbations_total_stress_energy(
   double delta_p_nufld=0.;
   double rho_plus_p_nufld;
   int n_nufld;
-  double rho_nufld_bg,p_nufld_bg;
+  double rho_nufld_bg,p_nufld_bg,pseudo_p_nufld;
   double cs2_nufld[pba->N_nufld];
   double *cs2_nufld_ptr = cs2_nufld;
   double shear_nufld[pba->N_nufld];
   double *shear_nufld_ptr = shear_nufld;
   double delta_p_nufld_bltz[pba->N_nufld];
   double *delta_p_nufld_bltz_ptr = delta_p_nufld_bltz;
+  double w_nufld,w_prime_nufld,ca2_nufld;
   double gwnufld;
   double rho_relativistic;
   double rho_dr_over_f;
@@ -7742,9 +7746,8 @@ int perturbations_total_stress_energy(
 
     /* non-cold dark matter with generalized Boltzmann hierarchy contribution */
     if (pba->has_nufld == _TRUE_) {
-      // idx = ppw->pv->index_pt_psi0_nufld1;
-      // if (ppw->approx[ppw->index_ap_nufldfa] == (int)nufldfa_on){
-        // The perturbations are evolved integrated:
+
+      // // OPTION 1: Use delta, theta from continuity equation
       
       class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, delta_p_nufld_bltz_ptr, cs2_nufld_ptr), pba->error_message, pba->error_message);
       class_call(shear_nufld_from_tower(ppw,pba,y,shear_nufld_ptr), pba->error_message, pba->error_message);
@@ -7752,9 +7755,14 @@ int perturbations_total_stress_energy(
       for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
         rho_nufld_bg = ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
         p_nufld_bg = ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
-        // pseudo_p_nufld = ppw->pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld];
-
+        pseudo_p_nufld = ppw->pvecback[pba->index_bg_pseudo_p_ncdm1+n_ncdm];
         rho_plus_p_nufld = rho_nufld_bg + p_nufld_bg;
+        // w_nufld = ppw->pvecback[pba->index_bg_w_nufld1+n_nufld];
+        // ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.0-pseudo_p_nufld/p_nufld_bg);
+
+        // // This will be useful once we change the equation of state to a tanh, but not now.
+        // w_prime_nufld = ppw->pvecback[pba->index_bg_w_prime_nufld1+n_nufld];
+        // ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
 
         if ((ppt->has_source_delta_nufld == _TRUE_) || (ppt->has_source_theta_nufld == _TRUE_) || (ppt->has_source_delta_m == _TRUE_)) {
           ppw->delta_nufld[n_nufld] = y[ppw->pv->index_pt_delta_nufld1+n_nufld];
@@ -7765,60 +7773,60 @@ int perturbations_total_stress_energy(
         ppw->delta_rho += rho_nufld_bg*ppw->delta_nufld[n_nufld];
         ppw->rho_plus_p_theta += rho_plus_p_nufld*ppw->theta_nufld[n_nufld];
         ppw->rho_plus_p_shear += rho_plus_p_nufld*ppw->shear_nufld[n_nufld];
-        // Right now, we will leave this as is, but nye!
-        // cs2_nufld[n_nufld] = p_nufld_bg/rho_nufld_bg - ppw->pvecback[pba->index_bg_w_prime_nufld1+n_nufld]/(3*a_prime_over_a*(1+p_nufld_bg/rho_nufld_bg));
-        // ppw->delta_p += cs2_nufld[n_nufld]*ppw->delta_nufld[n_nufld]*rho_nufld_bg;
+        ppw->rho_plus_p_tot   += rho_plus_p_nufld;
+
+        // // In which gauge is this computed?
         ppw->delta_p += delta_p_nufld_bltz[n_nufld];
-        ppw->rho_plus_p_tot += rho_plus_p_nufld;
 
-        // idx += ppw->pv->l_max_nufld[n_nufld]+1;
       }
+
+      // // OPTION 2: Use all variables from the Boltzmann tower (should recover ncdm)
+
+      // idx = ppw->pv->index_pt_psi0_nufld1;
+
+      // for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
+        // rho_delta_nufld = 0.0;
+        // rho_plus_p_theta_nufld = 0.0;
+        // rho_plus_p_shear_nufld = 0.0;
+        // delta_p_nufld = 0.0;
+        // factor = pba->factor_nufld[n_nufld]/pow(a,4);
+
+        // for (index_q=0; index_q < ppw->pv->q_size_nufld[n_nufld]; index_q ++) {
+
+        //   q = pba->q_nufld[n_nufld][index_q];
+        //   q2 = q*q;
+        //   epsilon = sqrt(q2+pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]*a2);
+
+          // rho_delta_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
+          // rho_plus_p_theta_nufld += q2*q*pba->w_nufld[n_nufld][index_q]*y[idx+1];
+          // rho_plus_p_shear_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx+2];
+          // delta_p_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
+
+          //Jump to next momentum bin:
+        //   idx+=(ppw->pv->l_max_nufld[n_nufld]+1);
+        // }
+
+        // rho_delta_nufld *= factor;
+        // rho_plus_p_theta_nufld *= k*factor;
+        // rho_plus_p_shear_nufld *= 2.0/3.0*factor;
+        // delta_p_nufld *= factor/3.;
+
+        // if ((ppt->has_source_delta_nufld == _TRUE_) || (ppt->has_source_theta_nufld == _TRUE_) || (ppt->has_source_delta_m == _TRUE_)) {
+          // ppw->delta_nufld[n_nufld] = rho_delta_nufld/ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
+          // ppw->theta_nufld[n_nufld] = rho_plus_p_theta_nufld/
+          //   (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
+          // ppw->shear_nufld[n_nufld] = rho_plus_p_shear_nufld/
+            // (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
+        // }
+
+        // ppw->delta_rho += rho_delta_nufld;
+        // ppw->rho_plus_p_theta += rho_plus_p_theta_nufld;
+        // ppw->rho_plus_p_shear += rho_plus_p_shear_nufld;
+        // ppw->delta_p += delta_p_nufld;
+
+        // ppw->rho_plus_p_tot += ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
       // }
-      // else{
-      //   // We must integrate to find perturbations:
-      //   for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
-      //     rho_delta_nufld = 0.0;
-      //     rho_plus_p_theta_nufld = 0.0;
-      //     rho_plus_p_shear_nufld = 0.0;
-      //     delta_p_nufld = 0.0;
-      //     factor = pba->factor_nufld[n_nufld]/pow(a,4);
 
-      //     for (index_q=0; index_q < ppw->pv->q_size_nufld[n_nufld]; index_q ++) {
-
-      //       q = pba->q_nufld[n_nufld][index_q];
-      //       q2 = q*q;
-      //       epsilon = sqrt(q2+pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]*a2);
-
-      //       rho_delta_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
-      //       rho_plus_p_theta_nufld += q2*q*pba->w_nufld[n_nufld][index_q]*y[idx+1];
-      //       rho_plus_p_shear_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx+2];
-      //       delta_p_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
-
-      //       //Jump to next momentum bin:
-      //       idx+=(ppw->pv->l_max_nufld[n_nufld]+1);
-      //     }
-
-      //     rho_delta_nufld *= factor;
-      //     rho_plus_p_theta_nufld *= k*factor;
-      //     rho_plus_p_shear_nufld *= 2.0/3.0*factor;
-      //     delta_p_nufld *= factor/3.;
-
-      //     if ((ppt->has_source_delta_nufld == _TRUE_) || (ppt->has_source_theta_nufld == _TRUE_) || (ppt->has_source_delta_m == _TRUE_)) {
-      //       ppw->delta_nufld[n_nufld] = rho_delta_nufld/ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
-      //       ppw->theta_nufld[n_nufld] = rho_plus_p_theta_nufld/
-      //         (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
-      //       ppw->shear_nufld[n_nufld] = rho_plus_p_shear_nufld/
-      //         (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
-      //     }
-
-      //     ppw->delta_rho += rho_delta_nufld;
-      //     ppw->rho_plus_p_theta += rho_plus_p_theta_nufld;
-      //     ppw->rho_plus_p_shear += rho_plus_p_shear_nufld;
-      //     ppw->delta_p += delta_p_nufld;
-
-      //     ppw->rho_plus_p_tot += ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
-      //   }
-      // }
       if (ppt->has_source_delta_m == _TRUE_) {
         for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
           delta_rho_m += ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]*ppw->delta_nufld[n_nufld]; // contribution to delta rho_matter
@@ -8897,14 +8905,16 @@ int perturbations_print_variables(double tau,
   /** - ncdm sector ends */
   /** - nufld sector begins */
   int n_nufld;
-  double *delta_nufld=NULL, *theta_nufld=NULL, *shear_nufld=NULL, *delta_p_over_delta_rho_nufld=NULL;
-  double rho_nufld_bg, p_nufld_bg;
+  double *delta_nufld=NULL, *theta_nufld=NULL, *shear_nufld=NULL, *delta_p_over_delta_rho_nufld=NULL, *cs2_nufld_fluid = NULL;
+  double rho_nufld_bg, p_nufld_bg, pseudo_p_nufld, ca2_nufld, w_nufld;
   double rho_delta_nufld = 0.0;
   double rho_plus_p_theta_nufld = 0.0;
   double rho_plus_p_shear_nufld = 0.0;
   double delta_p_nufld = 0.0;
   double cs2_nufld[3];
   double *cs2_nufld_ptr = cs2_nufld;
+  double delta_p_nufld_bltz[3];
+  double *delta_p_nufld_bltz_ptr = delta_p_nufld_bltz;  
   double temp_shear_nufld[3]; // This is not very memory-efficient, but whatever
   double *temp_shear_nufld_ptr = temp_shear_nufld;
   /** - nufld sector ends */
@@ -8981,6 +8991,8 @@ int perturbations_print_variables(double tau,
     class_alloc(theta_nufld, sizeof(double)*pba->N_nufld,error_message);
     class_alloc(shear_nufld, sizeof(double)*pba->N_nufld,error_message);
     class_alloc(delta_p_over_delta_rho_nufld, sizeof(double)*pba->N_nufld,error_message);
+    class_alloc(cs2_nufld_fluid, sizeof(double)*pba->N_nufld,error_message);
+
   }
 
   /** - calculate perturbed recombination */
@@ -9159,68 +9171,29 @@ int perturbations_print_variables(double tau,
       }
     }
 
-      if (pba->has_nufld == _TRUE_) {
-      /** - --> Get delta, deltaP/rho, theta, shear and store in array */
-      // idx = ppw->pv->index_pt_psi0_nufld1;
-      // if (ppw->approx[ppw->index_ap_nufldfa] == (int)nufldfa_on){
-        // The perturbations are evolved integrated:
-        class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, NULL, cs2_nufld_ptr), pba->error_message, pba->error_message);
-        class_call(shear_nufld_from_tower(ppw,pba,y,temp_shear_nufld_ptr), pba->error_message, pba->error_message);
+    if (pba->has_nufld == _TRUE_) {
+    /** - --> Get delta, deltaP/rho, theta, shear and store in array */
+      class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, delta_p_nufld_bltz_ptr, cs2_nufld_ptr), pba->error_message, pba->error_message);
+      class_call(shear_nufld_from_tower(ppw,pba,y,temp_shear_nufld_ptr), pba->error_message, pba->error_message);
 
-        for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
-          rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld];
-          p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld];
+      for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
+        rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld];
+        p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld];
+        pseudo_p_nufld = pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld];
+        w_nufld = p_nufld_bg/rho_nufld_bg;
+        ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.0-pseudo_p_nufld/p_nufld_bg);
 
-          delta_nufld[n_nufld] = y[ppw->pv->index_pt_delta_nufld1+n_nufld];
-          theta_nufld[n_nufld] = y[ppw->pv->index_pt_theta_nufld1+n_nufld];
-          shear_nufld[n_nufld] = temp_shear_nufld[n_nufld];
-          // This is the sound speed:
-          delta_p_over_delta_rho_nufld[n_nufld] = cs2_nufld[n_nufld]; // NUFLD_PERT: Obviously wrong
-        }
-      // }
-      // else{
-      //   // We must integrate to find perturbations:
-      //   for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
-      //     rho_delta_nufld = 0.0;
-      //     rho_plus_p_theta_nufld = 0.0;
-      //     rho_plus_p_shear_nufld = 0.0;
-      //     delta_p_nufld = 0.0;
-      //     factor = pba->factor_nufld[n_nufld]/pow(a,4);
+        delta_nufld[n_nufld] = y[ppw->pv->index_pt_delta_nufld1+n_nufld];
+        theta_nufld[n_nufld] = y[ppw->pv->index_pt_theta_nufld1+n_nufld];
+        shear_nufld[n_nufld] = temp_shear_nufld[n_nufld];
 
-      //     for (index_q=0; index_q < ppw->pv->q_size_nufld[n_nufld]; index_q ++) {
+        // This is the cs2_gauge sound speed:
+        delta_p_over_delta_rho_nufld[n_nufld] = cs2_nufld[n_nufld]; 
+        // This is the cs2_fluid sound speed:
+        cs2_nufld_fluid[n_nufld] =  (k*k*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg+3*a*H*ca2_nufld*(1+w_nufld)*theta_nufld[n_nufld])/
+                                  (k*k*delta_nufld[n_nufld]+3*a*H*(1+w_nufld)*theta_nufld[n_nufld]);
 
-      //       q = pba->q_nufld[n_nufld][index_q];
-      //       q2 = q*q;
-      //       epsilon = sqrt(q2+pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]*a2);
-
-      //       rho_delta_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
-      //       // rho_plus_p_theta_nufld += q2*q*pba->w_nufld[n_nufld][index_q]*y[idx+1];
-            
-      //       rho_plus_p_shear_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx+2];
-      //       delta_p_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
-
-      //       //Jump to next momentum bin:
-      //       idx+=(ppw->pv->l_max_nufld[n_nufld]+1);
-      //     }
-
-      //     rho_delta_nufld *= factor;
-      //     rho_plus_p_theta_nufld *= k*factor;
-      //     rho_plus_p_shear_nufld *= 2.0/3.0*factor;
-      //     delta_p_nufld *= factor/3.;
-      //     // sound_speed_nufld = delta_p_nufld/rho_delta_nufld;
-
-      //     delta_nufld[n_nufld] = y[ppw->pv->index_pt_delta_nufld1+n_nufld];
-      //     theta_nufld[n_nufld] = y[ppw->pv->index_pt_theta_nufld1+n_nufld];
-
-      //     // delta_nufld[n_nufld] = rho_delta_nufld/ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
-      //     // theta_nufld[n_nufld] = rho_plus_p_theta_nufld/
-      //     //   (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
-      //     shear_nufld[n_nufld] = rho_plus_p_shear_nufld/
-      //       (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
-      //     delta_p_over_delta_rho_nufld[n_nufld] = delta_p_nufld/rho_delta_nufld;
-
-      //   }
-      // }
+      }
     }
 
 
@@ -9386,6 +9359,7 @@ int perturbations_print_variables(double tau,
         class_store_double(dataptr, theta_nufld[n_nufld], _TRUE_, storeidx);
         class_store_double(dataptr, shear_nufld[n_nufld], _TRUE_, storeidx);
         class_store_double(dataptr, delta_p_over_delta_rho_nufld[n_nufld],  _TRUE_, storeidx);
+        class_store_double(dataptr, cs2_nufld_fluid[n_nufld],  _TRUE_, storeidx);
       }
     }
 
@@ -9586,6 +9560,7 @@ int perturbations_print_variables(double tau,
     free(theta_nufld);
     free(shear_nufld);
     free(delta_p_over_delta_rho_nufld);
+    free(cs2_nufld_fluid);
   }
 
   return _SUCCESS_;
@@ -9610,9 +9585,6 @@ int sound_speed_nufld_from_tower(struct perturbations_workspace * ppw,
   double a, a2, factor;
   double rho_delta_nufld, delta_p_nufld, q, q2, epsilon;
 
-  // FILE *cs2_file;
-  // cs2_file = fopen("cs2_inside.dat", "a");
-
   a = ppw->pvecback[pba->index_bg_a];
   a2 = a*a;
 
@@ -9632,18 +9604,14 @@ int sound_speed_nufld_from_tower(struct perturbations_workspace * ppw,
 
       rho_delta_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
       delta_p_nufld   += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
-      // fprintf(cs2_file, "a: %.5e, index: %d, rho_delta_nufld: %.5e, delta_p_nufld: %.5e\n", a, idx - ppw->pv->index_pt_psi0_nufld1, q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx], q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx]);
-      // fprintf(cs2_file, "q: %.3e, f: %.5e, psi: %.5e, delta_rho(q): %.5e, delta_p(q): %.5e\n", q, pba->w_nufld[n_nufld][index_q], y[idx], q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx], q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx]);
       idx += ppw->pv->l_max_nufld[n_nufld]+1;
     }
-    // if (ppaw != NULL) fprintf(cs2_file, "a: %.5e, k: %.5e, rho_delta_nufld: %.5e, delta_p_nufld: %.5e, cs2: %.5e\n", a, ppaw->k, rho_delta_nufld, delta_p_nufld/3.0, delta_p_nufld/3.0/rho_delta_nufld);
     rho_delta_nufld *= factor;
     delta_p_nufld *= factor/3.;
     if (delta_rho != NULL) delta_rho[n_nufld] = rho_delta_nufld;
     if (delta_p   != NULL) delta_p[n_nufld] = delta_p_nufld;
     if (c_s2      != NULL) c_s2[n_nufld] = delta_p_nufld/rho_delta_nufld;
   }      
-  // fclose(cs2_file);
   return _SUCCESS_;                
 }
 
@@ -9792,6 +9760,7 @@ int perturbations_derivs(double tau,
   double * delta_p_nufld_bltz_ptr = delta_p_nufld_bltz;  
   double shear_nufld[3];
   double * shear_nufld_ptr = shear_nufld;
+  double cf2_nufld, ca2_nufld;
 
   /* for use with curvature */
   double cotKgen, sqrt_absK;
@@ -10641,200 +10610,100 @@ int perturbations_derivs(double tau,
     //TBC: curvature in all nufld
     if (pba->has_nufld == _TRUE_) {
 
-      idx = pv->index_pt_psi0_nufld1;
+      class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, delta_p_nufld_bltz_ptr, cs2_nufld_ptr),pba->error_message,pba->error_message);
+      class_call(shear_nufld_from_tower(ppw,pba,y,shear_nufld_ptr),pba->error_message,pba->error_message);
 
-      /** - ----> first case: use a fluid approximation (nufldfa) */
-      //TBC: curvature
-      if (ppw->approx[ppw->index_ap_nufldfa] == (int)nufldfa_on) {
+      /** - -----> loop over species */
 
-        class_test(_FALSE_,pba->error_message, "You're trying to use a fluid approximation for the nufld species, which you shouldn't use.")
+      for (n_nufld=0; n_nufld<pv->N_nufld; n_nufld++) {
+        rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld]; /* background density */
+        p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld]; /* background pressure */
+        pseudo_p_nufld = pvecback[pba->index_bg_pseudo_p_nufld1 + n_nufld];
+        w_nufld = p_nufld_bg/rho_nufld_bg; /* equation of state parameter */
 
-        /** - -----> loop over species */
+        delta_nufld = y[pv->index_pt_delta_nufld1+n_nufld];
+        theta_nufld = y[pv->index_pt_theta_nufld1+n_nufld];
 
-        for (n_nufld=0; n_nufld<pv->N_nufld; n_nufld++) {
+        // IF WE WANT TO USE THE deltaP FORMULATION
+        // First define the derivative of w
+        w_prime_nufld = -a_prime_over_a*w_nufld*((2.-3.*w_nufld)-pseudo_p_nufld/p_nufld_bg);
 
-          /** - -----> define intermediate quantitites */
+        // // When we want to use an arbitrary equation of state, we may need:
+        // w_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]; /* derivative of the equation of state parameter */
+        // w_mass_nufld = pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
+        // w_prime_mass_nufld = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
 
-          // rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld]; /* background density */
-          // p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld]; /* background pressure */
-          // pseudo_p_nufld = pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld]; /* pseudo-pressure (see CLASS IV paper) */
-          // w_nufld = p_nufld_bg/rho_nufld_bg; /* equation of state parameter */
-          // ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.0-pseudo_p_nufld/p_nufld_bg); /* adiabatic sound speed */
-          // ca2_nufld = 1./3.0; // NUFLD_PERT: Obviously wrong.
+        dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity)
+                                                  +3.0*a_prime_over_a*w_nufld*delta_nufld
+                                                  -3.0*a_prime_over_a*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg;
+         
+        dy[pv->index_pt_theta_nufld1+n_nufld]  = -k2*shear_nufld[n_nufld]+metric_euler
+                                                 -a_prime_over_a*(1.0-3.0*w_nufld)*theta_nufld
+                                                 -w_prime_nufld/(1.0+w_nufld)*theta_nufld
+                                                 +k2*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg/(1.+w_nufld);   
 
-          /* c_eff is (delta p / delta rho) in the gauge under
-             consideration (not in the gauge comoving with the
-             fluid) */
 
-          /* c_vis is introduced in order to close the system */
+        // IF WE WANT TO USE THE ceff^2 FORMULATION
+        // // Note: This does not work. Check again!
 
-          /* different ansatz for sound speed c_eff and viscosity speed c_vis */
-          // if (ppr->nufld_fluid_approximation == nufldfa_mb) {
-          //   ceff2_nufld = ca2_nufld;
-          //   cvis2_nufld = 3.*w_nufld*ca2_nufld;
-          // }
-          // if (ppr->nufld_fluid_approximation == nufldfa_hu) {
-          //   ceff2_nufld = ca2_nufld;
-          //   cvis2_nufld = w_nufld;
-          // }
-          // if (ppr->nufld_fluid_approximation == nufldfa_CLASS) {
-          //   ceff2_nufld = ca2_nufld;
-          //   cvis2_nufld = 3.*w_nufld*ca2_nufld;
-          // }
+        // // The adiabatic sound speed
+        // ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.-pseudo_p_nufld/p_nufld_bg);
+        // // When we have an arbitrary equation of state, we will need
+        // ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
 
-          // /** - -----> exact continuity equation */
+        // // Sound speed in the fluid rest frame
+        // cf2_nufld  = (k2*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg+3*a_prime_over_a*ca2_nufld*(1+w_nufld)*theta_nufld)/
+        //               (k2*delta_nufld+3*a_prime_over_a*(1+w_nufld)*theta_nufld);
 
-          // dy[idx] = -(1.0+w_nufld)*(y[idx+1]+metric_continuity)-
-          //   3.0*a_prime_over_a*(ceff2_nufld-w_nufld)*y[idx];
+        // dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity)
+        //                                           -3.0*a_prime_over_a*(cf2_nufld-w_nufld)*delta_nufld
+        //                                           -9.0*(1+w_nufld)*(cf2_nufld-ca2_nufld)*pow(a_prime_over_a,2.)*theta_nufld/k2;
 
-          // /** - -----> exact euler equation */
+        // dy[pv->index_pt_theta_nufld1+n_nufld]  = -k2*shear_nufld[n_nufld]
+        //                                           +metric_euler
+        //                                           -(1.-3.*cf2_nufld)*a_prime_over_a*theta_nufld
+        //                                           +cf2_nufld/(1+w_nufld)*k2*delta_nufld;
 
-          // dy[idx+1] = -a_prime_over_a*(1.0-3.0*ca2_nufld)*y[idx+1]+
-          //   ceff2_nufld/(1.0+w_nufld)*k2*y[idx]-k2*y[idx+2]
-          //   + metric_euler;
 
-          // /** - -----> different ansatz for approximate shear derivative */
+        idx = pv->index_pt_psi0_nufld1;
 
-          // if (ppr->nufld_fluid_approximation == nufldfa_mb) {
+        for (index_q=0; index_q < pv->q_size_nufld[n_nufld]; index_q++) {
 
-          //   // dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-pseudo_p_nufld/p_nufld_bg/3.)+1./tau)*y[idx+2]
-          //   //   +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_shear);
-          //   dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-1/3.)+1./tau)*y[idx+2]
-          //     +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_shear); // NUFLD_PERT: Obviously wrong.
-          // }
+          /** - -----> define intermediate quantities */
 
-          // if (ppr->nufld_fluid_approximation == nufldfa_hu) {
+          dlnf0_dlnq = pba->dlnf0_dlnq_nufld[n_nufld][index_q];
+          q = pba->q_nufld[n_nufld][index_q];
+          epsilon = sqrt(q*q+a2*pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]);
+          qk_div_epsilon = k*q/epsilon;
 
-          //   dy[idx+2] = -3.0*a_prime_over_a*ca2_nufld/w_nufld*y[idx+2]
-          //     +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_shear);
+          /** - -----> nufld density for given momentum bin */
 
-          // }
-
-          // if (ppr->nufld_fluid_approximation == nufldfa_CLASS) {
-
-          //   // dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-pseudo_p_nufld/p_nufld_bg/3.)+1./tau)*y[idx+2]
-          //   //   +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_ufa_class);
-          //   dy[idx+2] = -3.0*(a_prime_over_a*(2./3.-ca2_nufld-1/3.)+1./tau)*y[idx+2]
-          //     +8.0/3.0*cvis2_nufld/(1.0+w_nufld)*s_l[2]*(y[idx+1]+metric_ufa_class); // NUFLD_PERT: Obviously wrong.
-
-          // }
-
-          // /** - -----> jump to next species */
-
-          // idx += pv->l_max_nufld[n_nufld]+1;
-        }
-      }
-
-      /** - ----> second case: use exact equation (Boltzmann hierarchy on momentum grid) */
-
-      else {
-
-        class_call(sound_speed_nufld_from_tower(ppw,pba,y,delta_rho_nufld_bltz_ptr, delta_p_nufld_bltz_ptr, cs2_nufld_ptr),pba->error_message,pba->error_message);
-        class_call(shear_nufld_from_tower(ppw,pba,y,shear_nufld_ptr),pba->error_message,pba->error_message);
-
-        /** - -----> loop over species */
-
-        for (n_nufld=0; n_nufld<pv->N_nufld; n_nufld++) {
-          rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld]; /* background density */
-          p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld]; /* background pressure */
-          w_nufld = p_nufld_bg/rho_nufld_bg; /* equation of state parameter */
-          w_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]; /* derivative of the equation of state parameter */
-          w_mass_nufld = pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
-          w_prime_mass_nufld = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
-          // printf("w: %.5e, w': %.5e, w_mass: %.5e, w_mass': %.5e\n", w_nufld, w_prime_nufld, w_mass_nufld, w_prime_mass_nufld);
-          if (_FALSE_) {
-            // This is just a flag to implement (or not) the correct k->0 limit in non-standard neutrinos.
-            cs2_nufld[n_nufld] -= w_mass_nufld - w_prime_mass_nufld/(3*a_prime_over_a*(1+w_mass_nufld)); // How can I define the massive equation of state? It might be nice to have them saved in the background, right?
-            cs2_nufld[n_nufld] += w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
-          }
-          if (_FALSE_) {
-          // if (k > 0.04) {
-          // if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
-          // // if (k > 1e-10) {
-          //   // This is just a flag to implement (or not) the correct k->0 limit in non-standard neutrinos.
-          //   // cs2_nufld[n_nufld] -= w_mass_nufld - w_prime_mass_nufld/(3*a_prime_over_a*(1+w_mass_nufld)); // How can I define the massive equation of state? It might be nice to have them saved in the background, right?
-            cs2_nufld[n_nufld] = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
-          }          
-          // w_prime_nufld = 0.0;
-          // if (isnan(w_prime_nufld)) printf("w: %.5e, w': %.5e\n", w_nufld, w_prime_nufld);
-
-          /** - -----> loop over momentum */
-
-          delta_nufld = y[pv->index_pt_delta_nufld1+n_nufld];
-          theta_nufld = y[pv->index_pt_theta_nufld1+n_nufld];
-
-          // dy[pv->index_pt_delta_nufld1+n_nufld] = -(1.0+w_nufld)*(theta_nufld+metric_continuity)-
-          //   3.0*a_prime_over_a*(cs2_nufld[n_nufld]-w_nufld)*delta_nufld;
-          // dy[pv->index_pt_theta_nufld1+n_nufld] = -a_prime_over_a*(1.0-3.0*w_nufld)*theta_nufld
-          //   - w_prime_nufld/(1.0+w_nufld)*theta_nufld +
-          //   + cs2_nufld[n_nufld]/(1.0+w_nufld)*k2*delta_nufld-k2*shear_nufld[n_nufld]
-          //   + metric_euler;
+          dy[idx] = -qk_div_epsilon*y[idx+1]+metric_continuity*dlnf0_dlnq/3.;
           
-          // if (a <= 0.01047120) cs2_nufld[n_nufld] = 1./3.;
-          // if (a > 0.01047120)  cs2_nufld[n_nufld] = 0.;
-          dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity);
-          dy[pv->index_pt_delta_nufld1+n_nufld] += -3.0*a_prime_over_a*w_nufld*delta_nufld;
-          // if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
-          if (_TRUE_) {
-            dy[pv->index_pt_delta_nufld1+n_nufld] += 3.0*a_prime_over_a*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg;
-          } else {
-            dy[pv->index_pt_delta_nufld1+n_nufld] += 3.0*a_prime_over_a*cs2_nufld[n_nufld]*delta_nufld;
+          /** - -----> nufld velocity for given momentum bin */
+
+          dy[idx+1] = qk_div_epsilon/3.0*(y[idx] - 2*s_l[2]*y[idx+2])
+            -epsilon*metric_euler/(3*q*k)*dlnf0_dlnq;
+
+          /** - -----> nufld shear for given momentum bin */
+
+          dy[idx+2] = qk_div_epsilon/5.0*(2*s_l[2]*y[idx+1]-3.*s_l[3]*y[idx+3])
+            -s_l[2]*metric_shear*2./15.*dlnf0_dlnq;
+
+          /** - -----> nufld l>3 for given momentum bin */
+
+          for (l=3; l<pv->l_max_nufld[n_nufld]; l++){
+            dy[idx+l] = qk_div_epsilon/(2.*l+1.0)*(l*s_l[l]*y[idx+(l-1)]-(l+1.)*s_l[l+1]*y[idx+(l+1)]);
           }
-          // dy[pv->index_pt_delta_nufld1+n_nufld] += 3.0*a_prime_over_a*(cs2_nufld[n_nufld]-w_nufld)*delta_nufld;
-          
-          dy[pv->index_pt_theta_nufld1+n_nufld]  = -k2*shear_nufld[n_nufld]
-                                                   +metric_euler;
-          dy[pv->index_pt_theta_nufld1+n_nufld] += -a_prime_over_a*(1.0-3.0*w_nufld)*theta_nufld
-                                                   -w_prime_nufld/(1.0+w_nufld)*theta_nufld;
-          // if (fabs(cs2_nufld[n_nufld]) > 1.e2) {
-          if (_TRUE_) {
-            dy[pv->index_pt_theta_nufld1+n_nufld] += +k2*delta_p_nufld_bltz[n_nufld]/(1.+w_nufld)/rho_nufld_bg;
-          } else {
-            dy[pv->index_pt_theta_nufld1+n_nufld] += +k2*cs2_nufld[n_nufld]/(1.+w_nufld)*delta_nufld;
-          }                                                                               
 
-          // myfile = fopen("akdd_nufld.dat", "a");
-          // fprintf(myfile, "a: %.5e, k: %.5e, delta: %.5e, deltaP: %.5e\n", a, k, delta_nufld,delta_p_nufld_bltz[n_nufld]/rho_nufld_bg);
-          // // fprintf(myfile,"a: %.5e, psi0: %.5e, psi10: %.5e, psi20: %.5e, cs2: %.5e\n",a, y[idx],y[idx+10], y[idx+20], cs2_nufld[n_nufld]);
-          // fclose(myfile);
-          for (index_q=0; index_q < pv->q_size_nufld[n_nufld]; index_q++) {
+          /** - -----> nufld lmax for given momentum bin (truncation as in Ma and Bertschinger)
+              but with curvature taken into account a la arXiv:1305.3261 */
 
-            /** - -----> define intermediate quantities */
+          dy[idx+l] = qk_div_epsilon*y[idx+l-1]-(1.+l)*k*cotKgen*y[idx+l];
 
-            dlnf0_dlnq = pba->dlnf0_dlnq_nufld[n_nufld][index_q];
-            q = pba->q_nufld[n_nufld][index_q];
-            epsilon = sqrt(q*q+a2*pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]);
-            qk_div_epsilon = k*q/epsilon;
+          /** - -----> jump to next momentum bin or species */
 
-            /** - -----> nufld density for given momentum bin */
-
-            dy[idx] = -qk_div_epsilon*y[idx+1]+metric_continuity*dlnf0_dlnq/3.;
-            
-            /** - -----> nufld velocity for given momentum bin */
-
-            dy[idx+1] = qk_div_epsilon/3.0*(y[idx] - 2*s_l[2]*y[idx+2])
-              -epsilon*metric_euler/(3*q*k)*dlnf0_dlnq;
-
-            /** - -----> nufld shear for given momentum bin */
-
-            dy[idx+2] = qk_div_epsilon/5.0*(2*s_l[2]*y[idx+1]-3.*s_l[3]*y[idx+3])
-              -s_l[2]*metric_shear*2./15.*dlnf0_dlnq;
-
-            /** - -----> nufld l>3 for given momentum bin */
-
-            for (l=3; l<pv->l_max_nufld[n_nufld]; l++){
-              dy[idx+l] = qk_div_epsilon/(2.*l+1.0)*(l*s_l[l]*y[idx+(l-1)]-(l+1.)*s_l[l+1]*y[idx+(l+1)]);
-            }
-
-            /** - -----> nufld lmax for given momentum bin (truncation as in Ma and Bertschinger)
-                but with curvature taken into account a la arXiv:1305.3261 */
-
-            dy[idx+l] = qk_div_epsilon*y[idx+l-1]-(1.+l)*k*cotKgen*y[idx+l];
-
-            /** - -----> jump to next momentum bin or species */
-
-            idx += (pv->l_max_nufld[n_nufld]+1);
-          }
+          idx += (pv->l_max_nufld[n_nufld]+1);
         }
       }
     }
