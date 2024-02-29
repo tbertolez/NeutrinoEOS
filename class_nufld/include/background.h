@@ -128,6 +128,7 @@ struct background
   enum nufld_parametrisation w_nufld_fit; /** parametrisation scheme for the neutrino equation of state */
   int nufld_num_of_pars;
   double * w_nufld_pars;    /** list of parameters to describe the equation of state of the nufld species */
+  double * k_cut_nufld;
   double a_ini_nufld;       /**< Scale factor where the integration begins, for the background evolution */
   double Omega0_k;         /**< \f$ \Omega_{0_k} \f$: curvature contribution */
 

@@ -2799,6 +2799,9 @@ int input_read_parameters_species(struct file_content * pfc,
     pba->nufld_num_of_pars = nufld_num_of_pars;
     class_read_list_of_doubles_or_default("nufld_pars",pba->w_nufld_pars,0.0,nufld_num_of_pars); // NUFLD_ERROR: I don't know how to define the default value :(
 
+    /** Momentum previous to which we approximate deltaP = ca2*deltarho*/
+    class_read_list_of_doubles_or_default("k_cut_nufld",pba->k_cut_nufld,1e2,N_nufld);
+
     /** 6.g) Temperatures */
     /* Read */
     class_read_list_of_doubles_or_default("T_nufld",pba->T_nufld,pba->T_nufld_default,N_nufld);

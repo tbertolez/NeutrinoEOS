@@ -7750,7 +7750,9 @@ int perturbations_total_stress_energy(
       // if (ppw->approx[ppw->index_ap_nufldfa] == (int)nufldfa_on){
         // The perturbations are evolved integrated:
       
-      class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, delta_p_nufld_bltz_ptr, cs2_nufld_ptr), pba->error_message, pba->error_message);
+      if (k <= pba->k_cut_nufld[0]) {
+        class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, delta_p_nufld_bltz_ptr, cs2_nufld_ptr), pba->error_message, pba->error_message);
+      }
       class_call(shear_nufld_from_tower(ppw,pba,y,shear_nufld_ptr), pba->error_message, pba->error_message);
 
       for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
@@ -7758,8 +7760,6 @@ int perturbations_total_stress_energy(
         p_nufld_bg = ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
         pseudo_p_nufld = ppw->pvecback[pba->index_bg_pseudo_p_ncdm1+n_ncdm];
         rho_plus_p_nufld = rho_nufld_bg + p_nufld_bg;
-        // w_nufld = ppw->pvecback[pba->index_bg_w_nufld1+n_nufld];
-        // ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.0-pseudo_p_nufld/p_nufld_bg);
 
         // // This will be useful once we change the equation of state to a tanh, but not now.
         // w_prime_nufld = ppw->pvecback[pba->index_bg_w_prime_nufld1+n_nufld];
@@ -7777,6 +7777,11 @@ int perturbations_total_stress_energy(
         ppw->rho_plus_p_tot   += rho_plus_p_nufld;
 
         // // In which gauge is this computed?
+        if (k > pba->k_cut_nufld[n_nufld]) {
+          w_nufld = ppw->pvecback[pba->index_bg_w_nufld1+n_nufld];
+          ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.0-pseudo_p_nufld/p_nufld_bg);
+          delta_p_nufld_bltz[n_nufld] = ca2_nufld*ppw->delta_nufld[n_nufld]*rho_nufld_bg;
+        }
         ppw->delta_p += delta_p_nufld_bltz[n_nufld];
 
       }
@@ -10611,7 +10616,9 @@ int perturbations_derivs(double tau,
     //TBC: curvature in all nufld
     if (pba->has_nufld == _TRUE_) {
 
-      class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, delta_p_nufld_bltz_ptr, cs2_nufld_ptr),pba->error_message,pba->error_message);
+      if (k <= pba->k_cut_nufld[0]) { // NUFLD_TODO: This index must be changed
+        class_call(sound_speed_nufld_from_tower(ppw,pba,y,NULL, delta_p_nufld_bltz_ptr, NULL),pba->error_message,pba->error_message);
+      }
       class_call(shear_nufld_from_tower(ppw,pba,y,shear_nufld_ptr),pba->error_message,pba->error_message);
 
       /** - -----> loop over species */
@@ -10628,6 +10635,14 @@ int perturbations_derivs(double tau,
         // IF WE WANT TO USE THE deltaP FORMULATION
         // First define the derivative of w
         w_prime_nufld = -a_prime_over_a*w_nufld*((2.-3.*w_nufld)-pseudo_p_nufld/p_nufld_bg);
+
+        // Now te adiabatic sound speed
+        ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.-pseudo_p_nufld/p_nufld_bg);
+        // When we have an arbitrary equation of state, we will need
+        // ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
+
+        // Now we want to use deltaP = ca^2 deltarho for k > k_cut
+        if (k > pba->k_cut_nufld[n_nufld]) delta_p_nufld_bltz[n_nufld] = ca2_nufld*delta_nufld*rho_nufld_bg;
 
         // // When we want to use an arbitrary equation of state, we may need:
         // w_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]; /* derivative of the equation of state parameter */
@@ -10647,10 +10662,6 @@ int perturbations_derivs(double tau,
         // IF WE WANT TO USE THE ceff^2 FORMULATION
         // // Note: This does not work. Check again!
 
-        // // The adiabatic sound speed
-        // ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.-pseudo_p_nufld/p_nufld_bg);
-        // // When we have an arbitrary equation of state, we will need
-        // ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
 
         // // Sound speed in the fluid rest frame
         // cf2_nufld  = (k2*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg+3*a_prime_over_a*ca2_nufld*(1+w_nufld)*theta_nufld)/
