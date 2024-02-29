@@ -989,17 +989,15 @@ extern "C" {
                                             ErrorMsg error_message
                                             );
 
-  int sound_speed_nufld_from_tower(struct perturbations_workspace * ppw,
-                                    struct background * pba, 
-                                    double * y,
-                                    double * delta_rho,
-                                    double * delta_p,
-                                    double * c_s2);
-
-  int shear_nufld_from_tower(struct perturbations_workspace *ppw,
-                            struct background *pba, 
-                            double * y,
-                            double * shear);
+  int variables_nufld_from_tower(struct perturbations_workspace * ppw,
+                                  struct background * pba, 
+                                  double * y,
+                                  double k,
+                                  double * delta_rho,
+                                  double * delta_p,
+                                  double * c_s2,
+                                  double * theta,
+                                  double * shear);
 
 #ifdef __cplusplus
 }
