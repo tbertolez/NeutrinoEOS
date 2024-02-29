@@ -10632,49 +10632,55 @@ int perturbations_derivs(double tau,
         delta_nufld = y[pv->index_pt_delta_nufld1+n_nufld];
         theta_nufld = y[pv->index_pt_theta_nufld1+n_nufld];
 
-        // IF WE WANT TO USE THE deltaP FORMULATION
-        // First define the derivative of w
-        w_prime_nufld = -a_prime_over_a*w_nufld*((2.-3.*w_nufld)-pseudo_p_nufld/p_nufld_bg);
+        // // IF WE WANT TO USE THE deltaP FORMULATION
+        // // First define the derivative of w
+        // w_prime_nufld = -a_prime_over_a*w_nufld*((2.-3.*w_nufld)-pseudo_p_nufld/p_nufld_bg);
 
-        // Now te adiabatic sound speed
+        // // Now te adiabatic sound speed
+        // ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.-pseudo_p_nufld/p_nufld_bg);
+        // // When we have an arbitrary equation of state, we will need
+        // // ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
+
+        // // Now we want to use deltaP = ca^2 deltarho for k > k_cut
+        // if (k > pba->k_cut_nufld[n_nufld]) delta_p_nufld_bltz[n_nufld] = ca2_nufld*delta_nufld*rho_nufld_bg;
+
+        // // // When we want to use an arbitrary equation of state, we may need:
+        // // w_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]; /* derivative of the equation of state parameter */
+        // // w_mass_nufld = pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
+        // // w_prime_mass_nufld = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
+
+        // dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity)
+        //                                           +3.0*a_prime_over_a*w_nufld*delta_nufld
+        //                                           -3.0*a_prime_over_a*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg;
+         
+        // dy[pv->index_pt_theta_nufld1+n_nufld]  = -k2*shear_nufld[n_nufld]+metric_euler
+        //                                          -a_prime_over_a*(1.0-3.0*w_nufld)*theta_nufld
+        //                                          -w_prime_nufld/(1.0+w_nufld)*theta_nufld
+        //                                          +k2*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg/(1.+w_nufld);   
+
+
+        // IF WE WANT TO USE THE ceff^2 FORMULATION
+        // First we define the adiabatic sound speed
         ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.-pseudo_p_nufld/p_nufld_bg);
         // When we have an arbitrary equation of state, we will need
         // ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
 
-        // Now we want to use deltaP = ca^2 deltarho for k > k_cut
-        if (k > pba->k_cut_nufld[n_nufld]) delta_p_nufld_bltz[n_nufld] = ca2_nufld*delta_nufld*rho_nufld_bg;
-
-        // // When we want to use an arbitrary equation of state, we may need:
-        // w_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]; /* derivative of the equation of state parameter */
-        // w_mass_nufld = pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
-        // w_prime_mass_nufld = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
+        // Sound speed in the fluid rest frame
+        if (k <= pba->k_cut_nufld[n_nufld]) { // NUFLD_TODO: This index must be changed
+          cf2_nufld  = (k2*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg+3*a_prime_over_a*ca2_nufld*(1+w_nufld)*theta_nufld)/
+                        (k2*delta_nufld+3*a_prime_over_a*(1+w_nufld)*theta_nufld);
+        } else {
+          cf2_nufld  = ca2_nufld;
+        }
 
         dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity)
-                                                  +3.0*a_prime_over_a*w_nufld*delta_nufld
-                                                  -3.0*a_prime_over_a*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg;
-         
-        dy[pv->index_pt_theta_nufld1+n_nufld]  = -k2*shear_nufld[n_nufld]+metric_euler
-                                                 -a_prime_over_a*(1.0-3.0*w_nufld)*theta_nufld
-                                                 -w_prime_nufld/(1.0+w_nufld)*theta_nufld
-                                                 +k2*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg/(1.+w_nufld);   
+                                                  -3.0*a_prime_over_a*(cf2_nufld-w_nufld)*delta_nufld
+                                                  -9.0*(1+w_nufld)*(cf2_nufld-ca2_nufld)*pow(a_prime_over_a,2.)*theta_nufld/k2;
 
-
-        // IF WE WANT TO USE THE ceff^2 FORMULATION
-        // // Note: This does not work. Check again!
-
-
-        // // Sound speed in the fluid rest frame
-        // cf2_nufld  = (k2*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg+3*a_prime_over_a*ca2_nufld*(1+w_nufld)*theta_nufld)/
-        //               (k2*delta_nufld+3*a_prime_over_a*(1+w_nufld)*theta_nufld);
-
-        // dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity)
-        //                                           -3.0*a_prime_over_a*(cf2_nufld-w_nufld)*delta_nufld
-        //                                           -9.0*(1+w_nufld)*(cf2_nufld-ca2_nufld)*pow(a_prime_over_a,2.)*theta_nufld/k2;
-
-        // dy[pv->index_pt_theta_nufld1+n_nufld]  = -k2*shear_nufld[n_nufld]
-        //                                           +metric_euler
-        //                                           -(1.-3.*cf2_nufld)*a_prime_over_a*theta_nufld
-        //                                           +cf2_nufld/(1+w_nufld)*k2*delta_nufld;
+        dy[pv->index_pt_theta_nufld1+n_nufld]  = -k2*shear_nufld[n_nufld]
+                                                  +metric_euler
+                                                  -(1.-3.*cf2_nufld)*a_prime_over_a*theta_nufld
+                                                  +cf2_nufld/(1+w_nufld)*k2*delta_nufld;
 
 
         idx = pv->index_pt_psi0_nufld1;
