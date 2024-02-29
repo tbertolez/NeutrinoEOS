@@ -11,7 +11,8 @@ funs.load_style()
 ####################################################
 
 pert_lcdm  = funs.class_clout_to_df('class_nufld/output/explanatory00_cl_lensed.dat')
-pert_nufld = funs.class_clout_to_df('class_nufld/output/default_nufld_cl_lensed.dat')
+pert_nufld1 = funs.class_clout_to_df('class_nufld/output/default_nufld_1eV_1e-1_cl_lensed.dat')
+pert_nufld2 = funs.class_clout_to_df('class_nufld/output/default_nufld_1eV_1e-4_cl_lensed.dat')
 pert_ncdm  = funs.class_clout_to_df('class_nufld/output/default_ncdm_cl_lensed.dat')
 
 # # DIFFERENCE TO LAMBDA-CDM PLOTS
@@ -19,19 +20,20 @@ pert_ncdm  = funs.class_clout_to_df('class_nufld/output/default_ncdm_cl_lensed.d
 
 fig_cl, axs_cl = plt.subplots(ncols = 1, nrows = 2, figsize = (6,9))
 
-what_to_plot = 'diff-lcdm'
+what_to_plot = 'diff-ncdm'
 
 for ax_cl in axs_cl:
     ax_cl.hlines(0.0,2,2500, ls = '--', lw = 1, color = 'gray')
     if what_to_plot == 'abs':
-        ax_cl.plot(pert_nufld['l'], pert_nufld['l']*(pert_nufld['l']+1)/(2*np.pi)*pert_nufld['TT'], color = 'c', ls = '--', lw = 2, label = r'Continuity equation')
+        ax_cl.plot(pert_nufld1['l'], pert_nufld1['l']*(pert_nufld1['l']+1)/(2*np.pi)*pert_nufld1['TT'], color = 'c', ls = '--', lw = 2, label = r'Continuity equation')
         ax_cl.plot(pert_ncdm['l'], pert_ncdm['l']*(pert_ncdm['l']+1)/(2*np.pi)*pert_ncdm['TT'], color = 'r', ls = '--', lw = 2, label = r'Full Boltzmann tower')
         ax_cl.plot(pert_lcdm['l'], pert_lcdm['l']*(pert_lcdm['l']+1)/(2*np.pi)*pert_lcdm['TT'], color = 'k', ls = '--', lw = 1, label = r'LCDM')
     elif what_to_plot == 'diff-lcdm':
-        ax_cl.plot(pert_nufld['l'], (pert_nufld['TT']-pert_lcdm['TT'])/pert_lcdm['TT'], color = 'k', lw = 3, label = r'nufld')
+        ax_cl.plot(pert_nufld1['l'], (pert_nufld1['TT']-pert_lcdm['TT'])/pert_lcdm['TT'], color = 'k', lw = 3, label = r'nufld')
         ax_cl.plot(pert_ncdm['l'], (pert_ncdm['TT']-pert_lcdm['TT'])/pert_lcdm['TT'], color = 'r', ls = '--', lw = 2, label = r'ncdm')
     elif what_to_plot == 'diff-ncdm':
-        ax_cl.plot(pert_ncdm['l'], (pert_nufld['TT']-pert_ncdm['TT'])/pert_ncdm['TT'], color = 'r', ls = '--', lw = 2, label = r'nufld-to-ncdm')
+        ax_cl.plot(pert_ncdm['l'], (pert_nufld1['TT']-pert_ncdm['TT'])/pert_ncdm['TT'], color = 'r', ls = '--', lw = 2, label = r'1e-1')
+        ax_cl.plot(pert_ncdm['l'], (pert_nufld2['TT']-pert_ncdm['TT'])/pert_ncdm['TT'], color = 'r', ls = '--', lw = 2, label = r'1e-4')
     
     if what_to_plot == 'abs':
         ax_cl.set_ylabel(r'$\frac{l(l+1)}{2\pi}C_\ell^\mathrm{TT}$')
@@ -56,45 +58,11 @@ axs_cl[1].set_xscale('linear')
 fig_cl.tight_layout()
 fig_cl.savefig("comparison_cl_lensed_TT.png")
 
-# fig_cl, axs_cl = plt.subplots(ncols = 1, nrows = 2, figsize = (6,9))
-# axs_cl[0].plot(pert_nufld['l'], pert_nufld['l']*(pert_nufld['l']+1)/(2*np.pi)*pert_nufld['TT'], color = 'c', ls = '--', lw = 2, label = r'Continuity equation')
-# axs_cl[0].plot(pert_ncdm['l'], pert_ncdm['l']*(pert_ncdm['l']+1)/(2*np.pi)*pert_ncdm['TT'], color = 'r', ls = '--', lw = 2, label = r'Full Boltzmann tower')
-# axs_cl[0].plot(pert_lcdm['l'], pert_lcdm['l']*(pert_lcdm['l']+1)/(2*np.pi)*pert_lcdm['TT'], color = 'k', ls = '--', lw = 1, label = r'LCDM')
-# axs_cl[0].set_ylabel(r'$\frac{l(l+1)}{2\pi}C_\ell^\mathrm{TT}$')
-# # axs_cl[0].set_ylim(0,1e-6)
 
-# axs_cl[1].plot(pert_nufld['l'], (pert_nufld['TT']-pert_lcdm['TT'])/pert_lcdm['TT'], color = 'k', lw = 3, label = r'nufld')
-# axs_cl[1].plot(pert_ncdm['l'], (pert_ncdm['TT']-pert_lcdm['TT'])/pert_lcdm['TT'], color = 'r', ls = '--', lw = 2, label = r'ncdm')
-# axs_cl[1].set_ylabel(r'$(C_\ell^\mathrm{TT}-C_{\ell,\mathrm{exact}}^\mathrm{TT})/C_{\ell,\mathrm{exact}}^\mathrm{TT}$')
-# axs_cl[1].hlines(0.0,2,2500, ls = '--', lw = 1, color = 'gray')
+# # K_CUT COMPARISON
+fig_cl, axs_cl = plt.subplots(ncols = 1, nrows = 2, figsize = (6,9))
 
 
-# for ax_cl in axs_cl:
-#     # ax_cl.plot(pert_nufld['l'], pert_nufld['l']*(pert_nufld['l']+1)/(2*np.pi)*pert_nufld['TT'], color = 'c', ls = '--', lw = 2, label = r'Continuity equation')
-#     # ax_cl.plot(pert_ncdm['l'], pert_ncdm['l']*(pert_ncdm['l']+1)/(2*np.pi)*pert_ncdm['TT'], color = 'r', ls = '--', lw = 2, label = r'Full Boltzmann tower')
-#     # ax_cl.plot(pert_lcdm['l'], pert_lcdm['l']*(pert_lcdm['l']+1)/(2*np.pi)*pert_lcdm['TT'], color = 'k', ls = '--', lw = 1, label = r'LCDM')
-#     # ax_cl.plot(pert_nufld['l'], (pert_nufld['TT']-pert_lcdm['TT'])/pert_lcdm['TT'], color = 'k', lw = 3, label = r'nufld')
-#     # ax_cl.plot(pert_ncdm['l'], (pert_ncdm['TT']-pert_lcdm['TT'])/pert_lcdm['TT'], color = 'r', ls = '--', lw = 2, label = r'ncdm')
-#     # ax_cl.set_ylabel(r'$(C_\ell^\mathrm{TT}-C_{\ell,\mathrm{exact}}^\mathrm{TT})/C_{\ell,\mathrm{exact}}^\mathrm{TT}$')
-#     # ax_cl.set_ylabel(r'$\frac{l(l+1)}{2\pi}C_\ell^\mathrm{TT}$')
-#     ax_cl.set_xlabel(r'$\ell$')
-#     # ax_cl.set_xlim(2,2500)
-#     ax_cl.legend(fontsize = 12)
-#     ax_cl.set_xscale('linear')
-#     ax_cl.set_xlim(2,2500)
-
-# # axs_cl[1].set_xscale('log')
-# # axs_cl[1].set_xscale('linear')
-# # ax_cl.set_xscale('log')
-
-# # axs_cl[0].set_ylim(-1e-7,1e-7)
-# # axs_cl[1].set_ylim(-0.2,0.2) # 1 eV
-# # axs_cl[0].set_ylim(-0.05,0.05) # 0.1 eV
-# # axs_cl[1].set_ylim(-0.05,0.05) # 0.1 eV
-# # axs_cl[1].set_ylim(-0.002,0.002) # 0.01 eV
-
-# fig_cl.tight_layout()
-# fig_cl.savefig("zoomed_cl_lensed_TT.png")
 
 
 #######################################################
