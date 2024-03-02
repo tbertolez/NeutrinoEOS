@@ -7390,7 +7390,7 @@ int perturbations_total_stress_energy(
   double delta_p_nufld=0.;
   double rho_plus_p_nufld;
   int n_nufld;
-  double rho_nufld_bg,p_nufld_bg,pseudo_p_nufld;
+  double rho_nufld_bg,p_nufld_bg;
   double cs2_nufld[pba->N_nufld];
   double *cs2_nufld_ptr = cs2_nufld;
   double shear_nufld[pba->N_nufld];
@@ -7758,7 +7758,6 @@ int perturbations_total_stress_energy(
       for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
         rho_nufld_bg = ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
         p_nufld_bg = ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
-        pseudo_p_nufld = ppw->pvecback[pba->index_bg_pseudo_p_ncdm1+n_ncdm];
         rho_plus_p_nufld = rho_nufld_bg + p_nufld_bg;
 
         // // This will be useful once we change the equation of state to a tanh, but not now.
@@ -7778,59 +7777,12 @@ int perturbations_total_stress_energy(
 
         if (k > pba->k_cut_nufld[n_nufld]) {
           w_nufld = ppw->pvecback[pba->index_bg_w_nufld1+n_nufld];
-          ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.0-pseudo_p_nufld/p_nufld_bg);
+          ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
           delta_p_nufld_bltz[n_nufld] = ca2_nufld*ppw->delta_nufld[n_nufld]*rho_nufld_bg;
         }
         ppw->delta_p += delta_p_nufld_bltz[n_nufld];
 
       }
-
-      // // OPTION 2: Use all variables from the Boltzmann tower (should recover ncdm)
-
-      // idx = ppw->pv->index_pt_psi0_nufld1;
-
-      // for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
-        // rho_delta_nufld = 0.0;
-        // rho_plus_p_theta_nufld = 0.0;
-        // rho_plus_p_shear_nufld = 0.0;
-        // delta_p_nufld = 0.0;
-        // factor = pba->factor_nufld[n_nufld]/pow(a,4);
-
-        // for (index_q=0; index_q < ppw->pv->q_size_nufld[n_nufld]; index_q ++) {
-
-        //   q = pba->q_nufld[n_nufld][index_q];
-        //   q2 = q*q;
-        //   epsilon = sqrt(q2+pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]*a2);
-
-          // rho_delta_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
-          // rho_plus_p_theta_nufld += q2*q*pba->w_nufld[n_nufld][index_q]*y[idx+1];
-          // rho_plus_p_shear_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx+2];
-          // delta_p_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
-
-          //Jump to next momentum bin:
-        //   idx+=(ppw->pv->l_max_nufld[n_nufld]+1);
-        // }
-
-        // rho_delta_nufld *= factor;
-        // rho_plus_p_theta_nufld *= k*factor;
-        // rho_plus_p_shear_nufld *= 2.0/3.0*factor;
-        // delta_p_nufld *= factor/3.;
-
-        // if ((ppt->has_source_delta_nufld == _TRUE_) || (ppt->has_source_theta_nufld == _TRUE_) || (ppt->has_source_delta_m == _TRUE_)) {
-          // ppw->delta_nufld[n_nufld] = rho_delta_nufld/ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld];
-          // ppw->theta_nufld[n_nufld] = rho_plus_p_theta_nufld/
-          //   (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
-          // ppw->shear_nufld[n_nufld] = rho_plus_p_shear_nufld/
-            // (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
-        // }
-
-        // ppw->delta_rho += rho_delta_nufld;
-        // ppw->rho_plus_p_theta += rho_plus_p_theta_nufld;
-        // ppw->rho_plus_p_shear += rho_plus_p_shear_nufld;
-        // ppw->delta_p += delta_p_nufld;
-
-        // ppw->rho_plus_p_tot += ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
-      // }
 
       if (ppt->has_source_delta_m == _TRUE_) {
         for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
@@ -8911,7 +8863,7 @@ int perturbations_print_variables(double tau,
   /** - nufld sector begins */
   int n_nufld;
   double *delta_nufld=NULL, *theta_nufld=NULL, *shear_nufld=NULL, *delta_p_over_delta_rho_nufld=NULL, *cs2_nufld_fluid = NULL;
-  double rho_nufld_bg, p_nufld_bg, pseudo_p_nufld, ca2_nufld, w_nufld;
+  double rho_nufld_bg, p_nufld_bg, w_prime_nufld, ca2_nufld, w_nufld;
   double rho_delta_nufld = 0.0;
   double rho_plus_p_theta_nufld = 0.0;
   double rho_plus_p_shear_nufld = 0.0;
@@ -9195,10 +9147,9 @@ int perturbations_print_variables(double tau,
       for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++){
         rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld];
         p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld];
-        pseudo_p_nufld = pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld];
         w_nufld = p_nufld_bg/rho_nufld_bg;
-        ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.0-pseudo_p_nufld/p_nufld_bg);
-
+        w_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld];
+        ca2_nufld = w_nufld - w_prime_nufld/(3*a*H*(1+w_nufld));
         delta_nufld[n_nufld] = y[ppw->pv->index_pt_delta_nufld1+n_nufld];
         theta_nufld[n_nufld] = y[ppw->pv->index_pt_theta_nufld1+n_nufld];
         shear_nufld[n_nufld] = shear_nufld_bltz[n_nufld];
@@ -9734,7 +9685,7 @@ int perturbations_derivs(double tau,
 
   /* for use with non-cold dark matter with continuity equations (nufld): */
   int n_nufld;
-  double rho_nufld_bg,p_nufld_bg,pseudo_p_nufld, delta_nufld, theta_nufld;
+  double rho_nufld_bg,p_nufld_bg, delta_nufld, theta_nufld;
   double w_nufld, w_prime_nufld, w_mass_nufld, w_prime_mass_nufld;
   // double cs2_nufld[3]; // NUFLD_ERROR: This is not very general, but whatever
   // double * cs2_nufld_ptr = cs2_nufld;
@@ -10610,44 +10561,15 @@ int perturbations_derivs(double tau,
       for (n_nufld=0; n_nufld<pv->N_nufld; n_nufld++) {
         rho_nufld_bg = pvecback[pba->index_bg_rho_nufld1+n_nufld]; /* background density */
         p_nufld_bg = pvecback[pba->index_bg_p_nufld1+n_nufld]; /* background pressure */
-        pseudo_p_nufld = pvecback[pba->index_bg_pseudo_p_nufld1 + n_nufld];
         w_nufld = p_nufld_bg/rho_nufld_bg; /* equation of state parameter */
 
         delta_nufld = y[pv->index_pt_delta_nufld1+n_nufld];
         theta_nufld = y[pv->index_pt_theta_nufld1+n_nufld];
 
-        // // IF WE WANT TO USE THE deltaP FORMULATION
-        // // First define the derivative of w
-        // w_prime_nufld = -a_prime_over_a*w_nufld*((2.-3.*w_nufld)-pseudo_p_nufld/p_nufld_bg);
-
-        // // Now te adiabatic sound speed
-        // ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.-pseudo_p_nufld/p_nufld_bg);
-        // // When we have an arbitrary equation of state, we will need
-        // // ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
-
-        // // Now we want to use deltaP = ca^2 deltarho for k > k_cut
-        // if (k > pba->k_cut_nufld[n_nufld]) delta_p_nufld_bltz[n_nufld] = ca2_nufld*delta_nufld*rho_nufld_bg;
-
-        // // // When we want to use an arbitrary equation of state, we may need:
-        // // w_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]; /* derivative of the equation of state parameter */
-        // // w_mass_nufld = pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
-        // // w_prime_mass_nufld = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
-
-        // dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity)
-        //                                           +3.0*a_prime_over_a*w_nufld*delta_nufld
-        //                                           -3.0*a_prime_over_a*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg;
-         
-        // dy[pv->index_pt_theta_nufld1+n_nufld]  = -k2*shear_nufld[n_nufld]+metric_euler
-        //                                          -a_prime_over_a*(1.0-3.0*w_nufld)*theta_nufld
-        //                                          -w_prime_nufld/(1.0+w_nufld)*theta_nufld
-        //                                          +k2*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg/(1.+w_nufld);   
-
-
-        // IF WE WANT TO USE THE ceff^2 FORMULATION
+        // WE USE THE ceff^2 FORMULATION
         // First we define the adiabatic sound speed
-        ca2_nufld = w_nufld/3.0/(1.0+w_nufld)*(5.-pseudo_p_nufld/p_nufld_bg);
-        // When we have an arbitrary equation of state, we will need
-        // ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
+        w_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld];
+        ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
 
         // Sound speed in the fluid rest frame
         if (k <= pba->k_cut_nufld[n_nufld]) { // NUFLD_TODO: This index must be changed

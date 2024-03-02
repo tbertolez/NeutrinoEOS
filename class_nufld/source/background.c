@@ -568,9 +568,9 @@ int background_functions(
                                     a,
                                     pba->w_nufld_fit,
                                     pba->w_nufld_pars, 
-                                    w_nufld_ptr+n_nufld, // NUFLD_DOUBT: Is this correct?
+                                    w_nufld_ptr+n_nufld, 
                                     dw_over_da_nufld_ptr+n_nufld, 
-                                    intw_nufld_ptr+n_nufld), // NUFLD_DOUBT: Is this correct?
+                                    intw_nufld_ptr+n_nufld), 
                  pba->error_message, 
                  pba->error_message)
 
@@ -593,33 +593,32 @@ int background_functions(
                  pba->error_message,
                  pba->error_message);
 
-      // myfile = fopen("eos_nufld.dat", "a");
-      // fprintf(myfile, "a: %.5e, w: %.5e, intw: %.5e, rho_nufld: %.5e, p_nufld: %.5e\n", a, w_nufld[n_nufld],
-      //                                                                          intw_nufld[n_nufld],
-      //                                                                          rho_nufld,
-      //                                                                          p_nufld);
-      // fclose(myfile);                                                                               
+
+      // This is alright. In principle one will change the previous function
+      // and leave this intact. 
+      pvecback[pba->index_bg_rho_nufld1+n_nufld] = rho_nufld;
+      rho_tot += rho_nufld;
+      pvecback[pba->index_bg_p_nufld1+n_nufld] = p_nufld;
+      p_tot += p_nufld;  
+
+      // Right now this line is necessary. 
+      // As soon as I check that everything works in terms of w and w_prime,
+      // this line is redundant and can go away.
+      w_nufld[n_nufld] = p_nufld/rho_nufld;
+
       pvecback[pba->index_bg_w_nufld1+n_nufld] = p_nufld/rho_nufld;
       pvecback[pba->index_bg_intw_nufld1+n_nufld] = intw_nufld[n_nufld];
-      // p_nufld = rho_nufld*w_nufld[n_nufld]; // In principle it is already computed in the previous function
-      // NUFLD_TODO: I need to save in the background the derivative of w_nufld as a function of time, for the perturbations.
 
+      rho_r += 3*p_nufld;
+      rho_m += rho_nufld-3*p_nufld;
 
-      // pvecback[pba->index_bg_rho_nufld1+n_nufld] = rho_nufld; // NUFLD_CMB_CHECKS: Uncomment this
-      // rho_tot += rho_nufld; // NUFLD_CMB_CHECKS: Uncomment this
-      // pvecback[pba->index_bg_p_nufld1+n_nufld] = p_nufld; // NUFLD_CMB_CHECKS: Uncomment this
-      // p_tot += p_nufld; // NUFLD_CMB_CHECKS: Uncomment this
-      // NUFLD_DOUBT: If I am correct, the pseudo_p need not be computed. We'll compute the sound speed with the full Boltzmann tower.
-      // pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld] = pseudo_p_nufld;
-      /** See e.g. Eq. A6 in 1811.00904. */
-      // dp_dloga += (pseudo_p_nufld - 5*p_nufld);
+      // This should be uncommented.
+      // Note: dp/dloga = a dp/da = a d(w rho)/da = a rho dw/da + 3w(1+w)rho
+      // dp_dloga += a*rho_nufld*dw_over_da_nufld[n_nufld] +
+      //             3*w_nufld[n_nufld]*(1+w_nufld[n_nufld])*rho_nufld;
 
-      /* (3 p_nufld1) is the "relativistic" contribution to rho_nufld1 */
-      // rho_r += 3.* p_nufld; // NUFLD_CMB_CHECKS: This cannot be removed
-
-      /* (rho_nufld1 - 3 p_nufld1) is the "non-relativistic" contribution
-         to rho_nufld1 */
-      // rho_m += rho_nufld - 3.* p_nufld; // NUFLD_CMB_CHECKS: This cannot be removed
+      // We may need the ncdm equation of state and its derivative.
+      // For the future, nothing should contribute to background here!!!
 
       // We now compute the massive equation of state:
       class_call(background_ncdm_momenta(
@@ -640,17 +639,11 @@ int background_functions(
       w_nufld_mass = p_nufld_mass/rho_nufld_mass;
       pvecback[pba->index_bg_w_nufld_mass1 + n_nufld] = w_nufld_mass;
 
-      // NUFLD_CMB_CHECKS: Comment the next lines
-      pvecback[pba->index_bg_rho_nufld1+n_nufld] = rho_nufld_mass;
-      rho_tot += rho_nufld_mass;
-      pvecback[pba->index_bg_p_nufld1+n_nufld] = p_nufld_mass;
-      p_tot += p_nufld_mass;
+      // This line is necessary for computing w_prime_mass, but not outside of background.c
+      // One should try to think of a more efficient way to implement it. 
       pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld] = pseudo_p_nufld_mass;
+      // The following line should be removed in the future, as soon as I check everything works.
       dp_dloga += (pseudo_p_nufld_mass - 5*p_nufld_mass);
-
-      rho_r += 3*p_nufld_mass;
-      rho_m += rho_nufld_mass-3*p_nufld_mass;
-
     }
   }
 
@@ -727,17 +720,10 @@ int background_functions(
     for (n_nufld=0; n_nufld<pba->N_nufld; n_nufld++) {
       a_prime_over_a = pvecback[pba->index_bg_H]*a;
 
-      // NUFLD_ERROR: Ojo lorito! pseudo_p_nufld_mass i p_nufld_mass no estan definits diferentment per a cada neutrí!
-      cg2_nufld_mass = w_nufld_mass/3./(1.+w_nufld_mass)*(5.-pseudo_p_nufld_mass/p_nufld_mass);
-      w_prime_nufld_mass = 3*a_prime_over_a*(1.+w_nufld_mass)*(w_nufld_mass-cg2_nufld_mass);
-      pvecback[pba->index_bg_w_prime_nufld_mass1 + n_nufld] = w_prime_nufld_mass;
-
-      // pvecback[pba->index_bg_w_prime_nufld1+n_nufld] = a*a_prime_over_a*dw_over_da_nufld[n_nufld];
-      pvecback[pba->index_bg_w_prime_nufld1+n_nufld] = w_prime_nufld_mass;
-      p_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld]*pvecback[pba->index_bg_rho_nufld1+n_nufld]
-                     -3*a*pvecback[pba->index_bg_H]*w_nufld[n_nufld]*(1.+w_nufld[n_nufld])*pvecback[pba->index_bg_rho_nufld1+n_nufld];
-      // pvecback[pba->index_bg_p_tot_prime] += p_prime_nufld; // NUFLD_CMB_CHECKS: Uncomment/check this!!
-
+      pvecback[pba->index_bg_w_prime_nufld_mass1 + n_nufld] = -a_prime_over_a*w_nufld[n_nufld]*((2.-3.*w_nufld[n_nufld])-pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld]/pvecback[pba->index_bg_p_nufld1+n_nufld]);
+      // In principle, the following line must be changed. Up to now, everything should be fine.
+      pvecback[pba->index_bg_w_prime_nufld1 + n_nufld] = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
+      // pvecback[pba->index_bg_w_prime_nufld1 + n_nufld] = a*a_prime_over_a*[n_nufld]
     }
   }
 
