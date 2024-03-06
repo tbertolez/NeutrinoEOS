@@ -9686,7 +9686,7 @@ int perturbations_derivs(double tau,
   /* for use with non-cold dark matter with continuity equations (nufld): */
   int n_nufld;
   double rho_nufld_bg,p_nufld_bg, delta_nufld, theta_nufld;
-  double w_nufld, w_prime_nufld, w_mass_nufld, w_prime_mass_nufld;
+  double w_nufld, w_prime_nufld, w_nufld_mass, w_prime_nufld_mass;
   // double cs2_nufld[3]; // NUFLD_ERROR: This is not very general, but whatever
   // double * cs2_nufld_ptr = cs2_nufld;
   double delta_rho_nufld_bltz[3];
@@ -9697,7 +9697,7 @@ int perturbations_derivs(double tau,
   double * theta_nufld_bltz_ptr = theta_nufld_bltz;
   double shear_nufld_bltz[3];
   double * shear_nufld_bltz_ptr = shear_nufld_bltz;
-  double cf2_nufld, ca2_nufld;
+  double cf2_nufld, ca2_nufld, ca2_nufld_mass;
 
   /* for use with curvature */
   double cotKgen, sqrt_absK;
@@ -10572,11 +10572,14 @@ int perturbations_derivs(double tau,
         ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
 
         // Sound speed in the fluid rest frame
+        w_nufld_mass = pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
+        w_prime_nufld_mass = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
+        ca2_nufld_mass = w_nufld_mass - w_prime_nufld_mass/(3*a_prime_over_a*(1+w_nufld_mass));
         if (k <= pba->k_cut_nufld[n_nufld]) { // NUFLD_TODO: This index must be changed
-          cf2_nufld  = (k2*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg+3*a_prime_over_a*ca2_nufld*(1+w_nufld)*theta_nufld_bltz[n_nufld])/
+          cf2_nufld  = (k2*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg+3*a_prime_over_a*ca2_nufld_mass*(1+w_nufld)*theta_nufld_bltz[n_nufld])/
                         (k2*delta_rho_nufld_bltz[n_nufld]/rho_nufld_bg+3*a_prime_over_a*(1+w_nufld)*theta_nufld_bltz[n_nufld]);
         } else {
-          cf2_nufld  = ca2_nufld;
+          cf2_nufld  = ca2_nufld_mass;
         }
 
         dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity)
