@@ -576,20 +576,17 @@ int background_functions(
 
       /* function returning background nufld[n_nufld] quantities (only
          those for which non-NULL pointers are passed) */
-      class_call(background_ncdm_momenta(
+      class_call(background_nufld_momenta(
                                          pba->q_nufld_bg[n_nufld],
                                          pba->w_nufld_bg[n_nufld],
                                          pba->q_size_nufld_bg[n_nufld],
-                                         pba->M_nufld[n_nufld], // NUFLD_CHECK: The mass enters, but should be redundant at background level
                                          pba->factor_nufld[n_nufld],
                                          1./a-1.,
-                                        //  w_nufld_ptr[n_nufld],
-                                        //  intw_nufld_ptr[n_nufld],
+                                         w_nufld_ptr[n_nufld],
+                                         intw_nufld_ptr[n_nufld],
                                          NULL,
                                          &rho_nufld,
-                                         &p_nufld,
-                                         NULL,
-                                         NULL),
+                                         &p_nufld),
                  pba->error_message,
                  pba->error_message);
 
@@ -604,7 +601,7 @@ int background_functions(
       // Right now this line is necessary. 
       // As soon as I check that everything works in terms of w and w_prime,
       // this line is redundant and can go away.
-      w_nufld[n_nufld] = p_nufld/rho_nufld;
+      // w_nufld[n_nufld] = p_nufld/rho_nufld;
 
       pvecback[pba->index_bg_w_nufld1+n_nufld] = p_nufld/rho_nufld;
       pvecback[pba->index_bg_intw_nufld1+n_nufld] = intw_nufld[n_nufld];
@@ -612,13 +609,12 @@ int background_functions(
       rho_r += 3*p_nufld;
       rho_m += rho_nufld-3*p_nufld;
 
-      // This should be uncommented.
       // Note: dp/dloga = a dp/da = a d(w rho)/da = a rho dw/da + 3w(1+w)rho
-      // dp_dloga += a*rho_nufld*dw_over_da_nufld[n_nufld] +
-      //             3*w_nufld[n_nufld]*(1+w_nufld[n_nufld])*rho_nufld;
+      dp_dloga += a*rho_nufld*dw_over_da_nufld[n_nufld] +
+                  3*w_nufld[n_nufld]*(1+w_nufld[n_nufld])*rho_nufld;
 
       // We may need the ncdm equation of state and its derivative.
-      // For the future, nothing should contribute to background here!!!
+      // Nothing should contribute to background here!!!
 
       // We now compute the massive equation of state:
       class_call(background_ncdm_momenta(
@@ -642,8 +638,6 @@ int background_functions(
       // This line is necessary for computing w_prime_mass, but not outside of background.c
       // One should try to think of a more efficient way to implement it. 
       pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld] = pseudo_p_nufld_mass;
-      // The following line should be removed in the future, as soon as I check everything works.
-      dp_dloga += (pseudo_p_nufld_mass - 5*p_nufld_mass);
     }
   }
 
@@ -722,8 +716,8 @@ int background_functions(
 
       pvecback[pba->index_bg_w_prime_nufld_mass1 + n_nufld] = -a_prime_over_a*w_nufld[n_nufld]*((2.-3.*w_nufld[n_nufld])-pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld]/pvecback[pba->index_bg_p_nufld1+n_nufld]);
       // In principle, the following line must be changed. Up to now, everything should be fine.
-      pvecback[pba->index_bg_w_prime_nufld1 + n_nufld] = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
-      // pvecback[pba->index_bg_w_prime_nufld1 + n_nufld] = a*a_prime_over_a*[n_nufld]
+      // pvecback[pba->index_bg_w_prime_nufld1 + n_nufld] = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
+      pvecback[pba->index_bg_w_prime_nufld1 + n_nufld] = a*a_prime_over_a*dw_over_da_nufld[n_nufld];
     }
   }
 
@@ -785,22 +779,14 @@ double w_nufld_tanh(
                     double k,
                     double a_0) {
   
-  // double c, b;
-
   return 1./6.*(1.-tanh(k*log(a/a_0)));
-  // c = 1./3.*(1-1/(1+tanh(k*log(1/a_0))));
-  // b = -1./3./(1+tanh(k*log(1/a_0)));
-  // return c+b*tanh(k*log(a/a_0));
 }
 
 double dw_over_da_nufld_tanh(
                              double a,
                              double k,
                              double a_0) {
-  // double b;
 
-  // b = -1./3./(1+tanh(k*log(1/a_0)));
-  // return b*k/a/pow(cosh(k*log(a/a_0)),2);
   return -k/(6.*a)/pow(cosh(k*log(a/a_0)),2.);
 }
 
@@ -808,14 +794,7 @@ double integral_w_nufld_tanh(
                              double a,
                              double k,
                              double a_0) {
-  // double b, c, int_a, int_a_today;
-  // c = 1./3.*(1-1/(1+tanh(k*log(1/a_0))));
-  // b = -1./3./(1+tanh(k*log(1/a_0)));
-  // int_a = (1+c)*log(a)+b/k*log(cosh(k*log(a/a_0)));
-  // int_a_today = b/k*log(cosh(k*log(1.0/a_0)));
-  // return exp(-3*(int_a - int_a_today));
 
-  // The following assumes k = 1, else we need hypergeometric functions
   double int_a,exp_a_ini;
   int_a = 7.*log(a)/6. - log(cosh(k*log(a/a_0)))/(6.*k);
   exp_a_ini = pow(2.,1/(2.*k))/sqrt(a_0); // if a_ini << a_0, we can remove the a_ini^4 dependency in exp(-3*int), and this is what remains
@@ -2397,7 +2376,6 @@ int background_nufld_momenta(
                             double * qvec,
                             double * wvec,
                             int qsize,
-                            double M,
                             double factor,
                             double z,
                             double w_nufld, // equation of state 
@@ -2451,100 +2429,6 @@ int background_nufld_momenta(
   // if (drho_dM!=NULL) *drho_dM *= factor2;
   // if (pseudo_p!=NULL) *pseudo_p *=factor2;
   if (p!=NULL) *p = *rho*w_nufld;
-
-  return _SUCCESS_;
-}
-
-/**
- * For a given nufld species: given the quadrature weights, the mass
- * and the redshift, find background quantities by a quick weighted
- * sum over. The difference with the previous functions is that this
- * one does not take into account an arbitrary equation of state,
- * but just the mass, as with standard massive neutrinos (ncdm).
- * Input parameters passed as NULL pointers are not
- * evaluated for speed-up.
- * 
- *
- * @param qvec     Input: sampled momenta
- * @param wvec     Input: quadrature weights
- * @param qsize    Input: number of momenta/weights
- * @param M        Input: mass
- * @param factor   Input: normalization factor for the p.s.d.
- * @param z        Input: redshift
- * @param n        Output: number density
- * @param rho      Output: energy density
- * @param p        Output: pressure
- * @param drho_dM  Output: derivative used in next function
- * @param pseudo_p Output: pseudo-pressure used in perturbation module for fluid approx
- *
- */
-
-int background_massive_nufld_momenta(
-                            /* Only calculate for non-NULL pointers: */
-                            double * qvec,
-                            double * wvec,
-                            int qsize,
-                            double M,
-                            double factor,
-                            double z,
-                            double * n,
-                            double * rho, // density
-                            double * p,   // pressure
-                            double * drho_dM,  // d rho / d M used in next function
-                            double * pseudo_p  // pseudo-p used in ncdm fluid approx
-                            ) {
-
-  class_call(background_ncdm_momenta(qvec, 
-                                     wvec, 
-                                     qsize, 
-                                     M, 
-                                     factor, 
-                                     z, 
-                                     n, 
-                                     rho, 
-                                     p, 
-                                     drho_dM, 
-                                     pseudo_p),
-             NULL, NULL); // This is wrong, but whatever.
-  // int index_q;
-  // double epsilon;
-  // double q2;
-  // double factor2;
-  // /** Summary: */
-
-  // /** - rescale normalization at given redshift */
-  // factor2 = factor*pow(1+z,4);
-
-  // /** - initialize quantities */
-  // if (n!=NULL) *n = 0.;
-  // if (rho!=NULL) *rho = 0.;
-  // if (p!=NULL) *p = 0.;
-  // if (drho_dM!=NULL) *drho_dM = 0.;
-  // if (pseudo_p!=NULL) *pseudo_p = 0.;
-
-  // /** - loop over momenta */
-  // for (index_q=0; index_q<qsize; index_q++) {
-
-  //   /* squared momentum */
-  //   q2 = qvec[index_q]*qvec[index_q];
-
-  //   /* energy */
-  //   epsilon = sqrt(q2+M*M/(1.+z)/(1.+z));
-
-  //   /* integrand of the various quantities */
-  //   if (n!=NULL) *n += q2*wvec[index_q];
-  //   if (rho!=NULL) *rho += q2*epsilon*wvec[index_q];
-  //   if (p!=NULL) *p += q2*q2/3./epsilon*wvec[index_q];
-  //   if (drho_dM!=NULL) *drho_dM += q2*M/(1.+z)/(1.+z)/epsilon*wvec[index_q];
-  //   if (pseudo_p!=NULL) *pseudo_p += pow(q2/epsilon,3)/3.0*wvec[index_q];
-  // }
-
-  // /** - adjust normalization */
-  // if (n!=NULL) *n *= factor2/(1.+z);
-  // if (rho!=NULL) *rho *= factor2;
-  // if (p!=NULL) *p *= factor2;
-  // if (drho_dM!=NULL) *drho_dM *= factor2;
-  // if (pseudo_p!=NULL) *pseudo_p *=factor2;
 
   return _SUCCESS_;
 }
@@ -2778,30 +2662,16 @@ int background_checks(
                pba->Omega0_nufld[n_nufld],
                pba->m_nufld_in_eV[n_nufld]*pba->deg_nufld[n_nufld]/pba->Omega0_nufld[n_nufld]/pba->h/pba->h);
 
-        class_call(background_w_nufld(pba,
-                                      1.0,
-                                      pba->w_nufld_fit,
-                                      pba->w_nufld_pars,
-                                      w_nufld_ptr+n_nufld, // NUFLD_DOUBT: Is this correct?
-                                      NULL,
-                                      intw_nufld_ptr+n_nufld), // NUFLD_DOUBT: Is this correct?
-                   pba->error_message,
-                   pba->error_message);
-
         /* call this function to get rho_nufld */
-        background_ncdm_momenta(pba->q_nufld_bg[n_nufld],
+        background_nufld_momenta(pba->q_nufld_bg[n_nufld],
                                 pba->w_nufld_bg[n_nufld],
                                 pba->q_size_nufld_bg[n_nufld],
-                                // pba->M_nufld[n_nufld],
-                                0.,
                                 pba->factor_nufld[n_nufld],
                                 0.,
-                                // w_nufld_ptr[n_nufld],
-                                // intw_nufld_ptr[n_nufld], // This should be 1, or something is wrong
+                                1/3,
+                                1., // This should be 1, or something is wrong
                                 NULL,
                                 &rho_nufld_rel,
-                                NULL,
-                                NULL,
                                 NULL);
 
         /* inform user of the contribution of each species to
@@ -3210,20 +3080,16 @@ int background_initial_conditions(
                    pba->error_message);
 
 
-        class_call(background_ncdm_momenta(pba->q_nufld_bg[n_nufld],
-                                           pba->w_nufld_bg[n_nufld],
-                                           pba->q_size_nufld_bg[n_nufld],
-                                           pba->M_nufld[n_nufld],
-                                           pba->factor_nufld[n_nufld],
-                                           1./a-1.0,
-                                          //  w_nufld[n_nufld],
-                                          //  1.,
-                                          //  intw_nufld_ptr[n_nufld], // We're computing rho_ini, this factor is always with respect to rho_ini
-                                           NULL,
-                                           &rho_nufld,
-                                           &p_nufld,
-                                           NULL,
-                                           NULL),
+        class_call(background_nufld_momenta(pba->q_nufld_bg[n_nufld],
+                                            pba->w_nufld_bg[n_nufld],
+                                            pba->q_size_nufld_bg[n_nufld],
+                                            pba->factor_nufld[n_nufld],
+                                            1./a-1.0,
+                                            w_nufld[n_nufld],
+                                            intw_nufld_ptr[n_nufld], // We're computing rho_ini, this factor is always with respect to rho_ini
+                                            NULL,
+                                            &rho_nufld,
+                                            &p_nufld),
                    pba->error_message,
                    pba->error_message);
         rho_nufld_rel_tot += 3.*p_nufld;

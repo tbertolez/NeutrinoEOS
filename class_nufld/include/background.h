@@ -592,7 +592,6 @@ int background_w_nufld(
                               double * qvec,
                               double * wvec,
                               int qsize,
-                              double M,
                               double factor,
                               double z,
                               double w_nufld,
