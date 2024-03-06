@@ -23,7 +23,7 @@ cols_bkg_nufld = ['z','t','tau','H','x','Dang','Dlum','rs','rho_g', 'rho_b','rho
                   'rho_tot', 'p_tot', 'p_tot_prime', 'gr.fac.D', 'gr.fac.f']
 
 cols_bkg_ncdm =  ['z','t','tau','H','x','Dang','Dlum','rs','rho_g', 'rho_b','rho_cdm', 
-                  'rho_ncdm[0]', 'p_ncdm[0]', 'rho_lambda', 'rho_ur', 'rho_crit',
+                  'rho_ncdm[0]', 'p_ncdm[0]', 'pseudo_p_ncdm[0]', 'rho_lambda', 'rho_ur', 'rho_crit',
                   'rho_tot', 'p_tot', 'p_tot_prime', 'gr.fac.D', 'gr.fac.f']
 
 def class_bkgout_to_df(file, cols = cols_bkg_nufld):
@@ -127,10 +127,10 @@ def class_tkout_to_df(file):
     tkdata = pd.DataFrame(nptkdata,columns=cols_tk)
     return tkdata
 
-planck_data = np.loadtxt("planck_data.dat")
+# planck_data = np.loadtxt("planck_data.dat")
 # CMB SUPER PLOT
 
-def prepare_cmb_super_plot(ymin = -1.5e-3, ymax = 4e-3):
+def prepare_cmb_super_plot(ymin = -1.5e-3, ymax = 4e-3, ylabel = r'$C_\ell/C_\ell^\mathrm{ncdm}-1$'):
     fig = plt.figure(figsize=(9, 7.5), tight_layout=True)
     fig.tight_layout()
     grid = plt.GridSpec(4, 4, hspace=0., wspace=0.)
@@ -222,7 +222,7 @@ def prepare_cmb_super_plot(ymin = -1.5e-3, ymax = 4e-3):
     plt.setp(tr.get_yticklabels(), visible=False)
 
     #labels
-    bl.set_ylabel(r'$C_\ell/C_\ell^\mathrm{ncdm}-1$')
+    bl.set_ylabel(ylabel)
     tl.set_ylabel(r'$\frac{\ell(\ell+1)}{2\pi} C_\ell$ [$\mu$K$^2$]')
     ax.xaxis.set_label_coords(0.35, -0.07)
     ax.set_xlabel(r'$\ell$')

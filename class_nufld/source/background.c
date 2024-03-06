@@ -801,6 +801,56 @@ double integral_w_nufld_tanh(
   return exp(-3*int_a)*exp_a_ini;
 }
 
+double w_nufld_sigm(
+                    double a,
+                    double k,
+                    double a_0) {
+  
+  return 1./3.-1./3./(1+exp(-2*k*log(a/a_0)));
+}
+
+double dw_over_da_nufld_sigm(
+                             double a,
+                             double k,
+                             double a_0) {
+  
+  return -(pow(a/a_0,-1.-2*k)*2*k)/(3*pow(1+pow(a/a_0,-2*k),2.)*a_0);
+
+}
+
+double integral_w_nufld_sigm(
+                             double a,
+                             double k,
+                             double a_0) {
+  return pow(1.+pow(a/a_0,2*k),1./2./k)/pow(a,4.);
+}
+
+double w_nufld_sqrt(
+                    double a,
+                    double k,
+                    double a_0) {
+  
+  return 1/6.*(1.-log(a/a_0)/sqrt(k*k+pow(log(a/a_0),2.)));
+}
+
+double dw_over_da_nufld_sqrt(
+                             double a,
+                             double k,
+                             double a_0) {
+  double dwda;
+
+  dwda = pow(log(a/a_0),2)/a/pow(k*k+pow(log(a/a_0),2),3./2.);
+  dwda -= 1./a/sqrt(k*k+pow(log(a/a_0),2.));
+  return dwda/6.;
+}
+
+double integral_w_nufld_sqrt(
+                             double a,
+                             double k,
+                             double a_0) {
+  return exp(1./2.*sqrt(k*k+pow(log(a/a_0),2.)))/sqrt(pow(a,7.)*a_0);
+}
+
 int background_w_nufld(
                        struct background *pba,
                        double a,
@@ -820,11 +870,23 @@ int background_w_nufld(
     if (w_nufld != NULL) *w_nufld = w_nufld_tanh(a,k,a_0);
     if (dw_over_da_nufld != NULL) *dw_over_da_nufld = dw_over_da_nufld_tanh(a,k,a_0);
     if (integral_nufld != NULL) *integral_nufld = integral_w_nufld_tanh(a,k,a_0);
-    // if (integral_nufld != NULL) *integral_nufld = integral_w_nufld_tanh(a,k,a_0);
-    // printf("intw: %.5e, \n", integral_w_nufld_tanh(a,k,a_0));
-
   }
-  // printf("inside w_nufld, w = %.5e, a^3(1+w) = %.5e, integral = %.5e\n", w_nufld_tanh(a,k,a_0), pow(a,3*(1+w_nufld_tanh(a,k,a_0))),integral_w_nufld_tanh(a,k,a_0));
+  else if (w_nufld_fit == nufld_sigm) {
+    // In sigm eos, pars[0] = k, pars[1] = a_0.
+    k = pars[0];
+    a_0 = pars[1];
+    if (w_nufld != NULL) *w_nufld = w_nufld_sigm(a,k,a_0);
+    if (dw_over_da_nufld != NULL) *dw_over_da_nufld = dw_over_da_nufld_sigm(a,k,a_0);
+    if (integral_nufld != NULL) *integral_nufld = integral_w_nufld_sigm(a,k,a_0);
+  }  
+  else if (w_nufld_fit == nufld_sqrt) {
+    // In sqrt eos, pars[0] = k, pars[1] = a_0.
+    k = pars[0];
+    a_0 = pars[1];
+    if (w_nufld != NULL) *w_nufld = w_nufld_sqrt(a,k,a_0);
+    if (dw_over_da_nufld != NULL) *dw_over_da_nufld = dw_over_da_nufld_sqrt(a,k,a_0);
+    if (integral_nufld != NULL) *integral_nufld = integral_w_nufld_sqrt(a,k,a_0);
+  }  
   else if (w_nufld_fit == nufld_ur) {
     if (w_nufld != NULL) *w_nufld = 1./3.0;
     if (dw_over_da_nufld != NULL) *dw_over_da_nufld = 0.0;
@@ -3367,6 +3429,8 @@ int background_output_titles(
       class_store_columntitle(titles,tmp,_TRUE_);
       sprintf(tmp,"(.)p_ncdm[%d]",n);
       class_store_columntitle(titles,tmp,_TRUE_);
+      sprintf(tmp,"(.)pseudo_p_ncdm[%d]",n);
+      class_store_columntitle(titles,tmp,_TRUE_);      
     }
   }
   if (pba->has_nufld == _TRUE_) {
@@ -3457,6 +3521,7 @@ int background_output_data(
       for (n=0; n<pba->N_ncdm; n++) {
         class_store_double(dataptr,pvecback[pba->index_bg_rho_ncdm1+n],_TRUE_,storeidx);
         class_store_double(dataptr,pvecback[pba->index_bg_p_ncdm1+n],_TRUE_,storeidx);
+        class_store_double(dataptr,pvecback[pba->index_bg_pseudo_p_ncdm1+n],_TRUE_,storeidx);
       }
     }
     if (pba->has_nufld == _TRUE_) {

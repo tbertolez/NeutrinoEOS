@@ -35,7 +35,7 @@ enum interpolation_method {inter_normal, inter_closeby};
 
 /** list of possible parametrisations of the neutrino equation of state */
 
-enum nufld_parametrisation {nufld_tanh,nufld_steps,nufld_ur};
+enum nufld_parametrisation {nufld_tanh,nufld_sigm,nufld_sqrt,nufld_steps,nufld_ur};
 
 /**
  * background structure containing all the background information that
@@ -488,15 +488,45 @@ double integral_w_nufld_tanh(
                              double k,
                              double a_0);
 
-int background_w_nufld(
-                       struct background *pba,
-                       double a,
-                       int w_nufld_fit,
-                       double *pars,
-                       double *w_nufld,
-                       double *dw_over_da_nufld,
-                       double *integral_nufld                       
-                       );
+  double w_nufld_sigm(
+                      double a,
+                      double k,
+                      double a_0);
+
+  double dw_over_da_nufld_sigm(
+                              double a,
+                              double k,
+                              double a_0);
+
+  double integral_w_nufld_sigm(
+                              double a,
+                              double k,
+                              double a_0);     
+
+  double w_nufld_sqrt(
+                      double a,
+                      double k,
+                      double a_0);
+
+  double dw_over_da_nufld_sqrt(
+                              double a,
+                              double k,
+                              double a_0);
+
+  double integral_w_nufld_sqrt(
+                              double a,
+                              double k,
+                              double a_0);                                                         
+
+  int background_w_nufld(
+                        struct background *pba,
+                        double a,
+                        int w_nufld_fit,
+                        double *pars,
+                        double *w_nufld,
+                        double *dw_over_da_nufld,
+                        double *integral_nufld                       
+                        );
 
   int background_w_fld(
                        struct background * pba,

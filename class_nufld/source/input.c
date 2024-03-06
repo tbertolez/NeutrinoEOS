@@ -2783,6 +2783,12 @@ int input_read_parameters_species(struct file_content * pfc,
       if ((strstr(string1,"tanh") != NULL) || (strstr(string1,"TANH") != NULL)) {
         pba->w_nufld_fit = nufld_tanh;
       }
+      else if ((strstr(string1,"sigm") != NULL) || (strstr(string1,"SIGM") != NULL)) {
+        pba->w_nufld_fit = nufld_sigm;
+      } 
+      else if ((strstr(string1,"sqrt") != NULL) || (strstr(string1,"SQRT") != NULL)) {
+        pba->w_nufld_fit = nufld_sqrt;
+      }               
       else if ((strstr(string1,"steps") != NULL) || (strstr(string1,"STEPS") != NULL)) {
         pba->w_nufld_fit = nufld_steps;
       }
