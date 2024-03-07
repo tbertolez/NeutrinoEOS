@@ -8874,10 +8874,10 @@ int perturbations_print_variables(double tau,
   double *delta_p_nufld_bltz_ptr = delta_p_nufld_bltz;  
   double cs2_nufld[3];
   double *cs2_nufld_ptr = cs2_nufld;
-  double theta_nufld_bltz[3]; // This is not very memory-efficient, but whatever
-  double *theta_nufld_bltz_ptr = theta_nufld_bltz;  
   double shear_nufld_bltz[3]; // This is not very memory-efficient, but whatever
   double *shear_nufld_bltz_ptr = shear_nufld_bltz;
+  double ceff2_nufld_bltz[3];
+  double *ceff2_nufld_bltz_ptr = ceff2_nufld_bltz;
   /** - nufld sector ends */
   double phi=0.,psi=0.,alpha=0.;
   double delta_temp=0., delta_chi=0.;
@@ -9138,8 +9138,8 @@ int perturbations_print_variables(double tau,
       class_call(variables_nufld_from_tower(ppw,pba,y,k,
                                             delta_rho_nufld_bltz_ptr,
                                             delta_p_nufld_bltz_ptr,
-                                            cs2_nufld_ptr,
-                                            theta_nufld_bltz_ptr,
+                                            ceff2_nufld_bltz_ptr,
+                                            NULL,
                                             shear_nufld_bltz_ptr),
                  pba->error_message,
                  pba->error_message);
@@ -9154,12 +9154,12 @@ int perturbations_print_variables(double tau,
         theta_nufld[n_nufld] = y[ppw->pv->index_pt_theta_nufld1+n_nufld];
         shear_nufld[n_nufld] = shear_nufld_bltz[n_nufld];
 
+        // This is the sound speed with respect to the fluid frame:
+        cs2_nufld_fluid[n_nufld] = ceff2_nufld_bltz[n_nufld];
+
         // This is the cs2_gauge sound speed:
-        delta_p_over_delta_rho_nufld[n_nufld] = cs2_nufld[n_nufld]; 
-        // This is the cs2_fluid sound speed:
-        cs2_nufld_fluid[n_nufld] = (k*k*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg+3*a*H*ca2_nufld*(1+w_nufld)*theta_nufld_bltz[n_nufld])/
-                                   (k*k*delta_rho_nufld_bltz[n_nufld]/rho_nufld_bg+3*a*H*(1+w_nufld)*theta_nufld_bltz[n_nufld]);
-      }
+        delta_p_over_delta_rho_nufld[n_nufld] = delta_p_nufld_bltz[n_nufld]/delta_rho_nufld_bltz[n_nufld]; 
+        }
     }
 
 
@@ -9545,16 +9545,19 @@ int variables_nufld_from_tower(struct perturbations_workspace * ppw,
                                 double k,
                                 double * delta_rho,
                                 double * delta_p,
-                                double * c_s2,
+                                double * ceff2,
                                 double * theta,
                                 double * shear) {
 
   int idx;
-  double a, a2, factor;
-  double rho_delta_nufld, delta_p_nufld, rho_plus_p_theta_nufld, rho_plus_p_shear_nufld, q, q2, epsilon;
+  double a, a2, H, k2, factor;
+  double rho_nufld, p_nufld, rho_delta_nufld, delta_p_nufld, rho_plus_p_theta_nufld, rho_plus_p_shear_nufld, q, q2, epsilon;
+  double w_nufld_mass, w_prime_nufld_mass, ca2_nufld_mass;
 
   a = ppw->pvecback[pba->index_bg_a];
+  H = ppw->pvecback[pba->index_bg_H];
   a2 = a*a;
+  k2 = k*k;
 
   idx = ppw->pv->index_pt_psi0_nufld1;
 
@@ -9565,6 +9568,9 @@ int variables_nufld_from_tower(struct perturbations_workspace * ppw,
     rho_plus_p_theta_nufld = 0.0;
     rho_plus_p_shear_nufld = 0.0;
     delta_p_nufld   = 0.0;
+    rho_nufld = 0.0;
+    p_nufld = 0.0;
+
 
     for (int index_q = 0; index_q < ppw->pv-> q_size_nufld[n_nufld]; index_q++) {
 
@@ -9572,12 +9578,16 @@ int variables_nufld_from_tower(struct perturbations_workspace * ppw,
       q2 = q*q;
       epsilon = sqrt(q2+pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]*a2);
 
+      rho_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q];
+      p_nufld += q2*q*pba->w_nufld[n_nufld][index_q];
       rho_delta_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
       delta_p_nufld   += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
       rho_plus_p_theta_nufld += q2*q*pba->w_nufld[n_nufld][index_q]*y[idx+1];
       rho_plus_p_shear_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx+2];
       idx += ppw->pv->l_max_nufld[n_nufld]+1;
     }
+    rho_nufld *= factor;
+    p_nufld *= factor/3.;
     rho_delta_nufld *= factor;
     delta_p_nufld *= factor/3.;
     rho_plus_p_theta_nufld *= k*factor;
@@ -9585,11 +9595,20 @@ int variables_nufld_from_tower(struct perturbations_workspace * ppw,
 
     if (delta_rho != NULL) delta_rho[n_nufld] = rho_delta_nufld;
     if (delta_p   != NULL) delta_p[n_nufld] = delta_p_nufld;
-    if (c_s2      != NULL) c_s2[n_nufld] = delta_p_nufld/rho_delta_nufld;
-    if (theta     != NULL) theta[n_nufld] = rho_plus_p_theta_nufld/
-            (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
-    if (shear     != NULL) shear[n_nufld] = rho_plus_p_shear_nufld/
-            (ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]+ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]);
+    if (theta     != NULL) theta[n_nufld] = rho_plus_p_theta_nufld/(rho_nufld+p_nufld);
+    if (shear     != NULL) shear[n_nufld] = rho_plus_p_shear_nufld/(rho_nufld+p_nufld);
+    if (ceff2     != NULL) {
+      w_nufld_mass       = ppw->pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
+      w_prime_nufld_mass = ppw->pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
+      ca2_nufld_mass     = w_nufld_mass - w_prime_nufld_mass/(3*a*H*(1+w_nufld_mass));
+
+      if (k <= pba->k_cut_nufld[n_nufld]) { 
+        ceff2[n_nufld]  = (k2*delta_p_nufld/rho_nufld+3*a*H*ca2_nufld_mass*(1+w_nufld_mass)*rho_plus_p_theta_nufld/(rho_nufld+p_nufld))/
+                          (k2*rho_delta_nufld/rho_nufld+3*a*H*(1+w_nufld_mass)*rho_plus_p_theta_nufld/(rho_nufld+p_nufld));
+      } else {
+        ceff2[n_nufld]  = ca2_nufld_mass;
+      }
+    }
   }      
   return _SUCCESS_;                
 }
@@ -9686,9 +9705,9 @@ int perturbations_derivs(double tau,
   /* for use with non-cold dark matter with continuity equations (nufld): */
   int n_nufld;
   double rho_nufld_bg,p_nufld_bg, delta_nufld, theta_nufld;
-  double w_nufld, w_prime_nufld, w_nufld_mass, w_prime_nufld_mass;
-  // double cs2_nufld[3]; // NUFLD_ERROR: This is not very general, but whatever
-  // double * cs2_nufld_ptr = cs2_nufld;
+  double w_nufld, w_prime_nufld;
+  double ceff2_nufld_bltz[3]; // NUFLD_TODO: This index is not very general, but whatever. Should allocate and bla bla bla.
+  double * ceff2_nufld_bltz_ptr = ceff2_nufld_bltz;
   double delta_rho_nufld_bltz[3];
   double * delta_rho_nufld_bltz_ptr = delta_rho_nufld_bltz;
   double delta_p_nufld_bltz[3];
@@ -9697,7 +9716,7 @@ int perturbations_derivs(double tau,
   double * theta_nufld_bltz_ptr = theta_nufld_bltz;
   double shear_nufld_bltz[3];
   double * shear_nufld_bltz_ptr = shear_nufld_bltz;
-  double cf2_nufld, ca2_nufld, ca2_nufld_mass;
+  double cf2_nufld, ca2_nufld;
 
   /* for use with curvature */
   double cotKgen, sqrt_absK;
@@ -10548,10 +10567,10 @@ int perturbations_derivs(double tau,
     if (pba->has_nufld == _TRUE_) {
 
       class_call(variables_nufld_from_tower(ppw,pba,y,k,
-                                            delta_rho_nufld_bltz_ptr,
-                                            delta_p_nufld_bltz_ptr,
                                             NULL,
-                                            theta_nufld_bltz_ptr,
+                                            NULL,
+                                            ceff2_nufld_bltz_ptr,
+                                            NULL,
                                             shear_nufld_bltz_ptr),
                  pba->error_message,
                  pba->error_message);
@@ -10571,16 +10590,8 @@ int perturbations_derivs(double tau,
         w_prime_nufld = pvecback[pba->index_bg_w_prime_nufld1+n_nufld];
         ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
 
-        // Sound speed in the fluid rest frame
-        w_nufld_mass = pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
-        w_prime_nufld_mass = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
-        ca2_nufld_mass = w_nufld_mass - w_prime_nufld_mass/(3*a_prime_over_a*(1+w_nufld_mass));
-        if (k <= pba->k_cut_nufld[n_nufld]) { // NUFLD_TODO: This index must be changed
-          cf2_nufld  = (k2*delta_p_nufld_bltz[n_nufld]/rho_nufld_bg+3*a_prime_over_a*ca2_nufld_mass*(1+w_nufld)*theta_nufld_bltz[n_nufld])/
-                        (k2*delta_rho_nufld_bltz[n_nufld]/rho_nufld_bg+3*a_prime_over_a*(1+w_nufld)*theta_nufld_bltz[n_nufld]);
-        } else {
-          cf2_nufld  = ca2_nufld_mass;
-        }
+        // Sound speed in the fluid rest frame, computed from the Boltzmann tower
+        cf2_nufld = ceff2_nufld_bltz[n_nufld];
 
         dy[pv->index_pt_delta_nufld1+n_nufld]  = -(1.0+w_nufld)*(theta_nufld + metric_continuity)
                                                   -3.0*a_prime_over_a*(cf2_nufld-w_nufld)*delta_nufld

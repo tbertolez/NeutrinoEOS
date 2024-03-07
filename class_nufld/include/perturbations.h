@@ -995,7 +995,7 @@ extern "C" {
                                   double k,
                                   double * delta_rho,
                                   double * delta_p,
-                                  double * c_s2,
+                                  double * ceff2,
                                   double * theta,
                                   double * shear);
 
