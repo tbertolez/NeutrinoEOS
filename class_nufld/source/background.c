@@ -410,6 +410,7 @@ int background_functions(
   /* exp(-3 int((1+w)/a)) of nufld species */
   double intw_nufld[pba->N_nufld];
   double * intw_nufld_ptr = intw_nufld;
+  double pseudo_p_nufld_mass_list[pba->N_nufld], p_nufld_mass_list[pba->N_nufld];
   /* background nufld quantities, using only m */
   double rho_nufld_mass, p_nufld_mass, pseudo_p_nufld_mass;
   /* equation of state of nufld, if massive and standard */
@@ -609,8 +610,8 @@ int background_functions(
       rho_r += 3*p_nufld;
       rho_m += rho_nufld-3*p_nufld;
 
-      // Note: dp/dloga = a dp/da = a d(w rho)/da = a rho dw/da + 3w(1+w)rho
-      dp_dloga += a*rho_nufld*dw_over_da_nufld[n_nufld] +
+      // Note: dp/dloga = a dp/da = a d(w rho)/da = a rho dw/da - 3w(1+w)rho
+      dp_dloga += a*rho_nufld*dw_over_da_nufld[n_nufld] -
                   3*w_nufld[n_nufld]*(1+w_nufld[n_nufld])*rho_nufld;
 
       // We may need the ncdm equation of state and its derivative.
@@ -637,7 +638,8 @@ int background_functions(
 
       // This line is necessary for computing w_prime_mass, but not outside of background.c
       // One should try to think of a more efficient way to implement it. 
-      pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld] = pseudo_p_nufld_mass;
+      p_nufld_mass_list[n_nufld] = p_nufld_mass;
+      pseudo_p_nufld_mass_list[n_nufld] = pseudo_p_nufld_mass;
     }
   }
 
@@ -713,8 +715,8 @@ int background_functions(
      * respect to time, we needed the expansion rate */
     for (n_nufld=0; n_nufld<pba->N_nufld; n_nufld++) {
       a_prime_over_a = pvecback[pba->index_bg_H]*a;
-
-      pvecback[pba->index_bg_w_prime_nufld_mass1 + n_nufld] = -a_prime_over_a*w_nufld[n_nufld]*((2.-3.*w_nufld[n_nufld])-pvecback[pba->index_bg_pseudo_p_nufld1+n_nufld]/pvecback[pba->index_bg_p_nufld1+n_nufld]);
+      w_nufld_mass = pvecback[pba->index_bg_w_nufld_mass1 + n_nufld];
+      pvecback[pba->index_bg_w_prime_nufld_mass1 + n_nufld] = -a_prime_over_a*w_nufld_mass*((2.-3.*w_nufld_mass)-pseudo_p_nufld_mass_list[n_nufld]/p_nufld_mass_list[n_nufld]);
       // In principle, the following line must be changed. Up to now, everything should be fine.
       // pvecback[pba->index_bg_w_prime_nufld1 + n_nufld] = pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
       pvecback[pba->index_bg_w_prime_nufld1 + n_nufld] = a*a_prime_over_a*dw_over_da_nufld[n_nufld];
@@ -1348,7 +1350,6 @@ int background_indices(
      are contiguous */
   class_define_index(pba->index_bg_rho_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   class_define_index(pba->index_bg_p_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
-  class_define_index(pba->index_bg_pseudo_p_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   class_define_index(pba->index_bg_w_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   class_define_index(pba->index_bg_w_prime_nufld1,pba->has_nufld,index_bg,pba->N_nufld);
   class_define_index(pba->index_bg_intw_nufld1,pba->has_nufld,index_bg,pba->N_nufld);

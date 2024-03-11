@@ -7397,7 +7397,7 @@ int perturbations_total_stress_energy(
   double *shear_nufld_ptr = shear_nufld;
   double delta_p_nufld_bltz[pba->N_nufld];
   double *delta_p_nufld_bltz_ptr = delta_p_nufld_bltz;
-  double w_nufld,w_prime_nufld,ca2_nufld;
+  double w_nufld_mass,w_prime_nufld_mass,ca2_nufld_mass;
   double gwnufld;
   double rho_relativistic;
   double rho_dr_over_f;
@@ -7775,11 +7775,12 @@ int perturbations_total_stress_energy(
         ppw->rho_plus_p_shear += rho_plus_p_nufld*ppw->shear_nufld[n_nufld];
         ppw->rho_plus_p_tot   += rho_plus_p_nufld;
 
-        if (k > pba->k_cut_nufld[n_nufld]) {
-          w_nufld = ppw->pvecback[pba->index_bg_w_nufld1+n_nufld];
-          ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
-          delta_p_nufld_bltz[n_nufld] = ca2_nufld*ppw->delta_nufld[n_nufld]*rho_nufld_bg;
-        }
+        // if (k > pba->k_cut_nufld[n_nufld]) {
+        //   w_nufld_mass       = ppw->pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
+        //   w_prime_nufld_mass = ppw->pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
+        //   ca2_nufld_mass     = w_nufld_mass - w_prime_nufld_mass/(3*a*H*(1+w_nufld_mass));
+        //   delta_p_nufld_bltz[n_nufld] = ca2_nufld_mass*ppw->delta_nufld[n_nufld]*rho_nufld_bg;
+        // }
         ppw->delta_p += delta_p_nufld_bltz[n_nufld];
 
       }
@@ -9578,12 +9579,13 @@ int variables_nufld_from_tower(struct perturbations_workspace * ppw,
       q2 = q*q;
       epsilon = sqrt(q2+pba->M_nufld[n_nufld]*pba->M_nufld[n_nufld]*a2);
 
-      rho_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q];
-      p_nufld += q2*q*pba->w_nufld[n_nufld][index_q];
-      rho_delta_nufld += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
-      delta_p_nufld   += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
+      rho_nufld              += q2*epsilon*pba->w_nufld[n_nufld][index_q];
+      p_nufld                += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q];
+      rho_delta_nufld        += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx]; // NUFLD_TODO: Some if could be written here to make it more efficient (only compute what you need)
       rho_plus_p_theta_nufld += q2*q*pba->w_nufld[n_nufld][index_q]*y[idx+1];
       rho_plus_p_shear_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx+2];
+      delta_p_nufld          += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
+
       idx += ppw->pv->l_max_nufld[n_nufld]+1;
     }
     rho_nufld *= factor;
