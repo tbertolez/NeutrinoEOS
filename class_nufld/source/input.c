@@ -2346,6 +2346,7 @@ int input_read_parameters_species(struct file_content * pfc,
   int N_nufld=3;
   double rho_nufld;
   int nufld_num_of_pars = 2;
+  double k0_nufld, m_bkg_nufld;
   double w_nufld[N_nufld];
   double *w_nufld_ptr = w_nufld;
   double intw_nufld[N_nufld];
@@ -2801,9 +2802,18 @@ int input_read_parameters_species(struct file_content * pfc,
     }
 
     /** 6.f) Equation of state parameters */
-    class_read_int("nufld_num_of_pars", nufld_num_of_pars);
-    pba->nufld_num_of_pars = nufld_num_of_pars;
-    class_read_list_of_doubles_or_default("nufld_pars",pba->w_nufld_pars,0.0,nufld_num_of_pars); // NUFLD_ERROR: I don't know how to define the default value :(
+    // class_read_int("nufld_num_of_pars", nufld_num_of_pars);
+    // pba->nufld_num_of_pars = nufld_num_of_pars;
+    // class_read_list_of_doubles_or_default("nufld_pars",pba->w_nufld_pars,0.0,nufld_num_of_pars); // NUFLD_ERROR: I don't know how to define the default value :(
+    
+    // This is a way to read it that splits it into k and m_bkg
+    class_read_double("k_nufld", k0_nufld);
+    class_read_double("m_bkg_nufld", m_bkg_nufld);
+    class_alloc(pba->w_nufld_pars,sizeof(double*)*2,pba->error_message);
+    pba->w_nufld_pars[0] = k0_nufld;
+    pba->w_nufld_pars[1] = 0.0005315/m_bkg_nufld;
+    // This is not the optimal way to write this, because it does not have default values for k and m_bkg
+    // however, for now let us stick with this!
 
     /** Momentum previous to which we approximate deltaP = ca2*deltarho*/
     class_read_list_of_doubles_or_default("k_cut_nufld",pba->k_cut_nufld,1e2,N_nufld);
