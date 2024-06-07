@@ -2874,19 +2874,32 @@ int input_read_parameters_species(struct file_content * pfc,
                    pba->error_message,
                    pba->error_message);
 
-        class_call(background_ncdm_momenta(pba->q_nufld_bg[n],
-                                           pba->w_nufld_bg[n],
-                                           pba->q_size_nufld_bg[n],
-                                           pba->M_nufld[n], // DOUBT_CHECK: M enters here, but should be redundant!
-                                           pba->factor_nufld[n],
-                                           0.,
-                                          //  w_nufld_ptr[n],
-                                          //  intw_nufld_ptr[n],
-                                           NULL,
-                                           &rho_nufld,
-                                           NULL,NULL,NULL),
-                   pba->error_message,
-                   errmsg);
+        class_call(background_nufld_momenta(pba->q_nufld_bg[n],
+                                            pba->w_nufld_bg[n],
+                                            pba->q_size_nufld_bg[n],
+                                            pba->factor_nufld[n],
+                                            0.,
+                                            w_nufld[n],
+                                            intw_nufld[n],
+                                            NULL,
+                                            &rho_nufld,
+                                            NULL),
+                  pba->error_message,
+                  errmsg);
+
+        // class_call(background_ncdm_momenta(pba->q_nufld_bg[n],
+        //                                    pba->w_nufld_bg[n],
+        //                                    pba->q_size_nufld_bg[n],
+        //                                    pba->M_nufld[n], // DOUBT_CHECK: M enters here, but should be redundant!
+        //                                    pba->factor_nufld[n],
+        //                                    0.,
+        //                                   //  w_nufld_ptr[n],
+        //                                   //  intw_nufld_ptr[n],
+        //                                    NULL,
+        //                                    &rho_nufld,
+        //                                    NULL,NULL,NULL),
+        //            pba->error_message,
+        //            errmsg);
         if (pba->Omega0_nufld[n] == 0.0){
           pba->Omega0_nufld[n] = rho_nufld/pba->H0/pba->H0;
         }

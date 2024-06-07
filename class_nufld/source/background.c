@@ -1222,6 +1222,10 @@ int background_free_input(
     free(pba->Omega0_nufld);
     free(pba->m_nufld_in_eV);
     free(pba->factor_nufld);
+    // free(pba->w_nufld_fit); // Only variables created through class_read_list_of_doubles_or_default should be cleaned
+    // free(pba->nufld_num_of_pars);
+    free(pba->w_nufld_pars);
+    free(pba->k_cut_nufld);
     if (pba->got_files!=NULL)
       free(pba->got_files);
     if (pba->nufld_psd_files!=NULL)
@@ -3018,6 +3022,7 @@ int background_solve(
   }
   for (n_nufld=0;n_nufld<pba->N_nufld; n_nufld++) {
     /* here we add to non-free-streaming matter as: any non-relatistic species with a dimensionless ratio m/T bigger than a threshold ppr->M_nfsm_threshold; if this threshold is of the order of 10^4, this corresponds to the condition "becoming non-relativistic during radiation domination". Beware: this definition won't work in the case in which the user passes a customised p.s.d. for nufld, such that M_nufld is not defined.  */
+    // NUFLD_ERROR: I believe this is wrong, but should not be worrysome unless we use a big m_nufld!!
     if (pba->M_nufld[n_nufld] > ppr->M_nfsm_threshold) {
       pba->Omega0_nfsm += pba->Omega0_nufld[n_nufld];
     }

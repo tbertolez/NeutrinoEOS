@@ -3024,7 +3024,6 @@ int perturbations_workspace_free (
       free(ppw->theta_ncdm);
       free(ppw->shear_ncdm);
 
-      // nufld_MOD: Related to the previous doubt, I don't know if this must be in here or not.
       free(ppw->delta_nufld);
       free(ppw->theta_nufld);
       free(ppw->shear_nufld);
@@ -3250,7 +3249,8 @@ int perturbations_solve(
 
     if (pba->has_nufld == _TRUE_) {
       for (n_nufld=0; n_nufld < pba->N_nufld; n_nufld++) {
-        if (fabs(ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]/ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]-1./3.) > ppr->tol_nufld_initial_w)
+        if (fabs(ppw->pvecback[pba->index_bg_w_nufld_mass1+n_nufld]-1./3.) > ppr->tol_nufld_initial_w)
+        // if (fabs(ppw->pvecback[pba->index_bg_p_nufld1+n_nufld]/ppw->pvecback[pba->index_bg_rho_nufld1+n_nufld]-1./3.) > ppr->tol_nufld_initial_w)
           is_early_enough = _FALSE_;
       }
     }
@@ -6196,7 +6196,7 @@ int perturbations_initial_conditions(struct precision * ppr,
 
       }
 
-      if ((pba->has_ur == _TRUE_) || (pba->has_ncdm == _TRUE_) || (pba->has_nufld == _TRUE_)) { // nufld_MOD: Did I do this right?
+      if ((pba->has_ur == _TRUE_) || (pba->has_ncdm == _TRUE_) || (pba->has_nufld == _TRUE_)) {
 
         delta_ur = ppw->pv->y[ppw->pv->index_pt_delta_g];
         theta_ur = ppw->pv->y[ppw->pv->index_pt_theta_g];
@@ -7391,13 +7391,12 @@ int perturbations_total_stress_energy(
   double rho_plus_p_nufld;
   int n_nufld;
   double rho_nufld_bg,p_nufld_bg;
-  double cs2_nufld[pba->N_nufld];
-  double *cs2_nufld_ptr = cs2_nufld;
   double shear_nufld[pba->N_nufld];
   double *shear_nufld_ptr = shear_nufld;
-  double delta_p_nufld_bltz[pba->N_nufld];
-  double *delta_p_nufld_bltz_ptr = delta_p_nufld_bltz;
+  double ceff2_nufld_bltz[pba->N_nufld];
+  double *ceff2_nufld_bltz_ptr = ceff2_nufld_bltz;
   double w_nufld_mass,w_prime_nufld_mass,ca2_nufld_mass;
+  double w_nufld,w_prime_nufld,ca2_nufld, cs2_nufld;
   double gwnufld;
   double rho_relativistic;
   double rho_dr_over_f;
@@ -7749,9 +7748,9 @@ int perturbations_total_stress_energy(
 
       class_call(variables_nufld_from_tower(ppw,pba,y,k,
                                             NULL,
-                                            delta_p_nufld_bltz_ptr,
                                             NULL,
                                             NULL,
+                                            ceff2_nufld_bltz_ptr,
                                             shear_nufld_ptr),
                  pba->error_message,pba->error_message);
 
@@ -7760,19 +7759,15 @@ int perturbations_total_stress_energy(
         p_nufld_bg = ppw->pvecback[pba->index_bg_p_nufld1+n_nufld];
         rho_plus_p_nufld = rho_nufld_bg + p_nufld_bg;
 
-        // // This will be useful once we change the equation of state to a tanh, but not now.
-        // w_prime_nufld = ppw->pvecback[pba->index_bg_w_prime_nufld1+n_nufld];
-        // ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
-
         if ((ppt->has_source_delta_nufld == _TRUE_) || (ppt->has_source_theta_nufld == _TRUE_) || (ppt->has_source_delta_m == _TRUE_)) {
           ppw->delta_nufld[n_nufld] = y[ppw->pv->index_pt_delta_nufld1+n_nufld];
           ppw->theta_nufld[n_nufld] = y[ppw->pv->index_pt_theta_nufld1+n_nufld];
           ppw->shear_nufld[n_nufld] = shear_nufld[n_nufld];
         }
 
-        ppw->delta_rho += rho_nufld_bg*ppw->delta_nufld[n_nufld];
+        ppw->delta_rho        += rho_nufld_bg*ppw->delta_nufld[n_nufld];
         ppw->rho_plus_p_theta += rho_plus_p_nufld*ppw->theta_nufld[n_nufld];
-        ppw->rho_plus_p_shear += rho_plus_p_nufld*ppw->shear_nufld[n_nufld];
+        ppw->rho_plus_p_shear += rho_plus_p_nufld*ppw->shear_nufld[n_nufld]; // NUFLD_TODO: Which rho, p to use here?
         ppw->rho_plus_p_tot   += rho_plus_p_nufld;
 
         // if (k > pba->k_cut_nufld[n_nufld]) {
@@ -7781,7 +7776,18 @@ int perturbations_total_stress_energy(
         //   ca2_nufld_mass     = w_nufld_mass - w_prime_nufld_mass/(3*a*H*(1+w_nufld_mass));
         //   delta_p_nufld_bltz[n_nufld] = ca2_nufld_mass*ppw->delta_nufld[n_nufld]*rho_nufld_bg;
         // }
-        ppw->delta_p += delta_p_nufld_bltz[n_nufld];
+        w_nufld = ppw->pvecback[pba->index_bg_w_nufld1+n_nufld];
+        w_prime_nufld = ppw->pvecback[pba->index_bg_w_nufld1+n_nufld];
+        ca2_nufld = w_nufld - w_prime_nufld/(3*a_prime_over_a*(1+w_nufld));
+        cs2_nufld = ceff2_nufld_bltz[n_nufld] + (ceff2_nufld_bltz[n_nufld] - ca2_nufld)*3*a_prime_over_a*(1+w_nufld)*ppw->theta_nufld[n_nufld]/k2/ppw->delta_nufld[n_nufld];
+
+        ppw->delta_p += cs2_nufld*ppw->delta_nufld[n_nufld]*rho_nufld_bg;
+        
+        //   w_nufld_mass       = ppw->pvecback[pba->index_bg_w_nufld1+n_nufld];
+        //   w_prime_nufld_mass = ppw->pvecback[pba->index_bg_w_prime_nufld1+n_nufld];
+        //   ca2_nufld_mass     = w_nufld_mass - w_prime_nufld_mass/(3*a*ppw->pvecback[pba->index_bg_H]*(1+w_nufld_mass));
+
+        // ppw->delta_p += rho_nufld_bg*ppw->delta_nufld[n_nufld]*ca2_nufld_mass;
 
       }
 
@@ -8101,6 +8107,12 @@ int perturbations_total_stress_energy(
 
   }
 
+  // Only variables allocated through class_alloc should be freed
+  // if (pba->has_nufld == _TRUE_) {
+  //   free(ceff2_nufld_bltz);
+  //   free(shear_nufld);
+  // }
+
   return _SUCCESS_;
 }
 
@@ -8167,6 +8179,7 @@ int perturbations_sources(
   int switch_isw = 1;
 
   double a, a2, f_dr;
+  double wtot, wtot_prime, Rcurv;
 
   double H_T_Nb_prime=0., rho_tot;
   double theta_over_k2,theta_shift;
@@ -8313,13 +8326,71 @@ int perturbations_sources(
 
         }
         else {
+          // CLASS default way of computing Sachs-Wolfe
           _set_source_(ppt->index_tp_t0) =
             ppt->switch_sw * g * (delta_g / 4. + pvecmetric[ppw->index_mt_psi])
             + switch_isw * ( g * (y[ppw->pv->index_pt_phi]-pvecmetric[ppw->index_mt_psi])
-                             + exp_m_kappa * 2. * pvecmetric[ppw->index_mt_phi_prime])
+                            + exp_m_kappa * 2. * pvecmetric[ppw->index_mt_phi_prime])
             + ppt->switch_dop /k/k * ( g * theta_b_prime  + g_prime * theta_b);
 
-          _set_source_(ppt->index_tp_t1) = switch_isw * exp_m_kappa * k* (pvecmetric[ppw->index_mt_psi]-y[ppw->pv->index_pt_phi]);
+          _set_source_(ppt->index_tp_t1) = 
+            switch_isw * exp_m_kappa * k* (pvecmetric[ppw->index_mt_psi]-y[ppw->pv->index_pt_phi]);
+
+          // Most things in terms of R
+          // wtot = pvecback[pba->index_bg_p_tot]/pvecback[pba->index_bg_rho_tot];
+          // wtot_prime = pvecback[pba->index_bg_p_tot_prime]/pvecback[pba->index_bg_rho_tot] - 
+          //              pvecback[pba->index_bg_p_tot]/(3*a_prime_over_a*(pvecback[pba->index_bg_rho_tot]+pvecback[pba->index_bg_p_tot]));
+          
+          // Rcurv = y[ppw->pv->index_pt_phi] + 2/3.*(1+wtot)*(pvecmetric[ppw->index_mt_phi_prime]/a_prime_over_a+pvecmetric[ppw->index_mt_psi]);
+          // // LRPS_TODO: Check that this is constant (and independent of the shear) for k->0
+          // theta_over_k2 = ppw->rho_plus_p_theta/ppw->rho_plus_p_tot/k/k;
+
+          // _set_source_(ppt->index_tp_t0) =
+          //   ppt->switch_sw*g*((1.+3.*wtot)/(5.+3.*wtot)*Rcurv + (delta_g/4.0 + a_prime_over_a*theta_over_k2)) -
+          //   switch_isw*g*(6*(1.0+wtot)/(5.0+3.*wtot)*Rcurv) +
+          //   ppt->switch_dop /k/k * ( g * theta_b_prime  + g_prime * theta_b);
+
+          // _set_source_(ppt->index_tp_t1) = 
+          //   switch_isw*exp_m_kappa*k*(Rcurv + pvecmetric[ppw->index_mt_psi] - a_prime_over_a*theta_over_k2);
+
+          // Equation (4) from Separations.pdf
+          // _set_source_(ppt->index_tp_t0) =
+          //   ppt->switch_sw * g * (delta_g / 4. - pvecmetric[ppw->pv->index_pt_phi])+
+          //   ppt->switch_dop /k/k * ( g * theta_b_prime  + g_prime * theta_b);
+
+          // _set_source_(ppt->index_tp_t1) = 
+          //   switch_isw*exp_m_kappa*k*(pvecmetric[ppw->index_mt_psi]+pvecmetric[ppw->pv->index_pt_phi]);
+
+          // Alternative (ours) way of computing Sachs-Wolfe
+          // wtot = pvecback[pba->index_bg_p_tot]/pvecback[pba->index_bg_rho_tot];
+          // wtot_prime = pvecback[pba->index_bg_p_tot_prime]/pvecback[pba->index_bg_rho_tot] - 
+          //              pvecback[pba->index_bg_p_tot]/(3*a_prime_over_a*(pvecback[pba->index_bg_rho_tot]+pvecback[pba->index_bg_p_tot]));
+
+          // if ((a > 1./(1088.+10)) && (a < 1./(1088.-10))) {
+          // printf("a: %.3e, k: %.3e, Theta + psi = %.5e, Phi - Psi = %.5e, Phi' = %.5e\n", a,k,
+          //         g * (delta_g/ 4. + pvecmetric[ppw->index_mt_psi]),
+          //         g*(1.+3.*wtot)/(5.+3.*wtot)*(pvecmetric[ppw->pv->index_pt_phi]-pvecmetric[ppw->index_mt_psi]),
+          //         g*(1.+3.*wtot)/(5.+3.*wtot)*2./3.*pvecmetric[ppw->index_mt_phi_prime]/a_prime_over_a*6./(1.+3.*wtot));
+          // }
+
+          // _set_source_(ppt->index_tp_t0) =
+          //   ppt->switch_sw * (g * (delta_g/ 4. + pvecmetric[ppw->index_mt_psi])) + 0
+          //                     (1+3*wtot)/(5+3*wtot)*(pvecmetric[ppw->pv->index_pt_phi]-pvecmetric[ppw->index_mt_psi] +
+          //                                            2./3.*pvecmetric[ppw->index_mt_phi_prime]/a_prime_over_a*6./(1.+3.*wtot)))
+          //   + switch_isw *  exp_m_kappa * ((12*wtot_prime/pow(5.+3*wtot,2))*pvecmetric[ppw->pv->index_pt_phi] +
+          //                                  6.*(1+wtot)/(5+3*wtot)*pvecmetric[ppw->index_mt_phi_prime]) +
+          //   // + switch_isw * g * 4/(5+3*wtot)*(pvecmetric[ppw->index_mt_psi] + pvecmetric[ppw->index_mt_phi_prime]/a_prime_over_a)
+
+          //   + ppt->switch_dop /k/k * ( g * theta_b_prime  + g_prime * theta_b);
+
+          // _set_source_(ppt->index_tp_t1) = 
+          //   -switch_isw * exp_m_kappa * k* 4/(5+3*wtot)*(pvecmetric[ppw->index_mt_psi] + pvecmetric[ppw->index_mt_phi_prime]/a_prime_over_a);
+
+          // I am gonna do a completely random things
+          // _set_source_(ppt->index_tp_t0) =
+          //   ppt->switch_sw * g * (delta_g / 4. - pvecmetric[ppw->pv->index_pt_phi]);
+            // + ppt->switch_dop /k/k * ( g * theta_b_prime  + g_prime * theta_b);
+            // I will switch isw manually 
         }
 
         _set_source_(ppt->index_tp_t2) = ppt->switch_pol * g * P;
@@ -8865,6 +8936,7 @@ int perturbations_print_variables(double tau,
   int n_nufld;
   double *delta_nufld=NULL, *theta_nufld=NULL, *shear_nufld=NULL, *delta_p_over_delta_rho_nufld=NULL, *cs2_nufld_fluid = NULL;
   double rho_nufld_bg, p_nufld_bg, w_prime_nufld, ca2_nufld, w_nufld;
+  double w_prime_nufld_mass, w_nufld_mass,ca2_nufld_mass;
   double rho_delta_nufld = 0.0;
   double rho_plus_p_theta_nufld = 0.0;
   double rho_plus_p_shear_nufld = 0.0;
@@ -8873,6 +8945,8 @@ int perturbations_print_variables(double tau,
   double *delta_rho_nufld_bltz_ptr = delta_rho_nufld_bltz;  
   double delta_p_nufld_bltz[3];
   double *delta_p_nufld_bltz_ptr = delta_p_nufld_bltz;  
+  double theta_nufld_bltz[3];
+  double *theta_nufld_bltz_ptr = theta_nufld_bltz;    
   double cs2_nufld[3];
   double *cs2_nufld_ptr = cs2_nufld;
   double shear_nufld_bltz[3]; // This is not very memory-efficient, but whatever
@@ -9140,7 +9214,7 @@ int perturbations_print_variables(double tau,
                                             delta_rho_nufld_bltz_ptr,
                                             delta_p_nufld_bltz_ptr,
                                             ceff2_nufld_bltz_ptr,
-                                            NULL,
+                                            theta_nufld_bltz_ptr,
                                             shear_nufld_bltz_ptr),
                  pba->error_message,
                  pba->error_message);
@@ -9158,6 +9232,12 @@ int perturbations_print_variables(double tau,
         // This is the sound speed with respect to the fluid frame:
         cs2_nufld_fluid[n_nufld] = ceff2_nufld_bltz[n_nufld];
 
+        w_nufld_mass       = ppw->pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
+        w_prime_nufld_mass = ppw->pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
+        ca2_nufld_mass     = w_nufld_mass - w_prime_nufld_mass/(3*a*ppw->pvecback[pba->index_bg_H]*(1+w_nufld_mass));
+
+        // delta_p_over_delta_rho_nufld[n_nufld] = (ceff2_nufld_bltz[n_nufld] +
+        //                                          3*a*H*(ceff2_nufld_bltz[n_nufld]-ca2_nufld_mass)*(1+w_nufld_mass)*theta_nufld_bltz_ptr[n_nufld]/k/k*delta_rho_nufld_bltz_ptr[n_nufld]/rho_nufld_bg);
         // This is the cs2_gauge sound speed:
         delta_p_over_delta_rho_nufld[n_nufld] = delta_p_nufld_bltz[n_nufld]/delta_rho_nufld_bltz[n_nufld]; 
         }
@@ -9528,6 +9608,18 @@ int perturbations_print_variables(double tau,
     free(shear_nufld);
     free(delta_p_over_delta_rho_nufld);
     free(cs2_nufld_fluid);
+    // free(theta_nufld_bltz); // One only needs to free what is allocated through class_alloc
+    // free(cs2_nufld);
+    // free(delta_rho_nufld_bltz);
+    // free(delta_p_nufld_bltz);
+    // free(shear_nufld_bltz);
+    // free(ceff2_nufld_bltz);
+    // free(theta_nufld_bltz_ptr);
+    // free(cs2_nufld_ptr);
+    // free(delta_rho_nufld_bltz_ptr);
+    // free(delta_p_nufld_bltz_ptr);
+    // free(shear_nufld_bltz_ptr);
+    // free(ceff2_nufld_bltz_ptr);
   }
 
   return _SUCCESS_;
@@ -9553,6 +9645,7 @@ int variables_nufld_from_tower(struct perturbations_workspace * ppw,
   int idx;
   double a, a2, H, k2, factor;
   double rho_nufld, p_nufld, rho_delta_nufld, delta_p_nufld, rho_plus_p_theta_nufld, rho_plus_p_shear_nufld, q, q2, epsilon;
+  // double rho_nufld_shear,p_nufld_shear;
   double w_nufld_mass, w_prime_nufld_mass, ca2_nufld_mass;
 
   a = ppw->pvecback[pba->index_bg_a];
@@ -9568,10 +9661,11 @@ int variables_nufld_from_tower(struct perturbations_workspace * ppw,
     rho_delta_nufld = 0.0;
     rho_plus_p_theta_nufld = 0.0;
     rho_plus_p_shear_nufld = 0.0;
-    delta_p_nufld   = 0.0;
+    delta_p_nufld = 0.0;
     rho_nufld = 0.0;
     p_nufld = 0.0;
-
+    // rho_nufld_shear = 0.0;
+    // p_nufld_shear = 0.0;
 
     for (int index_q = 0; index_q < ppw->pv-> q_size_nufld[n_nufld]; index_q++) {
 
@@ -9581,15 +9675,20 @@ int variables_nufld_from_tower(struct perturbations_workspace * ppw,
 
       rho_nufld              += q2*epsilon*pba->w_nufld[n_nufld][index_q];
       p_nufld                += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q];
+      // rho_nufld_shear        += q2*q*pba->w_nufld[n_nufld][index_q];
+      // p_nufld_shear          += q2*q*pba->w_nufld[n_nufld][index_q];
       rho_delta_nufld        += q2*epsilon*pba->w_nufld[n_nufld][index_q]*y[idx]; // NUFLD_TODO: Some if could be written here to make it more efficient (only compute what you need)
       rho_plus_p_theta_nufld += q2*q*pba->w_nufld[n_nufld][index_q]*y[idx+1];
       rho_plus_p_shear_nufld += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx+2];
+      // rho_plus_p_shear_nufld += q2*q*pba->w_nufld[n_nufld][index_q]*y[idx+2];
       delta_p_nufld          += q2*q2/epsilon*pba->w_nufld[n_nufld][index_q]*y[idx];
 
       idx += ppw->pv->l_max_nufld[n_nufld]+1;
     }
     rho_nufld *= factor;
     p_nufld *= factor/3.;
+    // rho_nufld_shear *= factor;
+    // p_nufld_shear *= factor/3.;    
     rho_delta_nufld *= factor;
     delta_p_nufld *= factor/3.;
     rho_plus_p_theta_nufld *= k*factor;
@@ -9599,6 +9698,7 @@ int variables_nufld_from_tower(struct perturbations_workspace * ppw,
     if (delta_p   != NULL) delta_p[n_nufld] = delta_p_nufld;
     if (theta     != NULL) theta[n_nufld] = rho_plus_p_theta_nufld/(rho_nufld+p_nufld);
     if (shear     != NULL) shear[n_nufld] = rho_plus_p_shear_nufld/(rho_nufld+p_nufld);
+    // if (shear     != NULL) shear[n_nufld] = rho_plus_p_shear_nufld/(rho_nufld_shear+p_nufld_shear);
     if (ceff2     != NULL) {
       w_nufld_mass       = ppw->pvecback[pba->index_bg_w_nufld_mass1+n_nufld];
       w_prime_nufld_mass = ppw->pvecback[pba->index_bg_w_prime_nufld_mass1+n_nufld];
@@ -9610,6 +9710,13 @@ int variables_nufld_from_tower(struct perturbations_workspace * ppw,
       } else {
         ceff2[n_nufld]  = ca2_nufld_mass;
       }
+      // w_nufld_mass       = ppw->pvecback[pba->index_bg_w_nufld1+n_nufld];
+      // w_prime_nufld_mass = ppw->pvecback[pba->index_bg_w_prime_nufld1+n_nufld];
+      // ca2_nufld_mass     = w_nufld_mass - w_prime_nufld_mass/(3*a*H*(1+w_nufld_mass));
+
+      // ceff2[n_nufld]  = ca2_nufld_mass;
+    // if (delta_p   != NULL) delta_p[n_nufld] = rho_delta_nufld*ca2_nufld_mass;
+
     }
   }      
   return _SUCCESS_;                
@@ -11016,6 +11123,20 @@ int perturbations_derivs(double tau,
     dy[pv->index_pt_gwdot] = pvecmetric[ppw->index_mt_gw_prime_prime];
 
   }
+
+  // One only needs to free what has been allocated by class_alloc
+  // if (pba->has_nufld == _TRUE_) {
+  //   free(ceff2_nufld_bltz);
+  //   free(delta_rho_nufld_bltz);
+  //   free(delta_p_nufld_bltz);
+  //   free(theta_nufld_bltz);
+  //   free(shear_nufld_bltz);
+  //   free(ceff2_nufld_bltz_ptr);
+  //   free(delta_rho_nufld_bltz_ptr);
+  //   free(delta_p_nufld_bltz_ptr);
+  //   free(theta_nufld_bltz_ptr);
+  //   free(shear_nufld_bltz_ptr);    
+  // }
 
   return _SUCCESS_;
 }
